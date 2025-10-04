@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Products</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../admin.css">
+    <style>
+        .mount-header, .mount-footer { display: contents; }
+    </style>
+</head>
+
+<body>
+    <div class="mount-header"></div>
+
+    <main>
+        <h1>Quản lý sản phẩm</h1>
+        <div class="admin-content">
+            <h2>Danh sách sản phẩm</h2>
+            <button class="btn-add">Thêm sản phẩm mới</button>
+            <div class="products-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Mô tả</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Website Portfolio</td>
+                            <td>2,000,000 VNĐ</td>
+                            <td>Thiết kế website cá nhân chuyên nghiệp</td>
+                            <td>
+                                <button class="btn-edit">Sửa</button>
+                                <button class="btn-delete">Xóa</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Website Doanh nghiệp</td>
+                            <td>5,000,000 VNĐ</td>
+                            <td>Website cho doanh nghiệp vừa và nhỏ</td>
+                            <td>
+                                <button class="btn-edit">Sửa</button>
+                                <button class="btn-delete">Xóa</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="mount-footer"></div>
+
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="admin_products.js"></script>
+</body>
+
+</html>

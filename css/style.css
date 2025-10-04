@@ -74,3 +74,6 @@ a:hover {
 main {
     padding: 24px 0;
 }
+
+/* Import common styles */
+@import url('common.css');

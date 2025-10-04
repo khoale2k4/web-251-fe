@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Orders</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../admin.css">
+    <style>
+        .mount-header, .mount-footer { display: contents; }
+    </style>
+</head>
+
+<body>
+    <div class="mount-header"></div>
+
+    <main>
+        <h1>Quản lý đơn hàng</h1>
+        <div class="admin-content">
+            <h2>Danh sách đơn hàng</h2>
+            <div class="orders-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Sản phẩm</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#001</td>
+                            <td>Nguyễn Văn A</td>
+                            <td>Website Portfolio</td>
+                            <td>2,000,000 VNĐ</td>
+                            <td><span class="status-pending">Chờ xử lý</span></td>
+                            <td>
+                                <button class="btn-approve">Duyệt</button>
+                                <button class="btn-reject">Từ chối</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>#002</td>
+                            <td>Trần Thị B</td>
+                            <td>Website Doanh nghiệp</td>
+                            <td>5,000,000 VNĐ</td>
+                            <td><span class="status-approved">Đã duyệt</span></td>
+                            <td>
+                                <button class="btn-view">Xem</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="mount-footer"></div>
+
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="admin_orders.js"></script>
+</body>
+
+</html>
