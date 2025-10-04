@@ -30,12 +30,3 @@
     ```
     http://localhost/web-251-fe
     ```
-
-## Cấu trúc thư mục mẫu sau khi copy vào XAMPP
-    /Applications/XAMPP/xamppfiles/htdocs/
-    └── web-251-fe/
-        ├── index.php
-        ├── css/
-        ├── js/
-        ├── images/
-        └── ...
