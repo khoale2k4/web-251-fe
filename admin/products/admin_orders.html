@@ -2,66 +2,125 @@
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Orders</title>
-    <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="../admin.css">
-    <style>
-        .mount-header, .mount-footer { display: contents; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Admin Orders</title>
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../admin.css">
+  <link rel="stylesheet" href="../../css/tableList.css">
+
+  <style>
+    .tabs {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 6px;
+    }
+
+    .tabs button {
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      background: #f1f5f9;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .tabs button.active {
+      background: #2563eb;
+      color: white;
+    }
+
+    .tabs button:hover:not(.active) {
+      background: #e2e8f0;
+    }
+
+    .section {
+      display: none;
+      margin-top: 15px;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="mount-header"></div>
+  <div class="mount-header"></div>
 
-    <main>
-        <h1>Quản lý đơn hàng</h1>
-        <div class="admin-content">
-            <h2>Danh sách đơn hàng</h2>
-            <div class="orders-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Mã đơn hàng</th>
-                            <th>Khách hàng</th>
-                            <th>Sản phẩm</th>
-                            <th>Tổng tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>#001</td>
-                            <td>Nguyễn Văn A</td>
-                            <td>Website Portfolio</td>
-                            <td>2,000,000 VNĐ</td>
-                            <td><span class="status-pending">Chờ xử lý</span></td>
-                            <td>
-                                <button class="btn-approve">Duyệt</button>
-                                <button class="btn-reject">Từ chối</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>#002</td>
-                            <td>Trần Thị B</td>
-                            <td>Website Doanh nghiệp</td>
-                            <td>5,000,000 VNĐ</td>
-                            <td><span class="status-approved">Đã duyệt</span></td>
-                            <td>
-                                <button class="btn-view">Xem</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+  <main>
+    <h1>Quản lý Giỏ hàng & Đơn hàng</h1>
+
+    <div class="tabs">
+      <button id="tab-cart" class="active">Giỏ hàng</button>
+      <button id="tab-orders">Đơn hàng</button>
+    </div>
+
+    <section id="cart-section" class="section active">
+      <h2>Danh sách Giỏ hàng</h2>
+
+      <div class="table-wrapper">
+        <div class="table-toolbar">
+          <div class="table-search">
+            <input type="text" class="cart-search" placeholder="Tìm kiếm giỏ hàng...">
+          </div>
         </div>
-    </main>
 
-    <div class="mount-footer"></div>
+        <table class="table-list">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Người dùng</th>
+              <th>Số sản phẩm</th>
+              <th>Lần cập nhật cuối</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody class="cart-table-body"></tbody>
+        </table>
+      </div>
+    </section>
 
-    <script type="module" src="../../js/main.js"></script>
-    <script type="module" src="admin_orders.js"></script>
+    <section id="orders-section" class="section">
+      <h2>Danh sách Đơn hàng</h2>
+
+      <div class="table-wrapper">
+        <div class="table-toolbar">
+          <div class="table-search">
+            <input type="text" class="order-search" placeholder="Tìm kiếm đơn hàng...">
+          </div>
+        </div>
+
+        <table class="table-list">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Người dùng</th>
+              <th>Tổng tiền</th>
+              <th>Địa chỉ</th>
+              <th>Phương thức thanh toán</th>
+              <th>Trạng thái</th>
+              <th>Note</th>
+              <th>Ngày tạo đơn</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody class="order-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="mount-footer"></div>
+
+  <script type="module" src="../../js/main.js"></script>
+  <script type="module" src="admin_orders.js"></script>
 </body>
 
 </html>

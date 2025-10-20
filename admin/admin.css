@@ -1,5 +1,4 @@
-/* Admin page styles */
-.admin-content {
+/* .admin-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -114,7 +113,6 @@
   background: #4b5563;
 }
 
-/* Tables */
 .products-table table,
 .orders-table table {
   width: 100%;
@@ -146,7 +144,6 @@
   background: #f8fafc;
 }
 
-/* Contact messages */
 .contact-messages {
   display: grid;
   gap: 15px;
@@ -170,7 +167,6 @@
   margin-bottom: 10px;
 }
 
-/* FAQ list */
 .faq-list {
   display: grid;
   gap: 15px;
@@ -194,7 +190,6 @@
   margin-bottom: 15px;
 }
 
-/* News list */
 .news-list {
   display: grid;
   gap: 15px;
@@ -224,7 +219,6 @@
   margin-bottom: 15px;
 }
 
-/* Status badges */
 .status-pending {
   background: #fef3c7;
   color: #92400e;
@@ -241,4 +235,4 @@
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
-}
+} */
