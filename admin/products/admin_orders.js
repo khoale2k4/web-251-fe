@@ -72,7 +72,6 @@ ready(async () => {
     data: carts,
     searchSelector: '.cart-search',
     columns: [
-      { key: 'id', label: 'ID' },
       { key: 'user', label: 'Người dùng' },
       { key: 'items', label: 'Số lượng', render: v => `${v} sản phẩm` },
       { key: 'created_at', label: 'Ngày tạo' },
@@ -90,7 +89,6 @@ ready(async () => {
     data: orders,
     searchSelector: '.order-search',
     columns: [
-      { key: 'id', label: 'ID' },
       { key: 'user', label: 'Người dùng' },
       {
         key: 'total_price',
