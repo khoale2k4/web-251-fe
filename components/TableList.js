@@ -139,4 +139,11 @@ export class TableList {
         if (this.currentPage > this.totalPages) this.currentPage = this.totalPages || 1;
         this.render();
     }
+
+    updateData(newData) {
+        this.data = newData;
+        this.filteredData = [...newData];
+        this.currentPage = 1; 
+        this.render();
+    }
 }
