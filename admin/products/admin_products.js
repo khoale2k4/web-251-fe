@@ -1,149 +1,321 @@
 import { ready } from '../../js/main.js';
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
+import { Popup } from '../../components/PopUp.js';
 import { TableList } from '../../components/TableList.js';
 
-ready(() => {
+ready(async () => {
   mountHeader('.mount-header', 'admin-products');
   mountFooter('.mount-footer');
 
-  const products = [
-    {
-      id: 1,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Thể Thao Nike Air Max Plus Og Men's - Voltage Purple",
-      price: 2000000,
-      discount: 0.5,
-      stock: 123,
-      size: 42,
-      color: "Trắng",
-      category: "Nike"
-    },
-    {
-      id: 2,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Adidas Ultraboost 22 Core Black",
-      price: 3500000,
-      discount: 0.3,
-      stock: 85,
-      size: 43,
-      color: "Đen",
-      category: "Adidas"
-    },
-    {
-      id: 3,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Converse Chuck Taylor All Star High Top",
-      price: 1500000,
-      discount: 0.1,
-      stock: 240,
-      size: 41,
-      color: "Trắng",
-      category: "Converse"
-    },
-    {
-      id: 4,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Vans Old Skool Classic Black",
-      price: 1200000,
-      discount: 0.15,
-      stock: 170,
-      size: 42,
-      color: "Đen Trắng",
-      category: "Vans"
-    },
-    {
-      id: 5,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Puma RS-X3 Puzzle White Red",
-      price: 2200000,
-      discount: 0.25,
-      stock: 90,
-      size: 43,
-      color: "Trắng Đỏ",
-      category: "Puma"
-    },
-    {
-      id: 6,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày New Balance 327 Grey",
-      price: 2800000,
-      discount: 0.2,
-      stock: 110,
-      size: 41,
-      color: "Xám",
-      category: "New Balance"
-    },
-    {
-      id: 7,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Nike Air Force 1 '07 Low Triple White",
-      price: 2500000,
-      discount: 0.1,
-      stock: 200,
-      size: 42,
-      color: "Trắng",
-      category: "Nike"
-    },
-    {
-      id: 8,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Adidas Stan Smith Green",
-      price: 1900000,
-      discount: 0.2,
-      stock: 150,
-      size: 40,
-      color: "Trắng Xanh",
-      category: "Adidas"
-    },
-    {
-      id: 9,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Jordan 1 Retro High University Blue",
-      price: 4500000,
-      discount: 0.35,
-      stock: 60,
-      size: 44,
-      color: "Xanh Trắng",
-      category: "Jordan"
-    },
-    {
-      id: 10,
-      imageLink: '../../assets/images/placeholder.png',
-      name: "Giày Balenciaga Triple S Clear Sole Beige",
-      price: 9500000,
-      discount: 0.4,
-      stock: 25,
-      size: 43,
-      color: "Be",
-      category: "Balenciaga"
+  const popup = new Popup();
+
+  async function fetchData(url) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      return json.data;
+    } catch (err) {
+      console.error(`Lỗi khi tải dữ liệu từ ${url}:`, err);
+      return null;
     }
-  ];
+  }
+
+  async function postData(url, body = {}) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const json = await res.json();
+      return json.data;
+    } catch (err) {
+      console.error(`Lỗi khi gửi PUT tới ${url}:`, err);
+      return null;
+    }
+  }
+
+  async function putData(url, body = {}) {
+    try {
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const json = await res.json();
+      return json.data;
+    } catch (err) {
+      console.error(`Lỗi khi gửi PUT tới ${url}:`, err);
+      return null;
+    }
+  }
+
+  const tableContainer = '.products-table tbody';
+  const searchInput = '.product-search';
+
+  document.querySelector(tableContainer).innerHTML = `<tr><td colspan="8" style="text-align:center;">Đang tải dữ liệu...</td></tr>`;
+
+  const res = await fetchData('http://localhost:8000/products');
+
+  const products = res.products.map(p => ({
+    id: p.id,
+    imageLink: `${p.image || '../../assets/images/placeholder.png'}`,
+    name: p.name,
+    price: parseInt(p.price),
+    discount: parseFloat(p.discount) / 100,
+    stock: p.stock,
+    size: p.size,
+    color: p.color,
+    category: p.category_name
+  }));
 
   const table = new TableList({
-    containerSelector: '.products-table tbody',
+    containerSelector: tableContainer,
     data: products,
-    searchSelector: '.product-search',
+    searchSelector: searchInput,
     columns: [
-      { key: 'imageLink', render: (v, p) => `<img src="${v}" width="60" height="60" style="border-radius:8px;">` },
-      { key: 'name' },
-      { key: 'price', render: (v) => `${v.toLocaleString('vi-VN')} VNĐ` },
-      { key: 'discount', render: (v) => `${(v * 100).toFixed(0)}%` },
-      { key: 'stock' },
-      { key: 'size' },
-      { key: 'color' },
-      { key: 'category' },
+      { key: 'imageLink', render: (v) => `<img src="${v}" width="60" height="60" style="border-radius:8px;">` },
+      { key: 'name', label: 'Tên sản phẩm' },
+      { key: 'price', label: 'Giá', render: (v) => `${v.toLocaleString('vi-VN')} VNĐ` },
+      { key: 'discount', label: 'Giảm giá', render: (v) => `${(v * 100).toFixed(0)}%` },
+      { key: 'stock', label: 'Tồn kho' },
+      { key: 'size', label: 'Size' },
+      { key: 'color', label: 'Màu sắc' },
+      { key: 'category', label: 'Danh mục' },
       {
-        key: 'actions', render: (_, p) => `
-          <button data-action="edit" data-id="${p.id}" class="btn-edit">Sửa</button>
-          <button data-action="delete" data-id="${p.id}" class="btn-delete">Xóa</button>
-        ` }
-    ],
-    searchSelector: '.product-search'
+        key: 'actions', label: 'Hành động', render: (_, p) =>
+          `<div class="table-actions">
+            <button data-action="edit" data-id="${p.id}" class="btn-edit">Sửa</button>
+            <button data-action="delete" data-id="${p.id}" class="btn-delete">Xóa</button>
+            </div>
+          `
+      }
+    ]
   });
 
-  table.onEdit = (id) => alert(`Sửa sản phẩm ID: ${id}`);
-  table.onDelete = (id) => {
-    if (confirm('Xóa sản phẩm này?')) table.remove(id);
+  async function reloadProducts() {
+    document.querySelector(tableContainer).innerHTML = `
+    <tr><td colspan="8" style="text-align:center;">Đang tải dữ liệu...</td></tr>
+  `;
+
+    const res = await fetchData('http://localhost:8000/products');
+    if (!res || !res.products) {
+      console.error('Không thể tải lại danh sách sản phẩm');
+      return;
+    }
+
+    products.length = 0;
+    products.push(
+      ...res.products.map(p => ({
+        id: p.id,
+        imageLink: `${p.image || '../../assets/images/placeholder.png'}`,
+        name: p.name,
+        price: parseInt(p.price),
+        discount: parseFloat(p.discount) / 100,
+        stock: p.stock,
+        size: p.size,
+        color: p.color,
+        category: p.category_name
+      }))
+    );
+
+    table.updateData(products);
+  }
+
+  const onEditAddPopupShow = async (product = null) => {
+    const isEdit = !!product;
+    const title = isEdit ? `Chỉnh sửa sản phẩm #${product.name}` : 'Thêm sản phẩm mới';
+
+    const content = `
+  <div class="popup-card">
+    <form id="product-form" class="product-form">
+  <div class="form-grid">
+    <label>
+      Tên sản phẩm
+      <input type="text" name="name" value="${product?.name || ''}" required>
+    </label>
+
+    <label>
+      Giá
+      <input 
+        type="text" 
+        name="price" 
+        inputmode="decimal"
+        pattern="^[0-9]+([.,][0-9]+)?$"
+        placeholder="VD: 123000 hoặc 123.000"
+        value="${product?.price || ''}" 
+        required
+      >
+    </label>
+
+    <label>
+      Giảm giá (%)
+      <input type="number" name="discount" step="any" value="${product?.discount ? product.discount * 100 : ''}">
+    </label>
+
+    <label>
+      Số lượng tồn
+      <input type="number" name="stock" step="1" value="${product?.stock || ''}">
+    </label>
+
+    <label>
+      Size
+      <input type="text" name="size" value="${product?.size || ''}">
+    </label>
+
+    <label>
+      Màu sắc
+      <input type="text" name="color" value="${product?.color || ''}">
+    </label>
+
+    <label>
+      Ảnh sản phẩm
+      <input type="file" name="imageFile" accept="image/*" id="imageFile">
+      <input type="hidden" name="imageLink" value="${product?.imageLink || ''}">
+      <div class="image-preview">
+        <img id="imagePreview" src="${product?.imageLink || '../../assets/images/placeholder.png'}" alt="Preview">
+      </div>
+    </label>
+
+    <label>
+      Danh mục
+      <select name="category" id="categorySelect">
+        <option value="">-- Chọn danh mục --</option>
+      </select>
+      <textarea name="newCategory" id="newCategory" placeholder="Hoặc nhập danh mục mới..." style="display:none;"></textarea>
+    </label>
+  </div>
+
+  <div class="popup-actions">
+    <button type="button" class="btn-cancel">Hủy</button>
+    <button type="submit" class="btn-save">${isEdit ? 'Cập nhật' : 'Thêm mới'}</button>
+  </div>
+</form>
+  </div>
+`;
+
+    popup.show({ title, content });
+
+    const form = document.getElementById('product-form');
+    const fileInput = document.getElementById('imageFile');
+    const previewImg = document.getElementById('imagePreview');
+    const hiddenInput = form.querySelector('input[name="imageLink"]');
+    const categorySelect = document.getElementById('categorySelect');
+    const newCategory = document.getElementById('newCategory');
+    const cancelBtn = form.querySelector('.btn-cancel');
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          previewImg.src = e.target.result;
+          hiddenInput.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // const res = await fetchData('http://localhost:8000/categories');
+    // if (Array.isArray(res.categories)) {
+    //   res.categories.forEach(c => {
+    //     const opt = document.createElement('option');
+    //     opt.value = c.name;
+    //     opt.textContent = c.name;
+    //     if (product?.category === c.name) opt.selected = true;
+    //     categorySelect.appendChild(opt);
+    //   });
+    // }
+
+    categorySelect.addEventListener('change', () => {
+      if (categorySelect.value === '') {
+        newCategory.style.display = 'block';
+      } else {
+        newCategory.style.display = 'none';
+        newCategory.value = '';
+      }
+    });
+
+    cancelBtn.addEventListener('click', () => popup.hide());
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      data.price = parseFloat(data.price || 0);
+      data.discount = parseFloat(data.discount || 0);
+      data.stock = parseInt(data.stock || 0);
+      if (data.newCategory) data.category = data.newCategory;
+
+      let imageUrl = product?.imageLink || '';
+      const file = fileInput.files[0];
+      if (file) {
+        try {
+          const uploadData = new FormData();
+          uploadData.append('file', file);
+          const uploadRes = await fetch('http://localhost:8000/upload', {
+            method: 'POST',
+            body: uploadData
+          });
+          const uploadJson = await uploadRes.json();
+          imageUrl = 'http://localhost:8000' + uploadJson.url;
+        } catch (err) {
+          console.error('Upload ảnh thất bại:', err);
+        }
+      }
+
+      const body = {
+        name: data.name,
+        price: data.price,
+        discount: data.discount,
+        stock: data.stock,
+        size: data.size,
+        color: data.color,
+        image: imageUrl,
+        category: data.category,
+      };
+
+      try {
+        if (isEdit) {
+          await putData(`http://localhost:8000/products/${product.id}`, body);
+        } else {
+          await postData('http://localhost:8000/products', body);
+        }
+
+        console.log('Đã lưu sản phẩm:', body);
+        popup.hide();
+        await reloadProducts();
+      } catch (err) {
+        console.error('Lỗi khi lưu sản phẩm:', err);
+      }
+    });
   };
+
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('.btn-edit')) {
+      const id = Number(e.target.dataset.id);
+      console.log(id);
+      const product = products.find((product) => product.id === id);
+      console.log(products);
+      console.log(product);
+      onEditAddPopupShow(product);
+    } else if (e.target.matches('.btn-add')) {
+      onEditAddPopupShow();
+    }
+  });
+
 });

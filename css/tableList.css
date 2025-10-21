@@ -266,3 +266,15 @@
     outline: none;
     border-color: #2563eb;
 }
+
+.table-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.table-actions .btn {
+    flex-shrink: 0;
+}

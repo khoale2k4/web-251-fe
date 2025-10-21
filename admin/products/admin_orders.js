@@ -4,122 +4,91 @@ import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 import { TableList } from '../../components/TableList.js';
 
-ready(() => {
+ready(async () => {
   mountHeader('.mount-header', 'admin-orders');
   mountFooter('.mount-footer');
 
   const popup = new Popup();
 
-  const carts = [
-    { id: 1, user: 'khoa', items: 3, created_at: '2025-10-18', },
-    { id: 2, user: 'an', items: 1, created_at: '2025-10-19', },
-    { id: 3, user: 'linh', items: 5, created_at: '2025-10-17', },
-    { id: 4, user: 'huy', items: 2, created_at: '2025-10-16', },
-    { id: 5, user: 'thảo', items: 4, created_at: '2025-10-15', },
-    { id: 6, user: 'minh', items: 7, created_at: '2025-10-15', },
-    { id: 7, user: 'phúc', items: 2, created_at: '2025-10-14', },
-    { id: 8, user: 'loan', items: 3, created_at: '2025-10-13', },
-    { id: 9, user: 'nam', items: 6, created_at: '2025-10-12', },
-    { id: 10, user: 'lan', items: 1, created_at: '2025-10-11', }
-  ];
-
-  const orders = [
-    {
-      id: 1,
-      user: 'khoa',
-      total_price: 2000000,
-      status: 'pending',
-      shipping_address: '123 Nguyễn Huệ, Q.1, TP.HCM',
-      payment_method: 'Bank Transfer',
-      note: 'Giao hàng trong giờ hành chính',
-      created_at: '2025-10-18 10:30'
-    },
-    {
-      id: 2,
-      user: 'an',
-      total_price: 3200000,
-      status: 'confirmed',
-      shipping_address: '45 Lê Lợi, Q.3, TP.HCM',
-      payment_method: 'COD',
-      note: '',
-      created_at: '2025-10-17 15:20'
-    },
-    {
-      id: 3,
-      user: 'linh',
-      total_price: 480000,
-      status: 'shipped',
-      shipping_address: '12 Phan Xích Long, Q.Phú Nhuận',
-      payment_method: 'Credit Card',
-      note: 'Gọi trước khi giao',
-      created_at: '2025-10-16 09:10'
-    },
-    {
-      id: 4,
-      user: 'huy',
-      total_price: 1150000,
-      status: 'completed',
-      shipping_address: '21 Nguyễn Văn Cừ, Q.5',
-      payment_method: 'Momo',
-      note: '',
-      created_at: '2025-10-15 19:45'
-    },
-    {
-      id: 5,
-      user: 'thảo',
-      total_price: 2500000,
-      status: 'cancelled',
-      shipping_address: '89 Võ Văn Kiệt, Q.1',
-      payment_method: 'COD',
-      note: 'Khách đổi ý',
-      created_at: '2025-10-14 11:00'
+  async function fetchData(url) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      return json.data;
+    } catch (err) {
+      console.error(`Lỗi khi tải dữ liệu từ ${url}:`, err);
+      return null;
     }
-  ];
+  }
 
-  const products = [
-    { id: 1, name: 'Giày Nike Air Max', price: 1500000, size: '42', color: 'Đen' },
-    { id: 2, name: 'Adidas Ultraboost', price: 2200000, size: '41', color: 'Trắng' },
-    { id: 3, name: 'Converse Classic', price: 900000, size: '40', color: 'Xanh navy' },
-    { id: 4, name: 'Vans Old Skool', price: 1100000, size: '43', color: 'Đen trắng' },
-    { id: 5, name: 'Puma RS-X', price: 1300000, size: '42', color: 'Đỏ' },
-  ];
+  async function putData(url, body = {}) {
+    try {
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
 
-  const order_items = [
-    { id: 1, order_id: 1, product_id: 1, quantity: 1, price: 1500000 },
-    { id: 2, order_id: 1, product_id: 3, quantity: 1, price: 500000 },
-    { id: 3, order_id: 2, product_id: 2, quantity: 1, price: 2200000 },
-    { id: 4, order_id: 2, product_id: 5, quantity: 1, price: 1000000 },
-    { id: 5, order_id: 3, product_id: 4, quantity: 2, price: 960000 },
-    { id: 6, order_id: 4, product_id: 3, quantity: 1, price: 900000 },
-    { id: 7, order_id: 4, product_id: 5, quantity: 1, price: 250000 },
-    { id: 8, order_id: 5, product_id: 1, quantity: 2, price: 3000000 },
-  ];
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const json = await res.json();
+      return json.data;
+    } catch (err) {
+      console.error(`Lỗi khi gửi PUT tới ${url}:`, err);
+      return null;
+    }
+  }
+
+  const cartRes = await fetchData('http://localhost:8000/carts');
+  const orderRes = await fetchData('http://localhost:8000/orders');
+
+  const carts = (cartRes?.cart || []).map(c => ({
+    id: c.cart_id,
+    user: c.user_name,
+    user_id: c.user_id,
+    user_email: c.user_email,
+    items: c.total_items,
+    value: parseFloat(c.total_value),
+    created_at: c.created_at
+  }));
+
+  const orders = (orderRes?.orders || []).map(o => ({
+    id: o.id,
+    user: o.user_name,
+    email: o.user_email,
+    total_price: parseFloat(o.total_price),
+    shipping_address: o.shipping_address,
+    payment_method: o.payment_method,
+    note: o.note,
+    status: o.status,
+    created_at: o.created_at
+  }));
 
   const cartTable = new TableList({
     containerSelector: '.cart-table-body',
     data: carts,
     searchSelector: '.cart-search',
     columns: [
-      { key: 'id', label: 'ID' },
       { key: 'user', label: 'Người dùng' },
       { key: 'items', label: 'Số lượng', render: v => `${v} sản phẩm` },
       { key: 'created_at', label: 'Ngày tạo' },
       {
         key: 'actions',
         render: (_, c) =>
-          `<button data-action="view" data-id="${c.id}" class="btn-view">Xem</button>`
+
+          `<div class="table-actions"><button data-action="view-cart" data-id="${c.user_id}" class="btn-view">Xem</button></div>`
       }
     ]
   });
-
-  cartTable.onView = (id) => alert(`Xem chi tiết giỏ hàng #${id}`);
 
   const orderTable = new TableList({
     containerSelector: '.order-table-body',
     data: orders,
     searchSelector: '.order-search',
     columns: [
-      { key: 'id', label: 'ID' },
       { key: 'user', label: 'Người dùng' },
       {
         key: 'total_price',
@@ -150,44 +119,26 @@ ready(() => {
         key: 'actions',
         label: 'Hành động',
         render: (_, o) =>
-          `<button data-action="save" data-id="${o.id}" class="btn-save">Lưu</button>
-         <button data-action="view" data-id="${o.id}" class="btn-view">Xem</button>`
+          `<div class="table-actions">
+        <button data-action="save" data-id="${o.id}" class="btn-save">Lưu</button>
+         <button data-action="view-order" data-id="${o.id}" class="btn-view">Xem</button>
+         </div>
+         `
       }
     ]
   });
 
-  document.addEventListener('click', (e) => {
-    if (e.target.matches('.btn-save')) {
-      const id = e.target.dataset.id;
-      const select = document.querySelector(`select[data-id="${id}"]`);
-      const status = select.value;
-      alert(`Cập nhật trạng thái đơn hàng #${id}: ${status}`);
-    }
-  });
+  const showOrderPopup = async (id) => {
+    const res = await fetchData(`http://localhost:8000/orders/${id}`);
 
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.btn-view');
-    if (!btn) return;
-
-    const id = parseInt(btn.dataset.id);
-    const order = orders.find(o => o.id === id);
+    const order = res.order;
     if (!order) return;
+    const items = res.items;
 
-    const items = order_items.filter(i => i.order_id === id).map(i => {
-      const product = products.find(p => p.id === i.product_id);
-      return {
-        ...i,
-        product_name: product?.name || 'Không xác định',
-        color: product?.color,
-        size: product?.size
-      };
-    });
-
-    console.log(items);
 
     const content = `
     <p><strong>ID đơn hàng:</strong> ${order.id}</p>
-    <p><strong>Khách hàng:</strong> ${order.user}</p>
+    <p><strong>Khách hàng:</strong> ${order.user_name}</p>
     <p><strong>Địa chỉ giao hàng:</strong> ${order.shipping_address}</p>
     <p><strong>Phương thức thanh toán:</strong> ${order.payment_method}</p>
     <p><strong>Trạng thái:</strong> ${order.status}</p>
@@ -200,6 +151,7 @@ ready(() => {
                     <table class="table-list">
                         <thead>
                             <tr>
+          <th></th>
           <th>Sản phẩm</th>
           <th>Màu</th>
           <th>Size</th>
@@ -220,6 +172,11 @@ ready(() => {
       containerSelector: '.product-detail-body',
       data: items,
       columns: [
+        {
+          key: 'product_image',
+          label: 'Hình ảnh',
+          render: v => `<img src="${v}" alt="product" style="width:60px; height:60px; object-fit:cover; border-radius:6px;">`
+        },
         { key: 'product_name', label: 'Sản phẩm' },
         { key: 'color', label: 'Màu' },
         { key: 'size', label: 'Kích thước' },
@@ -231,6 +188,130 @@ ready(() => {
         }
       ]
     });
+  }
+
+  const showCartPopup = async (id) => {
+    try {
+      const res = await fetchData(`http://localhost:8000/carts/${id}`);
+
+      const cart = res.cart;
+      const items = res.items || [];
+      const total = Number(res.total) || 0;
+      const itemCount = res.item_count || 0;
+
+      let content = `
+      <p><strong>ID giỏ hàng:</strong> ${cart.id}</p>
+      <p><strong>ID người dùng:</strong> ${cart.user_id}</p>
+      <p><strong>Ngày tạo:</strong> ${cart.created_at}</p>
+      <p><strong>Cập nhật gần nhất:</strong> ${cart.updated_at}</p>
+      <hr>
+      <h4>Chi tiết sản phẩm</h4>
+    `;
+
+      if (items.length === 0) {
+        content += `
+        <p style="text-align:center; padding:20px;">Giỏ hàng trống.</p>
+      `;
+      } else {
+        content += `
+        <div class="table-wrapper">
+          <div class="product-detail-table">
+            <table class="table-list">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Sản phẩm</th>
+                  <th>Màu</th>
+                  <th>Size</th>
+                  <th>Số lượng</th>
+                  <th>Giá</th>
+                  <th>Tạm tính</th>
+                </tr>
+              </thead>
+              <tbody class="product-detail-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <hr>
+        <p><strong>Tổng sản phẩm:</strong> ${itemCount}</p>
+        <p><strong>Tổng tiền:</strong> ${total.toLocaleString('vi-VN')} VNĐ</p>
+      `;
+      }
+
+      popup.show({ title: `Giỏ hàng #${id}`, content });
+
+      if (items.length > 0) {
+        new TableList({
+          containerSelector: '.product-detail-body',
+          data: items,
+          columns: [
+            {
+              key: 'image',
+              label: 'Hình ảnh',
+              render: v => `<img src="${v}" alt="product" style="width:60px; height:60px; object-fit:cover; border-radius:6px;">`
+            },
+            { key: 'product_name', label: 'Sản phẩm' },
+            { key: 'color', label: 'Màu' },
+            { key: 'size', label: 'Size' },
+            { key: 'quantity', label: 'Số lượng' },
+            {
+              key: 'price',
+              label: 'Giá',
+              render: v => `${Number(v).toLocaleString('vi-VN')} VNĐ`
+            },
+            {
+              key: 'subtotal',
+              label: 'Tạm tính',
+              render: v => `${Number(v).toLocaleString('vi-VN')} VNĐ`
+            }
+          ]
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải giỏ hàng:", error);
+      alert("Đã xảy ra lỗi khi tải giỏ hàng.");
+    }
+  };
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-view');
+    if (!btn) return;
+
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+
+    if (action === 'view-order') {
+      showOrderPopup(parseInt(id));
+    } else if (action === 'view-cart') {
+      showCartPopup(parseInt(id));
+    }
+
+  });
+
+  const saveOrderStatus = async (orderId, status) => {
+    try {
+      const body = { status }; // { "status": "confirmed" }
+
+      const data = await putData(`http://localhost:8000/orders/${orderId}/status`, body);
+
+      if (data) {
+        alert(`Cập nhật trạng thái đơn hàng #${orderId} thành công!`);
+      } else {
+        alert(`Không thể cập nhật đơn hàng #${orderId}`);
+      }
+    } catch (err) {
+      console.error(`Lỗi khi cập nhật trạng thái đơn hàng #${orderId}:`, err);
+      alert(`⚠️ Có lỗi xảy ra khi cập nhật đơn hàng #${orderId}`);
+    }
+  };
+
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('.btn-save')) {
+      const id = e.target.dataset.id;
+      const select = document.querySelector(`select[data-id="${id}"]`);
+      const status = select.value;
+      saveOrderStatus(id, status);
+    }
   });
 
   const tabCart = document.querySelector('#tab-cart');
