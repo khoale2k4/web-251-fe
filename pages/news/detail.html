@@ -4,10 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Chi tiết tin tức</title>
+    <!-- env meta will be populated by server or build; fallback uses env.js defaults -->
+    <meta name="app-env" content='{"API_BASE":"http://btl-web.test/web-251-be"}'>
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="news.css">
     <style>
-        .mount-header, .mount-footer { display: contents; }
+        .mount-header,
+        .mount-footer {
+            display: contents;
+        }
     </style>
 </head>
 
@@ -20,8 +25,9 @@
             <h2>Ra mắt website mới</h2>
             <p class="news-meta">Đăng bởiLê Khoa - 15/12/2024</p>
             <div class="news-content">
-                <p>Website demo củaLê Khoa đã được hoàn thành với đầy đủ tính năng và giao diện hiện đại. Dự án này được phát triển nhằm mục đích học tập và thực hành các kỹ năng web development.</p>
-                
+                <p>Website demo củaLê Khoa đã được hoàn thành với đầy đủ tính năng và giao diện hiện đại. Dự án này được
+                    phát triển nhằm mục đích học tập và thực hành các kỹ năng web development.</p>
+
                 <h3>Tính năng chính:</h3>
                 <ul>
                     <li>Giao diện responsive</li>
@@ -29,14 +35,30 @@
                     <li>ES6 modules</li>
                     <li>Modern CSS</li>
                 </ul>
-                
+
                 <p>Website được xây dựng với cấu trúc rõ ràng, dễ bảo trì và mở rộng trong tương lai.</p>
             </div>
         </article>
+        <div class="post-detail">
+            <h1 id="postTitle"></h1>
+            <div id="postContent"></div>
+            <p id="postAuthor"></p>
+        </div>
+
+        <div class="comments">
+            <h3>Bình luận</h3>
+            <div id="commentList"></div>
+
+            <form id="commentForm">
+                <textarea id="commentContent" placeholder="Nhập bình luận của bạn..."></textarea>
+                <button type="submit">Gửi</button>
+            </form>
+        </div>
     </main>
 
     <div class="mount-footer"></div>
 
+    <script src="../../js/env.js"></script>
     <script type="module" src="../../js/main.js"></script>
     <script type="module" src="news.js"></script>
 </body>

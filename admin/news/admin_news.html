@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../admin.css">
     <style>
-        .mount-header, .mount-footer { display: contents; }
+        .mount-header,
+        .mount-footer {
+            display: contents;
+        }
     </style>
 </head>
 
@@ -17,23 +20,38 @@
     <main>
         <h1>Quản lý tin tức</h1>
         <div class="admin-content">
-            <h2>Danh sách tin tức</h2>
-            <button class="btn-add">Thêm tin tức mới</button>
-            <div class="news-list">
-                <div class="news-item">
-                    <h3>Ra mắt website mới</h3>
-                    <p class="news-date">15/12/2024</p>
-                    <p>Website demo củaLê Khoa đã được hoàn thành...</p>
-                    <button class="btn-edit">Sửa</button>
-                    <button class="btn-delete">Xóa</button>
-                </div>
-                <div class="news-item">
-                    <h3>Công nghệ web hiện đại</h3>
-                    <p class="news-date">10/12/2024</p>
-                    <p>Những xu hướng công nghệ web mới nhất...</p>
-                    <button class="btn-edit">Sửa</button>
-                    <button class="btn-delete">Xóa</button>
-                </div>
+            <h2>Danh sách bài viết</h2>
+
+            <div class="toolbar">
+                <input type="text" id="searchPost" placeholder="Tìm kiếm bài viết...">
+                <button id="btnAdd" class="btn-add">Thêm bài viết</button>
+            </div>
+
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tiêu đề</th>
+                        <th>Tác giả</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="newsTableBody">
+                    <!-- render động từ JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Popup form -->
+        <div id="newsFormPopup" class="popup hidden">
+            <div class="popup-content">
+                <h3 id="formTitle">Thêm bài viết</h3>
+                <input type="text" id="title" placeholder="Tiêu đề" required />
+                <textarea id="content" placeholder="Nội dung" required></textarea>
+                <input type="text" id="author_id" placeholder="Mã tác giả (tạm thời)" />
+                <button id="btnSave">Lưu</button>
+                <button id="btnCancel">Hủy</button>
             </div>
         </div>
     </main>
