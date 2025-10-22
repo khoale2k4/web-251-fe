@@ -1,70 +1,165 @@
-const API_BASE = "http://btl-web.test/web-251-be";
+// admin_comments.js
+// Place this file next to admin_comments.html and ensure API_BASE points to your BE.
+(function () {
+    const API_BASE = "http://btl-web.test/web-251-be"; // <= đúng base backend của bạn
 
-document.addEventListener("DOMContentLoaded", () => {
-    const tableBody = document.querySelector("#commentTableBody");
-    const filterInput = document.querySelector("#filterPostId");
-    const btnFilter = document.querySelector("#btnFilter");
-    const modalEl = document.querySelector("#confirmModal");
-    const modal = new bootstrap.Modal(modalEl);
-    const btnConfirmDelete = document.querySelector("#btnConfirmDelete");
+    const commentTableBody = document.getElementById("commentTableBody");
+    const tabPosts = document.getElementById("tab-posts");
+    const tabProducts = document.getElementById("tab-products");
+    const filterInput = document.getElementById("filterId");
+    const btnFilter = document.getElementById("btnFilter");
+    const btnRefresh = document.getElementById("btnRefresh");
+    const confirmModalEl = document.getElementById("confirmModal");
+    const btnConfirmDelete = document.getElementById("btnConfirmDelete");
+    const confirmModal = new bootstrap.Modal(confirmModalEl);
 
+    let currentType = "post"; // 'post' or 'product'
     let deleteId = null;
 
-    // Load comments
-    async function loadComments(postId = "") {
-        let url = postId ? `${API_BASE}/comments?post_id=${postId}` : `${API_BASE}/comments?post_id=1`; // tạm mặc định post_id=1
-
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (!data.success) {
-            tableBody.innerHTML = `<tr><td colspan="6">Không thể tải dữ liệu</td></tr>`;
-            return;
-        }
-
-        if (!data.data.length) {
-            tableBody.innerHTML = `<tr><td colspan="6">Chưa có bình luận nào</td></tr>`;
-            return;
-        }
-
-        tableBody.innerHTML = data.data
-            .map(
-                (c) => `
-        <tr>
-          <td>${c.id}</td>
-          <td>${c.user_name || "Ẩn danh"}</td>
-          <td>${c.comment_type === "post" ? "Bài viết #" + c.post_id : "Sản phẩm #" + c.product_id}</td>
-          <td>${c.content}</td>
-          <td>${c.created_at}</td>
-          <td>
-            <button class="btn btn-danger btn-sm btn-delete" data-id="${c.id}">Xoá</button>
-          </td>
-        </tr>`
-            )
-            .join("");
+    // helper: show loading row
+    function showLoading() {
+        commentTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
+    }
+    function showEmpty(msg = "Không có dữ liệu") {
+        commentTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">${msg}</td></tr>`;
+    }
+    function showError(msg = "Lỗi khi tải dữ liệu") {
+        commentTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger">${msg}</td></tr>`;
     }
 
-    // Xoá bình luận
-    document.addEventListener("click", (e) => {
-        if (e.target.classList.contains("btn-delete")) {
-            deleteId = e.target.dataset.id;
-            modal.show();
+    // build URL based on type and optional filterId
+    function buildUrl(filterId) {
+        const effectiveFilter = (filterId || "").toString().trim();
+        if (currentType === "post") {
+            return effectiveFilter
+                ? `${API_BASE}/comments?post_id=${encodeURIComponent(effectiveFilter)}`
+                : `${API_BASE}/comments`;
+        } else {
+            return effectiveFilter
+                ? `${API_BASE}/product-comments?product_id=${encodeURIComponent(effectiveFilter)}`
+                : `${API_BASE}/product-comments`;
         }
+    }
+
+    // load comments
+    async function loadComments(filterId = "") {
+        showLoading();
+        const url = buildUrl(filterId);
+        try {
+            const res = await fetch(url, { credentials: "same-origin" });
+            // if backend returns non-JSON or non-200, handle gracefully
+            if (!res.ok) {
+                showError(`API lỗi: ${res.status}`);
+                return;
+            }
+            const data = await res.json();
+
+            // backend might return { success: true, data: [...] } or directly array
+            const list = Array.isArray(data) ? data : data.data || [];
+            if (!list || list.length === 0) {
+                showEmpty();
+                return;
+            }
+
+            // render rows
+            commentTableBody.innerHTML = list
+                .map((c) => {
+                    const targetLabel =
+                        currentType === "post" ? `Bài viết #${c.post_id ?? "-"}` : `Sản phẩm #${c.product_id ?? "-"}`;
+                    const userName = c.user_name || (c.user_id ? `User#${c.user_id}` : "Ẩn danh");
+                    const createdAt = c.created_at || "";
+
+                    return `<tr>
+            <td>${c.id}</td>
+            <td>${escapeHtml(userName)}</td>
+            <td>${escapeHtml(targetLabel)}</td>
+            <td>${escapeHtml(c.content)}</td>
+            <td>${escapeHtml(createdAt)}</td>
+            <td class="text-end">
+                <button class="btn btn-outline-danger btn-sm btn-delete" data-id="${c.id}">Xoá</button>
+            </td>
+        </tr>`;
+                })
+                .join("");
+        } catch (err) {
+            console.error(err);
+            showError();
+        }
+    }
+
+    // escape simple HTML
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return "";
+        return String(str)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+    }
+
+    // delete
+    async function doDelete(id) {
+        try {
+            // prefer DELETE /comments/{id}
+            const url = `${API_BASE}/comments/${id}`;
+            const res = await fetch(url, { method: "DELETE" });
+            if (!res.ok) {
+                // try alternative endpoint (if BE expects query param)
+                console.warn("DELETE failed, status:", res.status);
+                showError("Không thể xóa (server trả lỗi)");
+                return;
+            }
+            // refresh
+            await loadComments(filterInput.value.trim());
+        } catch (err) {
+            console.error(err);
+            showError("Lỗi khi xóa");
+        }
+    }
+
+    // event delegation for delete buttons
+    commentTableBody.addEventListener("click", (ev) => {
+        const btn = ev.target.closest(".btn-delete");
+        if (!btn) return;
+        deleteId = btn.dataset.id;
+        confirmModal.show();
     });
 
+    // confirm delete
     btnConfirmDelete.addEventListener("click", async () => {
         if (!deleteId) return;
-        await fetch(`${API_BASE}/comments/${deleteId}`, { method: "DELETE" });
-        modal.hide();
-        loadComments(filterInput.value);
+        confirmModal.hide();
+        await doDelete(deleteId);
+        deleteId = null;
     });
 
-    // Lọc theo post_id
+    // tab handlers
+    tabPosts.addEventListener("click", (e) => {
+        e.preventDefault();
+        currentType = "post";
+        tabPosts.classList.add("active");
+        tabProducts.classList.remove("active");
+        filterInput.placeholder = "Lọc theo post_id";
+        loadComments();
+    });
+    tabProducts.addEventListener("click", (e) => {
+        e.preventDefault();
+        currentType = "product";
+        tabProducts.classList.add("active");
+        tabPosts.classList.remove("active");
+        filterInput.placeholder = "Lọc theo product_id";
+        loadComments();
+    });
+
+    // filter / refresh
     btnFilter.addEventListener("click", () => {
-        const id = filterInput.value.trim();
-        loadComments(id);
+        loadComments(filterInput.value.trim());
+    });
+    btnRefresh.addEventListener("click", () => {
+        filterInput.value = "";
+        loadComments();
     });
 
-    // Load mặc định
+    // init
     loadComments();
-});
+})();
