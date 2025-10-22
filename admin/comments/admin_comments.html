@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý bình luận - Admin</title>
+
+    <!-- Tabler -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta21/dist/css/tabler.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta21/dist/js/tabler.min.js"></script>
+</head>
+
+<body>
+    <div class="page">
+        <!-- Sidebar -->
+        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <h1 class="navbar-brand">Admin Panel</h1>
+                <div class="collapse navbar-collapse" id="sidebar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+                        <li class="nav-item"><a class="nav-link" href="../news/admin_news.html">📰 Tin tức</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../products/admin_products.html">📦 Sản phẩm</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link active" href="#">💬 Bình luận</a></li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content -->
+        <div class="page-wrapper">
+            <div class="page-header">
+                <div class="container-xl">
+                    <h2 class="page-title">Quản lý bình luận</h2>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách bình luận</h3>
+                            <div class="ms-auto d-flex">
+                                <input type="number" id="filterPostId" class="form-control"
+                                    placeholder="Lọc theo post_id" style="width:150px;">
+                                <button id="btnFilter" class="btn btn-primary ms-2">Lọc</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Người dùng</th>
+                                        <th>Bài viết / Sản phẩm</th>
+                                        <th>Nội dung</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="commentTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal xác nhận xoá -->
+            <div class="modal modal-blur fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body text-center py-4">
+                            <h3>Bạn có chắc muốn xoá bình luận này?</h3>
+                            <div class="mt-3">
+                                <button class="btn btn-danger" id="btnConfirmDelete">Xoá</button>
+                                <button class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="admin_comments.js"></script>
+</body>
+
+</html>

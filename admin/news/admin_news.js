@@ -1,12 +1,12 @@
-const API_BASE = window.__ENV__?.API_BASE || "http://btl-web.test/web-251-be";
+const API_BASE = "http://btl-web.test/web-251-be";
 
 document.addEventListener("DOMContentLoaded", () => {
     const tableBody = document.querySelector("#newsTableBody");
-    const popup = document.querySelector("#newsFormPopup");
     const btnAdd = document.querySelector("#btnAdd");
     const btnSave = document.querySelector("#btnSave");
-    const btnCancel = document.querySelector("#btnCancel");
-    const formTitle = document.querySelector("#formTitle");
+    const modalEl = document.querySelector("#postModal");
+    const modal = new bootstrap.Modal(modalEl);
+    const modalTitle = document.querySelector("#modalTitle");
     const searchInput = document.querySelector("#searchPost");
 
     let editId = null;
@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await fetch(`${API_BASE}/posts?search=${encodeURIComponent(keyword)}`);
         const data = await res.json();
         if (!data.success) return;
+
         tableBody.innerHTML = data.data
             .map(
                 (p) => `
@@ -23,34 +24,29 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${p.title}</td>
           <td>${p.author_id || "-"}</td>
           <td>${p.created_at || ""}</td>
-          <td>
-            <button class="btn-edit" data-id="${p.id}">Sửa</button>
-            <button class="btn-delete" data-id="${p.id}">Xóa</button>
+          <td class="table-actions">
+            <button class="btn btn-sm btn-warning btn-edit" data-id="${p.id}">Sửa</button>
+            <button class="btn btn-sm btn-danger btn-delete" data-id="${p.id}">Xóa</button>
           </td>
         </tr>`
             )
             .join("");
     }
 
-    // Add new post
     btnAdd.addEventListener("click", () => {
         editId = null;
-        formTitle.textContent = "Thêm bài viết";
-        popup.classList.remove("hidden");
+        modalTitle.textContent = "Thêm bài viết";
         document.querySelector("#title").value = "";
         document.querySelector("#content").value = "";
+        modal.show();
     });
 
-    // Save (create/update)
     btnSave.addEventListener("click", async () => {
         const title = document.querySelector("#title").value.trim();
         const content = document.querySelector("#content").value.trim();
         const author_id = document.querySelector("#author_id").value || 1;
 
-        if (!title || !content) {
-            alert("Vui lòng nhập đủ tiêu đề và nội dung");
-            return;
-        }
+        if (!title || !content) return alert("Vui lòng nhập đủ tiêu đề và nội dung");
 
         const method = editId ? "PUT" : "POST";
         const url = editId ? `${API_BASE}/posts/${editId}` : `${API_BASE}/posts`;
@@ -63,49 +59,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = await res.json();
         if (data.success) {
-            alert(editId ? "Đã cập nhật bài viết" : "Đã thêm bài viết mới");
-            popup.classList.add("hidden");
+            modal.hide();
             loadPosts();
         } else {
             alert("Lỗi: " + data.message);
         }
     });
 
-    // Cancel popup
-    btnCancel.addEventListener("click", () => popup.classList.add("hidden"));
-
-    // Delete post
     document.addEventListener("click", async (e) => {
         if (e.target.classList.contains("btn-delete")) {
             const id = e.target.dataset.id;
             if (confirm("Xác nhận xóa bài viết này?")) {
-                const res = await fetch(`${API_BASE}/posts/${id}`, { method: "DELETE" });
-                const data = await res.json();
-                if (data.success) loadPosts();
+                await fetch(`${API_BASE}/posts/${id}`, { method: "DELETE" });
+                loadPosts();
             }
         }
-    });
 
-    // Edit post
-    document.addEventListener("click", async (e) => {
         if (e.target.classList.contains("btn-edit")) {
             editId = e.target.dataset.id;
             const res = await fetch(`${API_BASE}/posts/${editId}`);
             const data = await res.json();
             if (data.success) {
-                const post = data.data;
-                document.querySelector("#title").value = post.title;
-                document.querySelector("#content").value = post.content;
-                formTitle.textContent = "Chỉnh sửa bài viết";
-                popup.classList.remove("hidden");
+                document.querySelector("#title").value = data.data.title;
+                document.querySelector("#content").value = data.data.content;
+                document.querySelector("#author_id").value = data.data.author_id || 1;
+                modalTitle.textContent = "Chỉnh sửa bài viết";
+                modal.show();
             }
         }
     });
 
-    // Search post
-    searchInput.addEventListener("input", (e) => {
-        loadPosts(e.target.value);
-    });
-
+    searchInput.addEventListener("input", (e) => loadPosts(e.target.value));
     loadPosts();
 });
