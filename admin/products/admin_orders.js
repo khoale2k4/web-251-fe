@@ -269,7 +269,6 @@ ready(async () => {
       }
     } catch (error) {
       console.error("Lỗi khi tải giỏ hàng:", error);
-      alert("Đã xảy ra lỗi khi tải giỏ hàng.");
     }
   };
 
@@ -293,15 +292,8 @@ ready(async () => {
       const body = { status }; // { "status": "confirmed" }
 
       const data = await putData(`http://localhost:8000/orders/${orderId}/status`, body);
-
-      if (data) {
-        alert(`Cập nhật trạng thái đơn hàng #${orderId} thành công!`);
-      } else {
-        alert(`Không thể cập nhật đơn hàng #${orderId}`);
-      }
     } catch (err) {
       console.error(`Lỗi khi cập nhật trạng thái đơn hàng #${orderId}:`, err);
-      alert(`⚠️ Có lỗi xảy ra khi cập nhật đơn hàng #${orderId}`);
     }
   };
 
