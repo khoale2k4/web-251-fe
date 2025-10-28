@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Products</title>
+    
+    <!-- Tabler CSS cho Sidebar -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+    
+    <!-- Admin Sidebar CSS -->
+    <link rel="stylesheet" href="../admin-sidebar.css?v=102">
+    
+    <!-- CSS gốc -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="../../css/tableList.css">
+    <link rel="stylesheet" href="../../css/popUp.css">
+    <link rel="stylesheet" href="./product_popup.css">
+    
+    <!-- FINAL FIXED SIDEBAR CSS -->
+    <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+</head>
+
+<body>
+    <div class="page">
+        <!-- Tabler Sidebar -->
+        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark fixed-sidebar">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <h1 class="navbar-brand navbar-brand-autodark">
+                    <a href="../index.html">
+                        <span class="text-white">Admin Panel</span>
+                    </a>
+                </h1>
+                <div class="collapse navbar-collapse" id="sidebar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-home"></i>
+                                </span>
+                                <span class="nav-link-title">Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../contact/index.html">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-mail"></i>
+                                </span>
+                                <span class="nav-link-title">Quản lý Liên hệ</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../settings/index.html">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-settings"></i>
+                                </span>
+                                <span class="nav-link-title">Cấu hình Website</span>
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="./admin_products.html">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-package"></i>
+                                </span>
+                                <span class="nav-link-title">Quản lý Sản phẩm</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./admin_orders.html">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-shopping-cart"></i>
+                                </span>
+                                <span class="nav-link-title">Đơn hàng & Giỏ hàng</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../news/">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-news"></i>
+                                </span>
+                                <span class="nav-link-title">Quản lý Tin tức</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../faq/">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-help"></i>
+                                </span>
+                                <span class="nav-link-title">Quản lý FAQ</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../comments/">
+                                <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                    <i class="ti ti-message"></i>
+                                </span>
+                                <span class="nav-link-title">Quản lý Comments</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Nội dung chính - GIỮ NGUYÊN GIAO DIỆN GỐC -->
+        <div class="page-wrapper">
+            <div class="mount-header"></div>
+
+            <main>
+                <h1>Danh sách sản phẩm</h1>
+                <div class="admin-content">
+                    <div class="table-wrapper">
+                        <div class="table-toolbar">
+                            <button class="btn-add">Thêm sản phẩm mới</button>
+                            <div class="table-search">
+                                <input type="text" class="product-search" placeholder="Tìm kiếm...">
+                            </div>
+                        </div>
+                        <div class="products-table">
+                            <table class="table-list">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Giá</th>
+                                        <th>Giảm giá</th>
+                                        <th>Còn lại</th>
+                                        <th>Kích cỡ</th>
+                                        <th>Màu sắc</th>
+                                        <th>Phân loại</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="products-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <div class="mount-footer"></div>
+        </div>
+    </div>
+
+    <!-- Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+    
+    <!-- SIDEBAR FIX SCRIPT -->
+    <script src="../sidebar-fix.js?v=2"></script>
+    
+    <!-- JS gốc -->
+    <script type="module" src="../../js/main.js?v=6"></script>
+    <script type="module" src="../../js/config.js?v=6"></script>
+    <script type="module" src="admin_products.js?v=6"></script>
+</body>
+</html>

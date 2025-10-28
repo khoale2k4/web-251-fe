@@ -1,0 +1,86 @@
+/* ========================================
+   FIXED SIDEBAR CSS - GUARANTEED TO WORK
+   ======================================== */
+
+/* Completely override Tabler's sidebar behavior */
+.fixed-sidebar {
+    background-color: #1e293b !important;
+}
+
+/* Core navigation structure */
+.fixed-sidebar .navbar-nav .nav-item {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Link styling - base style */
+.fixed-sidebar .navbar-nav .nav-link {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.75rem 1.5rem !important;
+    text-decoration: none !important;
+    position: relative !important;
+    font-size: 0.925rem !important;
+}
+
+/* Fix icon and text */
+.fixed-sidebar .nav-link span,
+.fixed-sidebar .nav-link i,
+.fixed-sidebar .nav-link .nav-link-icon,
+.fixed-sidebar .nav-link .nav-link-title {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* Hover effect - use !important on all properties */
+.fixed-sidebar .nav-link:hover {
+    background-color: rgba(32, 107, 196, 0.3) !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+}
+
+/* Active state with stronger blue */
+.fixed-sidebar .nav-link.active {
+    background-color: rgba(32, 107, 196, 0.5) !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+}
+
+/* Ensure icons are properly sized and aligned */
+.fixed-sidebar .nav-link-icon {
+    margin-right: 0.75rem !important;
+    font-size: 1.25rem !important;
+}
+
+/* Hide any pseudo-elements that Tabler might use */
+.fixed-sidebar .nav-link::before,
+.fixed-sidebar .nav-link::after {
+    display: none !important;
+}
+
+/* Cancel out any animations or transitions */
+.fixed-sidebar .nav-item,
+.fixed-sidebar .nav-link,
+.fixed-sidebar .nav-link * {
+    transition: background 0.2s ease-in-out !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Fix for the collapse */
+.fixed-sidebar .collapse.navbar-collapse,
+.fixed-sidebar .navbar-nav {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+}
