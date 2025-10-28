@@ -1,5 +1,6 @@
 export function Header({ current, userName = "Lê Khoa" }) {
   const navItems = [
+<<<<<<< HEAD
     { href: '/web-251-fe-main/pages/home/index.html', label: 'Home', key: 'home' },
     { href: '/web-251-fe-main/pages/about/about.html', label: 'About', key: 'about' },
     { href: '/web-251-fe-main/pages/products/products.html', label: 'Products', key: 'products' },
@@ -12,6 +13,20 @@ export function Header({ current, userName = "Lê Khoa" }) {
     { href: '/web-251-fe-main/admin/news/', label: 'Admin News', key: 'admin-news' },
     { href: '/web-251-fe-main/admin/products/admin_products.html', label: 'Admin Products', key: 'admin-products' },
     { href: '/web-251-fe-main/admin/products/admin_orders.html', label: 'Admin Orders', key: 'admin-orders' },
+=======
+    { href: '/fe/pages/home/index.html', label: 'Home', key: 'home' },
+    { href: '/fe/pages/about/about.html', label: 'About', key: 'about' },
+    { href: '/fe/pages/products/products.html', label: 'Products', key: 'products' },
+    { href: '/fe/pages/news/news.html', label: 'News', key: 'news' },
+    { href: '/fe/pages/home/contact.html', label: 'Contact', key: 'contact' },
+    { href: '/fe/pages/home/login.html', label: 'Login', key: 'login' },
+    { href: '/fe/admin/dashboard.html', label: 'Admin', key: 'admin' },
+    { href: '/fe/admin/contact/admin_contact.html', label: 'Admin Contact', key: 'admin-contact' },
+    { href: '/fe/admin/faq/admin_faq.html', label: 'Admin Faq', key: 'admin-faq' },
+    { href: '/fe/admin/news/admin_news.html', label: 'Admin News', key: 'admin-news' },
+    { href: '/fe/admin/products/admin_products.html', label: 'Admin Products', key: 'admin-products' },
+    { href: '/fe/admin/products/admin_orders.html', label: 'Admin Orders', key: 'admin-orders' },
+>>>>>>> 1b5a4c94e303c46936a6a5432ca30265c2dac39e
   ];
 
   const navLinks = navItems

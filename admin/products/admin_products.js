@@ -4,9 +4,6 @@ import { mountFooter } from '../../components/Footer.js';
 import { Popup } from '../../components/PopUp.js';
 import { TableList } from '../../components/TableList.js';
 
-// API Base URL
-const API_BASE = 'http://localhost/web-251-be-main';
-
 ready(async () => {
   mountHeader('.mount-header', 'admin-products');
   mountFooter('.mount-footer');
@@ -65,12 +62,31 @@ ready(async () => {
     }
   }
 
+  async function deleteData(url) {
+    try {
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const json = await res.json();
+      return json.data;
+    } catch (err) {
+      console.error(`Lỗi khi gửi PUT tới ${url}:`, err);
+      return null;
+    }
+  }
+
   const tableContainer = '.products-table tbody';
   const searchInput = '.product-search';
 
   document.querySelector(tableContainer).innerHTML = `<tr><td colspan="8" style="text-align:center;">Đang tải dữ liệu...</td></tr>`;
 
-  const res = await fetchData(`${API_BASE}/products`);
+  const res = await fetchData('http://localhost:8000/products');
 
   const products = res.products.map(p => ({
     id: p.id,
@@ -113,7 +129,7 @@ ready(async () => {
     <tr><td colspan="8" style="text-align:center;">Đang tải dữ liệu...</td></tr>
   `;
 
-    const res = await fetchData(`${API_BASE}/products`);
+    const res = await fetchData('http://localhost:8000/products');
     if (!res || !res.products) {
       console.error('Không thể tải lại danh sách sản phẩm');
       return;
@@ -195,9 +211,9 @@ ready(async () => {
     <label>
       Danh mục
       <select name="category" id="categorySelect">
-        <option value="">-- Chọn danh mục --</option>
+        <option value="">-- Nhập danh mục --</option>
       </select>
-      <textarea name="newCategory" id="newCategory" placeholder="Hoặc nhập danh mục mới..." style="display:none;"></textarea>
+      <textarea name="newCategory" id="newCategory" placeholder="Nhập danh mục mới..." style="display:none;"></textarea>
     </label>
   </div>
 
@@ -219,6 +235,13 @@ ready(async () => {
     const newCategory = document.getElementById('newCategory');
     const cancelBtn = form.querySelector('.btn-cancel');
 
+<<<<<<< HEAD
+=======
+    if (!isEdit) {
+      newCategory.style.display = 'block';
+    }
+
+>>>>>>> 1b5a4c94e303c46936a6a5432ca30265c2dac39e
     fileInput.addEventListener('change', () => {
       const file = fileInput.files[0];
       if (file) {
@@ -231,16 +254,16 @@ ready(async () => {
       }
     });
 
-    // const res = await fetchData(`${API_BASE}/categories`);
-    // if (Array.isArray(res.categories)) {
-    //   res.categories.forEach(c => {
-    //     const opt = document.createElement('option');
-    //     opt.value = c.name;
-    //     opt.textContent = c.name;
-    //     if (product?.category === c.name) opt.selected = true;
-    //     categorySelect.appendChild(opt);
-    //   });
-    // }
+    const res = await fetchData('http://localhost:8000/categories');
+    if (Array.isArray(res.categories)) {
+      res.categories.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        if (product?.category === c.name) opt.selected = true;
+        categorySelect.appendChild(opt);
+      });
+    }
 
     categorySelect.addEventListener('change', () => {
       if (categorySelect.value === '') {
@@ -258,24 +281,30 @@ ready(async () => {
 
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
+      console.log(data);
 
       data.price = parseFloat(data.price || 0);
       data.discount = parseFloat(data.discount || 0);
       data.stock = parseInt(data.stock || 0);
-      if (data.newCategory) data.category = data.newCategory;
+      if (data.newCategory) {
+        const body = {
+          name: newCategory.value,
+          description: ''
+        };
+        const res = await postData('http://localhost:8000/categories', body);
+
+        // check error
+        data.category = res.id;
+      }
 
       let imageUrl = product?.imageLink || '';
       const file = fileInput.files[0];
       if (file) {
         try {
-          const uploadData = new FormData();
-          uploadData.append('file', file);
-          const uploadRes = await fetch(`${API_BASE}/upload`, {
-            method: 'POST',
-            body: uploadData
-          });
-          const uploadJson = await uploadRes.json();
-          imageUrl = API_BASE + uploadJson.url;
+          const uploadData = new FormData(); uploadData.append('file', file); 
+          const uploadRes = await fetch('http://localhost:8000/upload', { method: 'POST', body: uploadData }); 
+          const uploadJson = await uploadRes.json(); 
+          imageUrl = 'http://localhost:8000' + uploadJson.url;
         } catch (err) {
           console.error('Upload ảnh thất bại:', err);
         }
@@ -289,14 +318,14 @@ ready(async () => {
         size: data.size,
         color: data.color,
         image: imageUrl,
-        category: data.category,
+        category_id: data.category,
       };
 
       try {
         if (isEdit) {
-          await putData(`${API_BASE}/products/${product.id}`, body);
+          await putData(`http://localhost:8000/products/${product.id}`, body);
         } else {
-          await postData(`${API_BASE}/products`, body);
+          await postData('http://localhost:8000/products', body);
         }
 
         console.log('Đã lưu sản phẩm:', body);
@@ -308,16 +337,51 @@ ready(async () => {
     });
   };
 
+  const onDeleteConfirmPopup = (product) => {
+    if (!product) {
+      return;
+    }
+    const title = `Xóa sản phẩm #${product.name}`;
+    const content = `
+    <div class="popup-card">
+      <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
+      <div class="popup-actions">
+        <button type="button" class="btn-cancel">Hủy</button>
+        <button type="button" class="btn-delete" data-id="confirm">Xóa</button>
+      </div>
+    </div>
+  `;
+
+    popup.show({ title, content });
+
+    const cancelBtn = document.querySelector('.btn-cancel');
+    const deleteBtn = document.querySelector('button.btn-delete[data-id="confirm"]');
+
+    cancelBtn.addEventListener('click', () => popup.hide());
+
+    deleteBtn.addEventListener('click', async () => {
+      try {
+        await deleteData(`http://localhost:8000/products/${product.id}`);
+        popup.hide();
+        await reloadProducts();
+      } catch (err) {
+        console.error('Lỗi khi xóa sản phẩm:', err);
+        alert('Không thể xóa sản phẩm. Vui lòng thử lại!');
+      }
+    });
+  };
+
   document.addEventListener('click', (e) => {
     if (e.target.matches('.btn-edit')) {
       const id = Number(e.target.dataset.id);
-      console.log(id);
       const product = products.find((product) => product.id === id);
-      console.log(products);
-      console.log(product);
       onEditAddPopupShow(product);
     } else if (e.target.matches('.btn-add')) {
       onEditAddPopupShow();
+    } else if (e.target.matches('.btn-delete')) {
+      const id = Number(e.target.dataset.id);
+      const product = products.find((product) => product.id === id);
+      onDeleteConfirmPopup(product);
     }
   });
 

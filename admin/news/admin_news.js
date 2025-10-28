@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost/web-251-be-main";
+const API_BASE = "http://btl-web.test/web-251-be";
 
 document.addEventListener("DOMContentLoaded", () => {
     const tableBody = document.querySelector("#newsTableBody");

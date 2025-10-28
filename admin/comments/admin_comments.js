@@ -1,7 +1,7 @@
 // admin_comments.js
 // Place this file next to admin_comments.html and ensure API_BASE points to your BE.
 (function () {
-    const API_BASE = "http://localhost/web-251-be-main";
+    const API_BASE = "http://btl-web.test/web-251-be"; // <= đúng base backend của bạn
 
     const commentTableBody = document.getElementById("commentTableBody");
     const tabPosts = document.getElementById("tab-posts");

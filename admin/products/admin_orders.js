@@ -4,9 +4,6 @@ import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 import { TableList } from '../../components/TableList.js';
 
-// API Base URL
-const API_BASE = 'http://localhost/web-251-be-main';
-
 ready(async () => {
   mountHeader('.mount-header', 'admin-orders');
   mountFooter('.mount-footer');
@@ -45,8 +42,8 @@ ready(async () => {
     }
   }
 
-  const cartRes = await fetchData(`${API_BASE}/carts`);
-  const orderRes = await fetchData(`${API_BASE}/orders`);
+  const cartRes = await fetchData('http://localhost:8000/carts');
+  const orderRes = await fetchData('http://localhost:8000/orders');
 
   const carts = (cartRes?.cart || []).map(c => ({
     id: c.cart_id,
@@ -132,7 +129,7 @@ ready(async () => {
   });
 
   const showOrderPopup = async (id) => {
-    const res = await fetchData(`${API_BASE}/orders/${id}`);
+    const res = await fetchData(`http://localhost:8000/orders/${id}`);
 
     const order = res.order;
     if (!order) return;
@@ -195,7 +192,7 @@ ready(async () => {
 
   const showCartPopup = async (id) => {
     try {
-      const res = await fetchData(`${API_BASE}/carts/${id}`);
+      const res = await fetchData(`http://localhost:8000/carts/${id}`);
 
       const cart = res.cart;
       const items = res.items || [];
@@ -272,7 +269,6 @@ ready(async () => {
       }
     } catch (error) {
       console.error("Lỗi khi tải giỏ hàng:", error);
-      alert("Đã xảy ra lỗi khi tải giỏ hàng.");
     }
   };
 
@@ -295,16 +291,9 @@ ready(async () => {
     try {
       const body = { status }; // { "status": "confirmed" }
 
-      const data = await putData(`${API_BASE}/orders/${orderId}/status`, body);
-
-      if (data) {
-        alert(`Cập nhật trạng thái đơn hàng #${orderId} thành công!`);
-      } else {
-        alert(`Không thể cập nhật đơn hàng #${orderId}`);
-      }
+      const data = await putData(`http://localhost:8000/orders/${orderId}/status`, body);
     } catch (err) {
       console.error(`Lỗi khi cập nhật trạng thái đơn hàng #${orderId}:`, err);
-      alert(`⚠️ Có lỗi xảy ra khi cập nhật đơn hàng #${orderId}`);
     }
   };
 
