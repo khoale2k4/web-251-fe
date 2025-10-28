@@ -235,13 +235,10 @@ ready(async () => {
     const newCategory = document.getElementById('newCategory');
     const cancelBtn = form.querySelector('.btn-cancel');
 
-<<<<<<< HEAD
-=======
     if (!isEdit) {
       newCategory.style.display = 'block';
     }
 
->>>>>>> 1b5a4c94e303c46936a6a5432ca30265c2dac39e
     fileInput.addEventListener('change', () => {
       const file = fileInput.files[0];
       if (file) {

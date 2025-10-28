@@ -1,8 +1,4 @@
 FOLDER ?= default_name
 
 deploy-macos:
-	sudo cp -R "/Users/lekhoa/Desktop/BK/251/web/btl/fe" "/Applications/XAMPP/xamppfiles/htdocs/"
-FOLDER ?= default_name
-
-deploy-macos:
-	sudo cp -R "/Users/lekhoa/Desktop/BK/251/web/btl/fe" "/Applications/XAMPP/xamppfiles/htdocs/"
+	sudo cp -R "/Users/lekhoa/Documents/Zalo/web-251-fe-main" "/Applications/XAMPP/xamppfiles/htdocs/"

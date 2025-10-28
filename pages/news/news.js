@@ -1,4 +1,4 @@
-const API_BASE = window.__ENV__?.API_BASE || "http://btl-web.test/web-251-be";
+const API_BASE = window.__ENV__?.API_BASE || "http://localhost:8000";
 
 document.addEventListener("DOMContentLoaded", () => {
     const listContainer = document.querySelector(".news-list");

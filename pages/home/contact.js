@@ -1,6 +1,6 @@
 // Contact Form - User Side
 
-const API_BASE = 'http://localhost/web-251-be-main';
+const API_BASE = 'http://localhost:8000';
 
 // Load site settings to display contact info
 async function loadContactInfo() {

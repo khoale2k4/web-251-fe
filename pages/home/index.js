@@ -1,6 +1,6 @@
 // Home Page - Load site settings
 
-const API_BASE = 'http://localhost/web-251-be-main';
+const API_BASE = 'http://localhost:8000';
 
 // Load site settings
 async function loadSiteSettings() {

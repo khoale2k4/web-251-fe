@@ -1,6 +1,6 @@
 // Admin Site Settings Management
 
-const API_BASE = 'http://localhost/web-251-be-main';
+const API_BASE = 'http://localhost:8000';
 
 let currentSettings = null;
 
