@@ -5,22 +5,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản lý bài viết - Admin</title>
-
-    <!-- Tabler -->
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta21/dist/css/tabler.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta21/dist/js/tabler.min.js"></script>
-
-    <style>
-        .table-actions button {
-            margin-right: 4px;
-        }
-    </style>
+    
+    <!-- Tabler CSS cho Sidebar -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+    
+    <!-- Admin Sidebar CSS -->
+    <link rel="stylesheet" href="../admin-sidebar.css?v=102">
+    
+    <!-- CSS gốc -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../admin.css">
+    <link rel="stylesheet" href="../../css/popUp.css">
+    <link rel="stylesheet" href="./product_popup.css">
+    
+    <!-- FINAL FIXED SIDEBAR CSS -->
+    <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
 </head>
 
 <body>
     <div class="page">
+        <div class="mount-admin-sidebar"></div>
         <!-- Sidebar -->
-        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark bg-dark">
+        <!-- <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <h1 class="navbar-brand">Admin Panel</h1>
                 <div class="collapse navbar-collapse" id="sidebar-menu">
@@ -31,7 +38,7 @@
                     </ul>
                 </div>
             </div>
-        </aside>
+        </aside> -->
 
         <!-- Content -->
         <div class="page-wrapper">
@@ -110,3 +117,4 @@
 </body>
 
 </html>
+

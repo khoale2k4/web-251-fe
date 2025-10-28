@@ -17,204 +17,62 @@
   <link rel="stylesheet" href="../admin.css">
   <link rel="stylesheet" href="../../css/tableList.css">
   <link rel="stylesheet" href="../../css/popUp.css">
+  <link rel="stylesheet" href="admin_orders_tab.css">
 
   <!-- FINAL FIXED SIDEBAR CSS -->
   <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
-  
-  <style>
-    /* Giữ nguyên style cũ */
-    .tabs {
-      margin-bottom: 1rem;
-      display: flex;
-      gap: 6px;
-    }
-
-    .tabs button {
-      padding: 8px 16px;
-      border: none;
-      cursor: pointer;
-      background: #f1f5f9;
-      border-radius: 6px;
-      font-weight: 500;
-      transition: all 0.2s ease;
-    }
-
-    .tabs button.active {
-      background: #2563eb;
-      color: white;
-    }
-
-    .tabs button:hover:not(.active) {
-      background: #e2e8f0;
-    }
-
-    .section {
-      display: none;
-      margin-top: 15px;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    h2 {
-      margin-bottom: 10px;
-      font-size: 18px;
-      color: #333;
-    }
-  </style>
 </head>
 
 <body>
   <div class="page">
-    <!-- Tabler Sidebar -->
-    <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark fixed-sidebar">
-      <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <h1 class="navbar-brand navbar-brand-autodark">
-          <a href="../index.html">
-            <span class="text-white">Admin Panel</span>
-          </a>
-        </h1>
-        <div class="collapse navbar-collapse" id="sidebar-menu">
-          <ul class="navbar-nav pt-lg-3">
-            <li class="nav-item">
-              <a class="nav-link" href="../index.html">
-                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-home"></i>
-                </span>
-                <span class="nav-link-title">Dashboard</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../contact/index.html">
-                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-mail"></i>
-                </span>
-                <span class="nav-link-title">Quản lý Liên hệ</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../settings/index.html">
-                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-settings"></i>
-                </span>
-                <span class="nav-link-title">Cấu hình Website</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./admin_products.html">
-                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-package"></i>
-                </span>
-                <span class="nav-link-title">Quản lý Sản phẩm</span>
-              </a>
-            </li>
-            <li class="nav-item active">
-              <a class="nav-link" href="./admin_orders.html">
-                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-shopping-cart"></i>
-                </span>
-                <span class="nav-link-title">Đơn hàng & Giỏ hàng</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../news/">
-                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-news"></i>
-                </span>
-                <span class="nav-link-title">Quản lý Tin tức</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../faq/">
-                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-help"></i>
-                </span>
-                <span class="nav-link-title">Quản lý FAQ</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../comments/">
-                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                  <i class="ti ti-message"></i>
-                </span>
-                <span class="nav-link-title">Quản lý Comments</span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </aside>
+    <div class="mount-admin-sidebar"></div>
 
-    <!-- Nội dung chính - GIỮ NGUYÊN GIAO DIỆN CŨ -->
     <div class="page-wrapper">
-      <div class="mount-header"></div>
-
       <main>
-        <h1>Quản lý Giỏ hàng & Đơn hàng</h1>
-
-        <div class="tabs">
-          <button id="tab-cart" class="active">Giỏ hàng</button>
-          <button id="tab-orders">Đơn hàng</button>
+        <div class="page-header">
+          <div class="container-xl">
+            <h2 class="page-title">Quản lý Giỏ hàng & Đơn hàng</h2>
+          </div>
         </div>
 
-        <section id="cart-section" class="section active">
-          <h2>Danh sách Giỏ hàng</h2>
-
-          <div class="table-wrapper">
-            <div class="table-toolbar">
-              <div class="table-search">
-                <input type="text" class="cart-search" placeholder="Tìm kiếm giỏ hàng...">
+        <div class="page-body">
+          <div class="container-xl">
+            <div class="card">
+              <div class="card-header d-flex align-items-center">
+                <h3 class="card-title mb-0">Giỏ hàng & Đơn hàng</h3>
+                <ul class="nav nav-tabs card-header-tabs ms-3" id="ordersTabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="tab-cart" data-type="cart" href="#" role="tab">Giỏ hàng</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="tab-orders" data-type="orders" href="#" role="tab">Đơn hàng</a>
+                  </li>
+                </ul>
+                <div class="ms-auto d-flex filter-group">
+                  <input type="text" class="form-control order-search" id="ordersSearch" placeholder="Tìm kiếm..." style="width:220px;" />
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-striped table-vcenter">
+                  <thead class="table-light" id="ordersTableHead">
+                    <tr>
+                      <th>Người dùng</th>
+                      <th>Số sản phẩm</th>
+                      <th>Lần cập nhật cuối</th>
+                      <th class="text-end">Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ordersTableBody">
+                    <tr>
+                      <td colspan="4" class="text-center py-4 text-muted">Đang tải dữ liệu...</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-
-            <table class="table-list">
-              <thead>
-                <tr>
-                  <th>Người dùng</th>
-                  <th>Số sản phẩm</th>
-                  <th>Lần cập nhật cuối</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody class="cart-table-body"></tbody>
-            </table>
           </div>
-        </section>
-
-        <section id="orders-section" class="section">
-          <h2>Danh sách Đơn hàng</h2>
-
-          <div class="table-wrapper">
-            <div class="table-toolbar">
-              <div class="table-search">
-                <input type="text" class="order-search" placeholder="Tìm kiếm đơn hàng...">
-              </div>
-            </div>
-
-            <table class="table-list">
-              <thead>
-                <tr>
-                  <th>Người dùng</th>
-                  <th>Tổng tiền</th>
-                  <th>Địa chỉ</th>
-                  <th>Phương thức thanh toán</th>
-                  <th>Trạng thái</th>
-                  <th>Note</th>
-                  <th>Ngày tạo đơn</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody class="order-table-body"></tbody>
-            </table>
-          </div>
-        </section>
+        </div>
       </main>
-
-      <div class="mount-footer"></div>
     </div>
   </div>
 
@@ -226,6 +84,13 @@
   
   <!-- JS gốc -->
   <script type="module" src="../../js/main.js?v=6"></script>
+  <script type="module">
+    import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      mountAdminSidebar('.mount-admin-sidebar', 'admin-orders');
+    });
+  </script>
   <script type="module" src="admin_orders.js?v=6"></script>
 </body>
 </html>
+

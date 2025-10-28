@@ -473,3 +473,19 @@
   font-size: 12px;
   font-weight: 500;
 }
+
+/* Filters in card headers (consistent with comments page) */
+.filter-group {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+
+/* Prevent search input from expanding when button present */
+.filter-group .form-control.product-search,
+.filter-group .form-control.cart-search,
+.filter-group .form-control.order-search {
+  width: 220px;
+  max-width: 220px;
+  flex: 0 0 220px;
+}

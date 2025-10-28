@@ -5,6 +5,12 @@
 /* Completely override Tabler's sidebar behavior */
 .fixed-sidebar {
     background-color: #1e293b !important;
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 260px !important;
+    overflow-y: auto !important;
 }
 
 /* Core navigation structure */
@@ -83,4 +89,21 @@
     display: flex !important;
     flex-direction: column !important;
     width: 100% !important;
+}
+
+/* Ensure content is not hidden behind sidebar on desktop */
+.page .page-wrapper {
+    margin-left: 260px !important;
+}
+
+/* Responsive: stack sidebar on top for small screens */
+@media (max-width: 991.98px) {
+    .fixed-sidebar {
+        position: static !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+    .page .page-wrapper {
+        margin-left: 0 !important;
+    }
 }

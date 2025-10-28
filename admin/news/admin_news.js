@@ -1,4 +1,5 @@
-const API_BASE = "http://localhost:8000";
+import { BASE_URL } from '../../js/config.js';
+const API_BASE = BASE_URL;
 
 document.addEventListener("DOMContentLoaded", () => {
     const tableBody = document.querySelector("#newsTableBody");
@@ -92,3 +93,5 @@ document.addEventListener("DOMContentLoaded", () => {
     searchInput.addEventListener("input", (e) => loadPosts(e.target.value));
     loadPosts();
 });
+
+

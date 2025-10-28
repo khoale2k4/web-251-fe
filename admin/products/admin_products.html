@@ -15,7 +15,6 @@
     <!-- CSS gốc -->
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../admin.css">
-    <link rel="stylesheet" href="../../css/tableList.css">
     <link rel="stylesheet" href="../../css/popUp.css">
     <link rel="stylesheet" href="./product_popup.css">
     
@@ -25,125 +24,54 @@
 
 <body>
     <div class="page">
-        <!-- Tabler Sidebar -->
-        <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark fixed-sidebar">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <h1 class="navbar-brand navbar-brand-autodark">
-                    <a href="../index.html">
-                        <span class="text-white">Admin Panel</span>
-                    </a>
-                </h1>
-                <div class="collapse navbar-collapse" id="sidebar-menu">
-                    <ul class="navbar-nav pt-lg-3">
-                        <li class="nav-item">
-                            <a class="nav-link" href="../index.html">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                    <i class="ti ti-home"></i>
-                                </span>
-                                <span class="nav-link-title">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../contact/index.html">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                    <i class="ti ti-mail"></i>
-                                </span>
-                                <span class="nav-link-title">Quản lý Liên hệ</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../settings/index.html">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                    <i class="ti ti-settings"></i>
-                                </span>
-                                <span class="nav-link-title">Cấu hình Website</span>
-                            </a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="./admin_products.html">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                    <i class="ti ti-package"></i>
-                                </span>
-                                <span class="nav-link-title">Quản lý Sản phẩm</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./admin_orders.html">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                    <i class="ti ti-shopping-cart"></i>
-                                </span>
-                                <span class="nav-link-title">Đơn hàng & Giỏ hàng</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../news/">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                    <i class="ti ti-news"></i>
-                                </span>
-                                <span class="nav-link-title">Quản lý Tin tức</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../faq/">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                    <i class="ti ti-help"></i>
-                                </span>
-                                <span class="nav-link-title">Quản lý FAQ</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="../comments/">
-                                <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                    <i class="ti ti-message"></i>
-                                </span>
-                                <span class="nav-link-title">Quản lý Comments</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </aside>
+        <div class="mount-admin-sidebar"></div>
 
         <!-- Nội dung chính - GIỮ NGUYÊN GIAO DIỆN GỐC -->
         <div class="page-wrapper">
-            <div class="mount-header"></div>
-
             <main>
-                <h1>Danh sách sản phẩm</h1>
-                <div class="admin-content">
-                    <div class="table-wrapper">
-                        <div class="table-toolbar">
-                            <button class="btn-add">Thêm sản phẩm mới</button>
-                            <div class="table-search">
-                                <input type="text" class="product-search" placeholder="Tìm kiếm...">
+                <div class="page-header">
+                    <div class="container-xl">
+                        <h2 class="page-title">Quản lý sản phẩm</h2>
+                    </div>
+                </div>
+
+                <div class="page-body">
+                    <div class="container-xl">
+                        <div class="card">
+                            <div class="card-header d-flex align-items-center">
+                                <h3 class="card-title mb-0">Danh sách sản phẩm</h3>
+                                <div class="ms-auto d-flex filter-group">
+                                    <input type="text" class="form-control product-search" placeholder="Tìm kiếm..." style="width: 220px;" />
+                                    <button class="btn btn-primary ms-2 btn-add">Thêm sản phẩm mới</button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="products-table">
-                            <table class="table-list">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Tên sản phẩm</th>
-                                        <th>Giá</th>
-                                        <th>Giảm giá</th>
-                                        <th>Còn lại</th>
-                                        <th>Kích cỡ</th>
-                                        <th>Màu sắc</th>
-                                        <th>Phân loại</th>
-                                        <th>Thao tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="products-table"></tbody>
-                            </table>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped table-vcenter">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th></th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Giá</th>
+                                            <th>Giảm giá</th>
+                                            <th>Còn lại</th>
+                                            <th>Kích cỡ</th>
+                                            <th>Màu sắc</th>
+                                            <th>Phân loại</th>
+                                            <th class="text-end">Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productsTableBody">
+                                        <tr>
+                                            <td colspan="9" class="text-center py-4 text-muted">Đang tải dữ liệu...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </main>
-
-            <div class="mount-footer"></div>
         </div>
     </div>
 
@@ -155,7 +83,14 @@
     
     <!-- JS gốc -->
     <script type="module" src="../../js/main.js?v=6"></script>
+    <script type="module">
+      import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+      document.addEventListener('DOMContentLoaded', () => {
+        mountAdminSidebar('.mount-admin-sidebar', 'admin-products');
+      });
+    </script>
     <script type="module" src="../../js/config.js?v=6"></script>
     <script type="module" src="admin_products.js?v=6"></script>
 </body>
 </html>
+

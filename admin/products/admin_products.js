@@ -1,13 +1,8 @@
 import { ready } from '../../js/main.js';
-import { mountHeader } from '../../components/Header.js';
-import { mountFooter } from '../../components/Footer.js';
 import { Popup } from '../../components/PopUp.js';
-import { TableList } from '../../components/TableList.js';
+import { BASE_URL } from '../../js/config.js';
 
 ready(async () => {
-  mountHeader('.mount-header', 'admin-products');
-  mountFooter('.mount-footer');
-
   const popup = new Popup();
 
   async function fetchData(url) {
@@ -81,16 +76,16 @@ ready(async () => {
     }
   }
 
-  const tableContainer = '.products-table tbody';
+  const tableContainer = '#productsTableBody';
   const searchInput = '.product-search';
 
   document.querySelector(tableContainer).innerHTML = `<tr><td colspan="8" style="text-align:center;">Đang tải dữ liệu...</td></tr>`;
 
-  const res = await fetchData('http://localhost:8000/products');
+  const res = await fetchData(`${BASE_URL}/products`);
 
   const products = res.products.map(p => ({
     id: p.id,
-    imageLink: `${p.image || '../../assets/images/placeholder.png'}`,
+    imageLink: `${BASE_URL + '/' + p.image || '../../assets/images/placeholder.png'}`,
     name: p.name,
     price: parseInt(p.price),
     discount: parseFloat(p.discount) / 100,
@@ -100,36 +95,51 @@ ready(async () => {
     category: p.category_name
   }));
 
-  const table = new TableList({
-    containerSelector: tableContainer,
-    data: products,
-    searchSelector: searchInput,
-    columns: [
-      { key: 'imageLink', render: (v) => `<img src="${v}" width="60" height="60" style="border-radius:8px;">` },
-      { key: 'name', label: 'Tên sản phẩm' },
-      { key: 'price', label: 'Giá', render: (v) => `${v.toLocaleString('vi-VN')} VNĐ` },
-      { key: 'discount', label: 'Giảm giá', render: (v) => `${(v * 100).toFixed(0)}%` },
-      { key: 'stock', label: 'Tồn kho' },
-      { key: 'size', label: 'Size' },
-      { key: 'color', label: 'Màu sắc' },
-      { key: 'category', label: 'Danh mục' },
-      {
-        key: 'actions', label: 'Hành động', render: (_, p) =>
-          `<div class="table-actions">
-            <button data-action="edit" data-id="${p.id}" class="btn-edit">Sửa</button>
-            <button data-action="delete" data-id="${p.id}" class="btn-delete">Xóa</button>
-            </div>
-          `
-      }
-    ]
-  });
+  function renderRows(list) {
+    const tbody = document.querySelector(tableContainer);
+    if (!Array.isArray(list) || list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Không có dữ liệu</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(p => `
+      <tr>
+        <td><img src="${p.imageLink}" width="60" height="60" style="border-radius:8px;"></td>
+        <td>${p.name}</td>
+        <td>${Number(p.price).toLocaleString('vi-VN')} VNĐ</td>
+        <td>${(Number(p.discount) * 100).toFixed(0)}%</td>
+        <td>${p.stock}</td>
+        <td>${p.size}</td>
+        <td>${p.color}</td>
+        <td>${p.category}</td>
+        <td class="text-end">
+          <button data-action="edit" data-id="${p.id}" class="btn btn-warning btn-edit">Sửa</button>
+          <button data-action="delete" data-id="${p.id}" class="btn btn-danger btn-delete">Xóa</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  renderRows(products);
+
+  const searchEl = document.querySelector(searchInput);
+  if (searchEl) {
+    searchEl.addEventListener('input', (e) => {
+      const kw = e.target.value.toLowerCase().trim();
+      const filtered = products.filter(p =>
+        p.name.toLowerCase().includes(kw) ||
+        String(p.price).includes(kw) ||
+        (p.category || '').toLowerCase().includes(kw)
+      );
+      renderRows(filtered);
+    });
+  }
 
   async function reloadProducts() {
     document.querySelector(tableContainer).innerHTML = `
     <tr><td colspan="8" style="text-align:center;">Đang tải dữ liệu...</td></tr>
   `;
 
-    const res = await fetchData('http://localhost:8000/products');
+    const res = await fetchData(`${BASE_URL}/products`);
     if (!res || !res.products) {
       console.error('Không thể tải lại danh sách sản phẩm');
       return;
@@ -139,7 +149,7 @@ ready(async () => {
     products.push(
       ...res.products.map(p => ({
         id: p.id,
-        imageLink: `${p.image || '../../assets/images/placeholder.png'}`,
+        imageLink: `${BASE_URL + '/' + p.image || '../../assets/images/placeholder.png'}`,
         name: p.name,
         price: parseInt(p.price),
         discount: parseFloat(p.discount) / 100,
@@ -150,7 +160,7 @@ ready(async () => {
       }))
     );
 
-    table.updateData(products);
+    renderRows(products);
   }
 
   const onEditAddPopupShow = async (product = null) => {
@@ -251,7 +261,7 @@ ready(async () => {
       }
     });
 
-    const res = await fetchData('http://localhost:8000/categories');
+    const res = await fetchData(`${BASE_URL}/categories`);
     if (Array.isArray(res.categories)) {
       res.categories.forEach(c => {
         const opt = document.createElement('option');
@@ -299,9 +309,9 @@ ready(async () => {
       if (file) {
         try {
           const uploadData = new FormData(); uploadData.append('file', file); 
-          const uploadRes = await fetch('http://localhost:8000/upload', { method: 'POST', body: uploadData }); 
+          const uploadRes = await fetch(`${BASE_URL}/upload`, { method: 'POST', body: uploadData }); 
           const uploadJson = await uploadRes.json(); 
-          imageUrl = 'http://localhost:8000' + uploadJson.url;
+          imageUrl = uploadJson.url;
         } catch (err) {
           console.error('Upload ảnh thất bại:', err);
         }
@@ -320,9 +330,9 @@ ready(async () => {
 
       try {
         if (isEdit) {
-          await putData(`http://localhost:8000/products/${product.id}`, body);
+          await putData(`${BASE_URL}/products/${product.id}`, body);
         } else {
-          await postData('http://localhost:8000/products', body);
+          await postData(`${BASE_URL}/products`, body);
         }
 
         console.log('Đã lưu sản phẩm:', body);
@@ -358,7 +368,7 @@ ready(async () => {
 
     deleteBtn.addEventListener('click', async () => {
       try {
-        await deleteData(`http://localhost:8000/products/${product.id}`);
+        await deleteData(`${BASE_URL}/products/${product.id}`);
         popup.hide();
         await reloadProducts();
       } catch (err) {
@@ -383,3 +393,4 @@ ready(async () => {
   });
 
 });
+

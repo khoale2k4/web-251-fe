@@ -1,7 +1,8 @@
 // admin_comments.js
 // Place this file next to admin_comments.html and ensure API_BASE points to your BE.
+import { BASE_URL } from '../../js/config.js';
 (function () {
-    const API_BASE = "http://localhost:8000"; // <= đúng base backend của bạn
+    const API_BASE = BASE_URL;
 
     const commentTableBody = document.getElementById("commentTableBody");
     const tabPosts = document.getElementById("tab-posts");

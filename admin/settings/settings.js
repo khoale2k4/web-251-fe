@@ -1,6 +1,7 @@
 // Admin Site Settings Management
+import { BASE_URL } from '../../js/config.js';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = BASE_URL;
 
 let currentSettings = null;
 
