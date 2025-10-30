@@ -1,15 +1,17 @@
 import { ready } from '../../js/main.js';
 import { BASE_URL } from '../../js/config.js';
+import { Popup } from '../../components/PopUp.js';
 
 ready(async () => {
   const API_BASE = BASE_URL;
-
+  const popup = new Popup();
   const tableHeadSel = '#ordersTableHead';
   const tableBodySel = '#ordersTableBody';
+  const paginationSel = '#ordersPagination';
 
   async function fetchJson(url) {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return (await res.json()).data;
   }
 
@@ -23,7 +25,6 @@ ready(async () => {
       </tr>
     `;
   }
-
   function setHeadForOrders() {
     document.querySelector(tableHeadSel).innerHTML = `
       <tr>
@@ -43,42 +44,63 @@ ready(async () => {
     const tbody = document.querySelector(tableBodySel);
     if (!Array.isArray(carts) || carts.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>`;
+      document.querySelector(paginationSel).innerHTML = '';
       return;
     }
     tbody.innerHTML = carts.map(c => `
       <tr>
         <td>${c.user_name || c.user || '-'}</td>
-        <td>${c.items?.length ?? c.num_items ?? 0}</td>
+        <td>${c.total_items}</td>
         <td>${c.updated_at || '-'}</td>
-        <td class="text-end"><button class="btn btn-secondary btn-view" data-id="${c.id}">Xem</button></td>
+        <td class="text-end"><button class="btn btn-secondary btn-view-cart" data-id="${c.user_id}">Xem</button></td>
       </tr>
     `).join('');
+    document.querySelector(paginationSel).innerHTML = '';
   }
 
-  function renderOrderRows(orders) {
+  function renderOrderRows(orders, page = 1, totalPages = 1) {
     const tbody = document.querySelector(tableBodySel);
     if (!Array.isArray(orders) || orders.length === 0) {
       tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>`;
+      renderPagination(1,1);
       return;
     }
     tbody.innerHTML = orders.map(o => `
       <tr>
         <td>${o.user_name || o.user || '-'}</td>
-        <td>${Number(o.total || 0).toLocaleString('vi-VN')} VNĐ</td>
-        <td>${o.address || '-'}</td>
+        <td>${Number(o.total_price || o.total || 0).toLocaleString('vi-VN')} VNĐ</td>
+        <td>${o.address || o.shipping_address || '-'}</td>
         <td>${o.payment_method || '-'}</td>
         <td><span class="${o.status === 'approved' ? 'status-approved' : 'status-pending'}">${o.status || 'pending'}</span></td>
         <td>${o.note || ''}</td>
         <td>${o.created_at || '-'}</td>
         <td class="text-end">
-          <button class="btn btn-success btn-approve" data-id="${o.id}">Duyệt</button>
-          <button class="btn btn-danger btn-reject" data-id="${o.id}">Hủy</button>
+          <button class="btn btn-success btn-save" data-id="${o.id}">Lưu</button>
+          <button class="btn btn-danger btn-delete" data-id="${o.id}">Xoá</button>
+          <button class="btn btn-secondary btn-view-order" data-id="${o.id}">Xem</button>
         </td>
       </tr>
     `).join('');
+    renderPagination(page, totalPages);
   }
 
-  // Default: load cart tab
+  function renderPagination(page, totalPages) {
+    const pagDiv = document.querySelector(paginationSel);
+    if (!pagDiv) return;
+    if (totalPages <= 1) {
+      pagDiv.innerHTML = '';
+      return;
+    }
+    let h = '';
+    if (page > 1) h += `<button class='btn btn-sm btn-outline-primary m-1' data-page='${page-1}'>‹</button>`;
+    for (let i = 1; i <= totalPages; ++i) {
+      h += `<button class='btn btn-sm m-1 ${i===page?'btn-primary':'btn-outline-primary'}' data-page='${i}'>${i}</button>`;
+    }
+    if (page < totalPages) h += `<button class='btn btn-sm btn-outline-primary m-1' data-page='${page+1}'>›</button>`;
+    pagDiv.innerHTML = h;
+  }
+
+  // ----- Logic Tab/Load -----
   setHeadForCart();
   document.querySelector(tableBodySel).innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
   try {
@@ -92,6 +114,9 @@ ready(async () => {
   const tabOrders = document.getElementById('tab-orders');
   const searchInput = document.getElementById('ordersSearch');
   let currentTab = 'cart';
+  let ordersPage = 1;
+  let ordersTotalPages = 1;
+  let ordersLastKw = '';
 
   tabCart?.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -107,361 +132,155 @@ ready(async () => {
     } catch {}
   });
 
-  tabOrders?.addEventListener('click', async (e) => {
+  async function fetchAndRenderOrders(page=1, kw='') {
+    document.querySelector(tableBodySel).innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
+    try {
+      let url = `${API_BASE}/orders`;
+      if (kw) url += `&search=${encodeURIComponent(kw)}`;
+      const data = await fetchJson(url); // data: {orders, total_pages}
+      const orders = data.orders || [];
+      ordersTotalPages = data.total_pages || 1;
+      ordersPage = page;
+      ordersLastKw = kw;
+      renderOrderRows(orders, ordersPage, ordersTotalPages);
+    } catch {
+      renderOrderRows([], 1, 1);
+    }
+  }
+
+  tabOrders?.addEventListener('click', (e) => {
     e.preventDefault();
     if (currentTab === 'orders') return;
     currentTab = 'orders';
     tabOrders.classList.add('active');
     tabCart.classList.remove('active');
     setHeadForOrders();
-    document.querySelector(tableBodySel).innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
-    try {
-      const ordersRes = await fetchJson(`${API_BASE}/orders`);
-      renderOrderRows(ordersRes.data || ordersRes.orders || []);
-    } catch {}
+    fetchAndRenderOrders(1, '');
   });
 
-  // Search in current tab
   searchInput?.addEventListener('input', async (e) => {
     const kw = e.target.value.trim();
     if (currentTab === 'cart') {
       try {
-        const cartsRes = await fetchJson(`${API_BASE}/carts?search=${encodeURIComponent(kw)}`);
+        const cartsRes = await fetchJson(`${API_BASE}/carts`);
         renderCartRows(cartsRes.data || cartsRes.carts || cartsRes.cart || []);
       } catch {}
     } else {
+      fetchAndRenderOrders(1, kw);
+    }
+  });
+
+  document.addEventListener('click', async (e) => {
+    // --- Pagination event for orders ---
+    if (
+      currentTab === 'orders' &&
+      e.target.closest('#ordersPagination button[data-page]')
+    ) {
+      const btn = e.target.closest('button[data-page]');
+      const page = parseInt(btn.dataset.page);
+      fetchAndRenderOrders(page, ordersLastKw);
+      return;
+    }
+    // Nút save và delete chỉ xuất hiện ở bảng Đơn hàng
+    if (e.target.classList.contains('btn-save')) {
+      const id = e.target.dataset.id;
       try {
-        const ordersRes = await fetchJson(`${API_BASE}/orders?search=${encodeURIComponent(kw)}`);
-        renderOrderRows(ordersRes.data || ordersRes.orders || []);
+        await fetch(`${API_BASE}/orders/${id}/status`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'confirmed' }) });
+        fetchAndRenderOrders(ordersPage, ordersLastKw);
       } catch {}
+      return;
+    }
+    if (e.target.classList.contains('btn-delete')) {
+      const id = e.target.dataset.id;
+      if (!confirm('Bạn có chắc muốn xoá đơn hàng này?')) return;
+      try {
+        await fetch(`${API_BASE}/orders/${id}`, { method: 'DELETE' });
+        fetchAndRenderOrders(ordersPage, ordersLastKw);
+      } catch {}
+      return;
+    }
+    // Popup chi tiết
+    if (e.target.classList.contains('btn-view-order')) {
+      const id = e.target.getAttribute('data-id');
+      try {
+        const orderRes = await fetchJson(`${API_BASE}/orders/${id}`);
+        const order = orderRes.order || orderRes;
+        const items = orderRes.items || [];
+        let content = `
+        <div><strong>ID đơn hàng:</strong> ${order.id}</div>
+        <div><strong>Khách hàng:</strong> ${order.user_name || order.user || '-'}</div>
+        <div><strong>Địa chỉ giao hàng:</strong> ${order.address || order.shipping_address || '-'}</div>
+        <div><strong>Phương thức thanh toán:</strong> ${order.payment_method || '-'}</div>
+        <div><strong>Trạng thái:</strong> ${order.status}</div>
+        <div><strong>Ngày tạo:</strong> ${order.created_at}</div>
+        <hr/>
+        <div><strong>Chi tiết sản phẩm:</strong></div>
+        <div class="table-responsive">
+          <table class="table table-striped">
+                        <thead>
+              <tr><th></th><th>Sản phẩm</th><th>Màu</th><th>Size</th><th>Số lượng</th><th>Giá</th></tr>
+            </thead>
+            <tbody>
+              ${(items||[]).map(i => `
+                <tr>
+                  <td><img src="${BASE_URL + '/' + i.product_image}" alt="sp" style="width:48px;height:48px;object-fit:cover;border-radius:5px;"></td>
+                  <td>${i.name || i.product_name || '-'}</td>
+                  <td>${i.color || '-'}</td>
+                  <td>${i.size || '-'}</td>
+                  <td>${i.quantity || 1}</td>
+                  <td>${Number(i.price || 0).toLocaleString('vi-VN')} VNĐ</td>
+                            </tr>
+              `).join('')}
+            </tbody>
+                    </table>
+                </div>
+        <div><strong>Tổng tiền:</strong> ${Number(order.total || order.total_price || 0).toLocaleString('vi-VN')} VNĐ</div>
+        `;
+        popup.show({ title: `Chi tiết đơn #${order.id}`, content });
+      } catch (err) {
+        popup.show({ title: 'Lỗi', content: 'Không thể tải chi tiết đơn hàng.' });
+      }
+    }
+    if (e.target.classList.contains('btn-view-cart')) {
+      const id = e.target.getAttribute('data-id');
+      try {
+        const cartRes = await fetchJson(`${API_BASE}/carts/${id}`);
+        const cart = cartRes.cart || cartRes;
+        const items = cartRes.items || [];
+      let content = `
+        <div><strong>ID giỏ hàng:</strong> ${cart.id}</div>
+        <div><strong>ID người dùng:</strong> ${cart.user_id || '-'}</div>
+        <div><strong>Ngày tạo:</strong> ${cart.created_at || '-'}</div>
+        <div><strong>Cập nhật gần nhất:</strong> ${cart.updated_at || '-'}</div>
+        <hr/>
+        <div><strong>Chi tiết sản phẩm:</strong></div>
+        <div class="table-responsive">
+          <table class="table table-striped">
+              <thead>
+              <tr><th></th><th>Sản phẩm</th><th>Màu</th><th>Size</th><th>Số lượng</th><th>Giá</th><th>Tạm tính</th></tr>
+            </thead>
+            <tbody>
+              ${(items||[]).map(i => `
+                <tr>
+                  <td><img src="${BASE_URL + '/' + i.image}" alt="sp" style="width:48px;height:48px;object-fit:cover;border-radius:5px;"></td>
+                  <td>${i.name || i.product_name || '-'}</td>
+                  <td>${i.color || '-'}</td>
+                  <td>${i.size || '-'}</td>
+                  <td>${i.quantity || 1}</td>
+                  <td>${Number(i.price || 0).toLocaleString('vi-VN')} VNĐ</td>
+                  <td>${Number(i.subtotal || i.price * (i.quantity||1) || 0).toLocaleString('vi-VN')} VNĐ</td>
+                </tr>
+              `).join('')}
+            </tbody>
+            </table>
+        </div>
+        <div><strong>Tổng sản phẩm:</strong> ${items.length}</div>
+        <div><strong>Tổng tiền:</strong> ${Number(cart.total || cart.total_value || 0).toLocaleString('vi-VN')} VNĐ</div>
+        `;
+        popup.show({ title: `Chi tiết giỏ hàng #${cart.id}`, content });
+      } catch (err) {
+        popup.show({ title: 'Lỗi', content: 'Không thể tải chi tiết giỏ hàng.' });
+      }
     }
   });
 });
-
-// import { ready } from '../../js/main.js';
-// import { Popup } from '../../components/PopUp.js';
-// import { mountHeader } from '../../components/Header.js';
-// import { mountFooter } from '../../components/Footer.js';
-// import { TableList } from '../../components/TableList.js';
-
-// ready(async () => {
-//   mountHeader('.mount-header', 'admin-orders');
-//   mountFooter('.mount-footer');
-
-//   const popup = new Popup();
-
-//   async function fetchData(url) {
-//     try {
-//       const res = await fetch(url);
-//       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-//       const json = await res.json();
-//       return json.data;
-//     } catch (err) {
-//       console.error(`Lỗi khi tải dữ liệu từ ${url}:`, err);
-//       return null;
-//     }
-//   }
-
-//   async function putData(url, body = {}) {
-//     try {
-//       const res = await fetch(url, {
-//         method: "PUT",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(body),
-//       });
-
-//       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-//       const json = await res.json();
-//       return json.data;
-//     } catch (err) {
-//       console.error(`Lỗi khi gửi PUT tới ${url}:`, err);
-//       return null;
-//     }
-//   }
-
-//   const cartRes = await fetchData('http://localhost:8000/carts');
-//   const orderRes = await fetchData('http://localhost:8000/orders');
-
-//   const carts = (cartRes?.cart || []).map(c => ({
-//     id: c.cart_id,
-//     user: c.user_name,
-//     user_id: c.user_id,
-//     user_email: c.user_email,
-//     items: c.total_items,
-//     value: parseFloat(c.total_value),
-//     created_at: c.created_at
-//   }));
-
-//   const orders = (orderRes?.orders || []).map(o => ({
-//     id: o.id,
-//     user: o.user_name,
-//     email: o.user_email,
-//     total_price: parseFloat(o.total_price),
-//     shipping_address: o.shipping_address,
-//     payment_method: o.payment_method,
-//     note: o.note,
-//     status: o.status,
-//     created_at: o.created_at
-//   }));
-
-//   const cartTable = new TableList({
-//     containerSelector: '.cart-table-body',
-//     data: carts,
-//     searchSelector: '.cart-search',
-//     columns: [
-//       { key: 'user', label: 'Người dùng' },
-//       { key: 'items', label: 'Số lượng', render: v => `${v} sản phẩm` },
-//       { key: 'created_at', label: 'Ngày tạo' },
-//       {
-//         key: 'actions',
-//         render: (_, c) =>
-
-//           `<div class="table-actions"><button data-action="view-cart" data-id="${c.user_id}" class="btn-view">Xem</button></div>`
-//       }
-//     ]
-//   });
-
-//   const orderTable = new TableList({
-//     containerSelector: '.order-table-body',
-//     data: orders,
-//     searchSelector: '.order-search',
-//     columns: [
-//       { key: 'user', label: 'Người dùng' },
-//       {
-//         key: 'total_price',
-//         label: 'Tổng tiền',
-//         render: v => `${v.toLocaleString('vi-VN')} VNĐ`
-//       },
-//       {
-//         key: 'shipping_address',
-//         label: 'Địa chỉ giao hàng'
-//       },
-//       {
-//         key: 'payment_method',
-//         label: 'Thanh toán'
-//       },
-//       {
-//         key: 'status',
-//         label: 'Trạng thái',
-//         render: (v, o) => `
-//         <select data-id="${o.id}" data-action="status" class="order-status">
-//           ${['pending', 'confirmed', 'shipped', 'completed', 'cancelled']
-//             .map(s => `<option value="${s}" ${s === v ? 'selected' : ''}>${s}</option>`)
-//             .join('')}
-//         </select>`
-//       },
-//       { key: 'note', label: 'Ghi chú' },
-//       { key: 'created_at', label: 'Ngày tạo' },
-//       {
-//         key: 'actions',
-//         label: 'Hành động',
-//         render: (_, o) =>
-//           `<div class="table-actions">
-//         <button data-action="save" data-id="${o.id}" class="btn-save">Lưu</button>
-//          <button data-action="view-order" data-id="${o.id}" class="btn-view">Xem</button>
-//          </div>
-//          `
-//       }
-//     ]
-//   });
-
-//   const showOrderPopup = async (id) => {
-//     const res = await fetchData(`http://localhost:8000/orders/${id}`);
-
-//     const order = res.order;
-//     if (!order) return;
-//     const items = res.items;
-
-
-//     const content = `
-//     <p><strong>ID đơn hàng:</strong> ${order.id}</p>
-//     <p><strong>Khách hàng:</strong> ${order.user_name}</p>
-//     <p><strong>Địa chỉ giao hàng:</strong> ${order.shipping_address}</p>
-//     <p><strong>Phương thức thanh toán:</strong> ${order.payment_method}</p>
-//     <p><strong>Trạng thái:</strong> ${order.status}</p>
-//     <p><strong>Ngày tạo:</strong> ${order.created_at}</p>
-//     <hr>
-//     <h4>Chi tiết sản phẩm</h4>
-
-//             <div class="table-wrapper">
-//                 <div class="product-detail-table">
-//                     <table class="table-list">
-//                         <thead>
-//                             <tr>
-//           <th></th>
-//           <th>Sản phẩm</th>
-//           <th>Màu</th>
-//           <th>Size</th>
-//           <th>Số lượng</th>
-//           <th>Giá</th>
-//                             </tr>
-//                         </thead>
-//                         <tbody class="product-detail-body"></tbody>
-//                     </table>
-//                 </div>
-//             </div>
-//     <hr>
-//     <p><strong>Tổng tiền:</strong> ${order.total_price.toLocaleString('vi-VN')} VNĐ</p>
-//   `;
-
-//     popup.show({ title: `Đơn hàng #${id}`, content });
-//     const productTable = new TableList({
-//       containerSelector: '.product-detail-body',
-//       data: items,
-//       columns: [
-//         {
-//           key: 'product_image',
-//           label: 'Hình ảnh',
-//           render: v => `<img src="${v}" alt="product" style="width:60px; height:60px; object-fit:cover; border-radius:6px;">`
-//         },
-//         { key: 'product_name', label: 'Sản phẩm' },
-//         { key: 'color', label: 'Màu' },
-//         { key: 'size', label: 'Kích thước' },
-//         { key: 'quantity', label: 'Số lượng' },
-//         {
-//           key: 'price',
-//           label: 'Giá',
-//           render: v => `${v.toLocaleString('vi-VN')} VNĐ`
-//         }
-//       ]
-//     });
-//   }
-
-//   const showCartPopup = async (id) => {
-//     try {
-//       const res = await fetchData(`http://localhost:8000/carts/${id}`);
-
-//       const cart = res.cart;
-//       const items = res.items || [];
-//       const total = Number(res.total) || 0;
-//       const itemCount = res.item_count || 0;
-
-//       let content = `
-//       <p><strong>ID giỏ hàng:</strong> ${cart.id}</p>
-//       <p><strong>ID người dùng:</strong> ${cart.user_id}</p>
-//       <p><strong>Ngày tạo:</strong> ${cart.created_at}</p>
-//       <p><strong>Cập nhật gần nhất:</strong> ${cart.updated_at}</p>
-//       <hr>
-//       <h4>Chi tiết sản phẩm</h4>
-//     `;
-
-//       if (items.length === 0) {
-//         content += `
-//         <p style="text-align:center; padding:20px;">Giỏ hàng trống.</p>
-//       `;
-//       } else {
-//         content += `
-//         <div class="table-wrapper">
-//           <div class="product-detail-table">
-//             <table class="table-list">
-//               <thead>
-//                 <tr>
-//                   <th></th>
-//                   <th>Sản phẩm</th>
-//                   <th>Màu</th>
-//                   <th>Size</th>
-//                   <th>Số lượng</th>
-//                   <th>Giá</th>
-//                   <th>Tạm tính</th>
-//                 </tr>
-//               </thead>
-//               <tbody class="product-detail-body"></tbody>
-//             </table>
-//           </div>
-//         </div>
-//         <hr>
-//         <p><strong>Tổng sản phẩm:</strong> ${itemCount}</p>
-//         <p><strong>Tổng tiền:</strong> ${total.toLocaleString('vi-VN')} VNĐ</p>
-//       `;
-//       }
-
-//       popup.show({ title: `Giỏ hàng #${id}`, content });
-
-//       if (items.length > 0) {
-//         new TableList({
-//           containerSelector: '.product-detail-body',
-//           data: items,
-//           columns: [
-//             {
-//               key: 'image',
-//               label: 'Hình ảnh',
-//               render: v => `<img src="${v}" alt="product" style="width:60px; height:60px; object-fit:cover; border-radius:6px;">`
-//             },
-//             { key: 'product_name', label: 'Sản phẩm' },
-//             { key: 'color', label: 'Màu' },
-//             { key: 'size', label: 'Size' },
-//             { key: 'quantity', label: 'Số lượng' },
-//             {
-//               key: 'price',
-//               label: 'Giá',
-//               render: v => `${Number(v).toLocaleString('vi-VN')} VNĐ`
-//             },
-//             {
-//               key: 'subtotal',
-//               label: 'Tạm tính',
-//               render: v => `${Number(v).toLocaleString('vi-VN')} VNĐ`
-//             }
-//           ]
-//         });
-//       }
-//     } catch (error) {
-//       console.error("Lỗi khi tải giỏ hàng:", error);
-//     }
-//   };
-
-//   document.addEventListener('click', (e) => {
-//     const btn = e.target.closest('.btn-view');
-//     if (!btn) return;
-
-//     const action = btn.dataset.action;
-//     const id = btn.dataset.id;
-
-//     if (action === 'view-order') {
-//       showOrderPopup(parseInt(id));
-//     } else if (action === 'view-cart') {
-//       showCartPopup(parseInt(id));
-//     }
-
-//   });
-
-//   const saveOrderStatus = async (orderId, status) => {
-//     try {
-//       const body = { status }; // { "status": "confirmed" }
-
-//       const data = await putData(`http://localhost:8000/orders/${orderId}/status`, body);
-//     } catch (err) {
-//       console.error(`Lỗi khi cập nhật trạng thái đơn hàng #${orderId}:`, err);
-//     }
-//   };
-
-//   document.addEventListener('click', (e) => {
-//     if (e.target.matches('.btn-save')) {
-//       const id = e.target.dataset.id;
-//       const select = document.querySelector(`select[data-id="${id}"]`);
-//       const status = select.value;
-//       saveOrderStatus(id, status);
-//     }
-//   });
-
-//   const tabCart = document.querySelector('#tab-cart');
-//   const tabOrders = document.querySelector('#tab-orders');
-//   const cartSection = document.querySelector('#cart-section');
-//   const ordersSection = document.querySelector('#orders-section');
-
-//   tabCart.addEventListener('click', () => {
-//     tabCart.classList.add('active');
-//     tabOrders.classList.remove('active');
-//     cartSection.classList.add('active');
-//     ordersSection.classList.remove('active');
-//   });
-
-//   tabOrders.addEventListener('click', () => {
-//     tabOrders.classList.add('active');
-//     tabCart.classList.remove('active');
-//     ordersSection.classList.add('active');
-//     cartSection.classList.remove('active');
-//   });
-// });

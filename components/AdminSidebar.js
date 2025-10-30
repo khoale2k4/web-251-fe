@@ -1,14 +1,21 @@
 export function AdminSidebar({ current = '' } = {}) {
-  const items = [
+  var items = [
     { href: '../index.html', key: 'dashboard', label: 'Dashboard', icon: 'ti ti-home' },
     { href: '../contact/index.html', key: 'admin-contact', label: 'Quản lý Liên hệ', icon: 'ti ti-mail' },
     { href: '../settings/index.html', key: 'settings', label: 'Cấu hình Website', icon: 'ti ti-settings' },
     { href: '../products/admin_products.html', key: 'admin-products', label: 'Quản lý Sản phẩm', icon: 'ti ti-package' },
     { href: '../products/admin_orders.html', key: 'admin-orders', label: 'Đơn hàng & Giỏ hàng', icon: 'ti ti-shopping-cart' },
-    { href: '../news/admin_news.html', key: 'admin-news', label: 'Quản lý Tin tức', icon: 'ti ti-news' },
-    { href: '../faq/admin_faq.html', key: 'admin-faq', label: 'Quản lý FAQ', icon: 'ti ti-help' },
+    { href: '../news/index.html', key: 'admin-news', label: 'Quản lý Bài viết', icon: 'ti ti-news' },
+    { href: '../faq/index.html', key: 'admin-faq', label: 'Quản lý FAQ', icon: 'ti ti-help' },
     { href: '../comments/index.html', key: 'comments', label: 'Quản lý Comments', icon: 'ti ti-message' },
   ];
+
+  if (current === 'dashboard') {
+    items = items.map(item => ({
+      ...item,
+      href: item.href.replace(/^\.\.\//, '') 
+    }));
+  }
 
   const links = items
     .map(({ href, key, label, icon }) => `
