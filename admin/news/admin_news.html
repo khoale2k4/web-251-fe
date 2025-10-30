@@ -2,46 +2,119 @@
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Admin News</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý bài viết - Admin</title>
+    
+    <!-- Tabler CSS cho Sidebar -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+    
+    <!-- Admin Sidebar CSS -->
+    <link rel="stylesheet" href="../admin-sidebar.css?v=102">
+    
+    <!-- CSS gốc -->
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../admin.css">
-    <style>
-        .mount-header, .mount-footer { display: contents; }
-    </style>
+    <link rel="stylesheet" href="../../css/popUp.css">
+    <link rel="stylesheet" href="./product_popup.css">
+    
+    <!-- FINAL FIXED SIDEBAR CSS -->
+    <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
 </head>
 
 <body>
-    <div class="mount-header"></div>
-
-    <main>
-        <h1>Quản lý tin tức</h1>
-        <div class="admin-content">
-            <h2>Danh sách tin tức</h2>
-            <button class="btn-add">Thêm tin tức mới</button>
-            <div class="news-list">
-                <div class="news-item">
-                    <h3>Ra mắt website mới</h3>
-                    <p class="news-date">15/12/2024</p>
-                    <p>Website demo củaLê Khoa đã được hoàn thành...</p>
-                    <button class="btn-edit">Sửa</button>
-                    <button class="btn-delete">Xóa</button>
+    <div class="page">
+        <div class="mount-admin-sidebar"></div>
+        <!-- Sidebar -->
+        <!-- <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <h1 class="navbar-brand">Admin Panel</h1>
+                <div class="collapse navbar-collapse" id="sidebar-menu">
+                    <ul class="navbar-nav pt-lg-3">
+                        <li class="nav-item"><a class="nav-link active" href="#">📰 Tin tức</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">📦 Sản phẩm</a></li>
+                        <li class="nav-item"><a class="nav-link" href="../comments/admin_comments.html">💬 Bình luận</a></li>
+                    </ul>
                 </div>
-                <div class="news-item">
-                    <h3>Công nghệ web hiện đại</h3>
-                    <p class="news-date">10/12/2024</p>
-                    <p>Những xu hướng công nghệ web mới nhất...</p>
-                    <button class="btn-edit">Sửa</button>
-                    <button class="btn-delete">Xóa</button>
+            </div>
+        </aside> -->
+
+        <!-- Content -->
+        <div class="page-wrapper">
+            <div class="page-header">
+                <div class="container-xl">
+                    <h2 class="page-title">Quản lý bài viết</h2>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách bài viết</h3>
+                            <div class="ms-auto">
+                                <input type="text" id="searchPost" class="form-control" placeholder="Tìm kiếm..."
+                                    style="width: 200px;">
+                                <button class="btn btn-primary ms-2" id="btnAdd">Thêm bài viết</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tiêu đề</th>
+                                        <th>Tác giả</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="newsTableBody">
+                                    <!-- Render động bằng JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal thêm/sửa -->
+            <div class="modal modal-blur fade" id="postModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTitle">Thêm bài viết</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Tiêu đề</label>
+                                <input type="text" class="form-control" id="title" placeholder="Nhập tiêu đề">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nội dung</label>
+                                <textarea class="form-control" id="content" rows="4"
+                                    placeholder="Nhập nội dung"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tác giả (ID)</label>
+                                <input type="number" class="form-control" id="author_id" value="1">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-link link-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button class="btn btn-primary" id="btnSave">Lưu</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <div class="mount-footer"></div>
-
-    <script type="module" src="../../js/main.js"></script>
-    <script type="module" src="admin_news.js"></script>
+    <script src="admin_news.js"></script>
 </body>
 
 </html>
+
