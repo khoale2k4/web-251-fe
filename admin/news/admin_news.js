@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${p.author_id || "-"}</td>
           <td>${p.created_at || ""}</td>
           <td class="table-actions">
+            <button class="btn btn-sm btn-secondary btn-detail" data-id="${p.id}">Xem</button>
             <button class="btn btn-sm btn-warning btn-edit" data-id="${p.id}">Sửa</button>
             <button class="btn btn-sm btn-danger btn-delete" data-id="${p.id}">Xóa</button>
           </td>
@@ -68,6 +69,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.addEventListener("click", async (e) => {
+        if (e.target.classList.contains("btn-detail")) {
+            const id = e.target.dataset.id;
+            // navigate to detail page
+            window.location.href = `detail.html?id=${id}`;
+            return;
+        }
         if (e.target.classList.contains("btn-delete")) {
             const id = e.target.dataset.id;
             if (confirm("Xác nhận xóa bài viết này?")) {

@@ -71,15 +71,16 @@ import { BASE_URL } from '../../js/config.js';
                     const createdAt = c.created_at || "";
 
                     return `<tr>
-            <td>${c.id}</td>
-            <td>${escapeHtml(userName)}</td>
-            <td>${escapeHtml(targetLabel)}</td>
-            <td>${escapeHtml(c.content)}</td>
-            <td>${escapeHtml(createdAt)}</td>
-            <td class="text-end">
-                <button class="btn btn-outline-danger btn-sm btn-delete" data-id="${c.id}">Xoá</button>
-            </td>
-        </tr>`;
+                    <td>${c.id}</td>
+                    <td>${escapeHtml(userName)}</td>
+                    <td>${escapeHtml(targetLabel)}</td>
+                    <td>${escapeHtml(c.content)}</td>
+                    <td>${escapeHtml(createdAt)}</td>
+                    <td class="text-end">
+                        <button class="btn btn-outline-primary btn-sm btn-view me-1" data-id="${c.id}">Xem</button>
+                        <button class="btn btn-outline-danger btn-sm btn-delete" data-id="${c.id}">Xoá</button>
+                    </td>
+                </tr>`;
                 })
                 .join("");
         } catch (err) {
@@ -118,8 +119,16 @@ import { BASE_URL } from '../../js/config.js';
         }
     }
 
-    // event delegation for delete buttons
+    // event delegation for view and delete buttons
     commentTableBody.addEventListener("click", (ev) => {
+        const viewBtn = ev.target.closest('.btn-view');
+        if (viewBtn) {
+            const id = viewBtn.dataset.id;
+            // navigate to comment detail page
+            window.location.href = `detail.html?id=${id}`;
+            return;
+        }
+
         const btn = ev.target.closest(".btn-delete");
         if (!btn) return;
         deleteId = btn.dataset.id;
