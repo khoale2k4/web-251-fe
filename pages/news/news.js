@@ -1,16 +1,10 @@
-<<<<<<< HEAD
-import { ready } from '../../js/main.js';
+const API_BASE = window.__ENV__?.API_BASE || "http://localhost:8000";
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 
-ready(() => {
-  mountHeader('.mount-header', 'news');
-  mountFooter('.mount-footer');
-});
-=======
-const API_BASE = window.__ENV__?.API_BASE || "http://localhost:8000";
-
 document.addEventListener("DOMContentLoaded", () => {
+    mountHeader('.mount-header', 'products');
+    mountFooter('.mount-footer');
     const listContainer = document.querySelector(".news-list");
     const searchInput = document.querySelector("#searchInput");
 
@@ -49,4 +43,3 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
->>>>>>> fd06cc4569a6982f7b46b54b50aed7ebf617085a

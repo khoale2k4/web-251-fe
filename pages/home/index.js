@@ -1,6 +1,8 @@
 // Home Page - Load site settings
 
 const API_BASE = 'http://localhost:8000';
+import { mountHeader } from '../../components/Header.js';
+import { mountFooter } from '../../components/Footer.js';
 
 // Load site settings
 async function loadSiteSettings() {
@@ -110,6 +112,8 @@ function escapeHtml(text) {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
+    mountHeader('.mount-header', 'login');
+    mountFooter('.mount-footer');
     loadSiteSettings();
 });
 

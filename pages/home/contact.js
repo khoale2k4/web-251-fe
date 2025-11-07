@@ -1,5 +1,8 @@
 // Contact Form - User Side
 
+import { mountHeader } from '../../components/Header.js';
+import { mountFooter } from '../../components/Footer.js';
+
 const API_BASE = 'http://localhost:8000';
 
 // Load site settings to display contact info
@@ -10,7 +13,7 @@ async function loadContactInfo() {
 
         if (result.success && result.data) {
             const settings = result.data;
-            
+
             if (settings.email) {
                 document.getElementById('infoEmail').textContent = settings.email;
             }
@@ -140,7 +143,9 @@ function setupRealtimeValidation() {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    mountHeader('.mount-header', 'login');
+    mountFooter('.mount-footer');
     loadContactInfo();
     setupRealtimeValidation();
 
