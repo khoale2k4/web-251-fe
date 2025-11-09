@@ -40,12 +40,21 @@
   // Just return a value to define the module export.
   // This example returns an object, but the module
   // can return a function as the exported value.
+<<<<<<< HEAD
   /*!
   * Copyright (c) 2021-2024 Momo Bassit.
   * Licensed under the MIT License (MIT)
   * https://github.com/mdbassit/Coloris
   * Version: 0.25.0
   * NPM: https://github.com/melloware/coloris-npm
+=======
+  /*!
+  * Copyright (c) 2021-2024 Momo Bassit.
+  * Licensed under the MIT License (MIT)
+  * https://github.com/mdbassit/Coloris
+  * Version: 0.25.0
+  * NPM: https://github.com/melloware/coloris-npm
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
   */
 
   return ((window, document, Math, undefined) => {
@@ -99,9 +108,15 @@
     let defaultInstance = {};
     let hasInstance = false;
 
+<<<<<<< HEAD
     /**
      * Configure the color picker.
      * @param {object} options Configuration options.
+=======
+    /**
+     * Configure the color picker.
+     * @param {object} options Configuration options.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function configure(options) {
       if (typeof options !== 'object') {
@@ -281,10 +296,17 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Add or update a virtual instance.
      * @param {String} selector The CSS selector of the elements to which the instance is attached.
      * @param {Object} options Per-instance options to apply.
+=======
+    /**
+     * Add or update a virtual instance.
+     * @param {String} selector The CSS selector of the elements to which the instance is attached.
+     * @param {Object} options Per-instance options to apply.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function setVirtualInstance(selector, options) {
       if (typeof selector === 'string' && typeof options === 'object') {
@@ -293,9 +315,15 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Remove a virtual instance.
      * @param {String} selector The CSS selector of the elements to which the instance is attached.
+=======
+    /**
+     * Remove a virtual instance.
+     * @param {String} selector The CSS selector of the elements to which the instance is attached.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function removeVirtualInstance(selector) {
       delete instances[selector];
@@ -309,9 +337,15 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Attach a virtual instance to an element if it matches a selector.
      * @param {Object} element Target element that will receive a virtual instance if applicable.
+=======
+    /**
+     * Attach a virtual instance to an element if it matches a selector.
+     * @param {Object} element Target element that will receive a virtual instance if applicable.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function attachVirtualInstance(element) {
       if (hasInstance) {
@@ -342,8 +376,13 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Revert any per-instance options that were previously applied.
+=======
+    /**
+     * Revert any per-instance options that were previously applied.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function resetVirtualInstance() {
       if (Object.keys(defaultInstance).length > 0) {
@@ -353,9 +392,15 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Bind the color picker to input fields that match the selector.
      * @param {(string|HTMLElement|HTMLElement[])} selector A CSS selector string, a DOM element or a list of DOM elements.
+=======
+    /**
+     * Bind the color picker to input fields that match the selector.
+     * @param {(string|HTMLElement|HTMLElement[])} selector A CSS selector string, a DOM element or a list of DOM elements.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function bindFields(selector) {
       if (selector instanceof HTMLElement) {
@@ -373,9 +418,15 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Open the color picker.
      * @param {object} event The event that opens the color picker.
+=======
+    /**
+     * Open the color picker.
+     * @param {object} event The event that opens the color picker.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function openPicker(event) {
       // Skip if inline mode is in use
@@ -412,8 +463,13 @@
       currentEl.dispatchEvent(new Event('open', { bubbles: false }));
     }
 
+<<<<<<< HEAD
     /**
      * Update the color picker's position and the color gradient's offset
+=======
+    /**
+     * Update the color picker's position and the color gradient's offset
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function updatePickerPosition() {
       if (!picker || !currentEl && !settings.inline) return; //** DO NOT REMOVE: in case called before initialized
@@ -490,9 +546,15 @@
       };
     }
 
+<<<<<<< HEAD
     /**
      * Wrap the linked input fields in a div that adds a color preview.
      * @param {(string|HTMLElement|HTMLElement[])} selector A CSS selector string, a DOM element or a list of DOM elements.
+=======
+    /**
+     * Wrap the linked input fields in a div that adds a color preview.
+     * @param {(string|HTMLElement|HTMLElement[])} selector A CSS selector string, a DOM element or a list of DOM elements.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function wrapFields(selector) {
       if (selector instanceof HTMLElement) {
@@ -504,9 +566,15 @@
       }
     }
 
+<<<<<<< HEAD
     /**
        * Wrap an input field in a div that adds a color preview.
        * @param {object} field The input field.
+=======
+    /**
+       * Wrap an input field in a div that adds a color preview.
+       * @param {object} field The input field.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
        */
     function wrapColorField(field) {
       const parentNode = field.parentNode;
@@ -527,9 +595,15 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Update the color preview of an input field
      * @param {object} event The "input" event that triggers the color change.
+=======
+    /**
+     * Update the color preview of an input field
+     * @param {object} event The "input" event that triggers the color change.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function updateColorPreview(event) {
       const parent = event.target.parentNode;
@@ -540,9 +614,15 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Close the color picker.
      * @param {boolean} [revert] If true, revert the color to the original value.
+=======
+    /**
+     * Close the color picker.
+     * @param {boolean} [revert] If true, revert the color to the original value.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function closePicker(revert) {
       if (currentEl && !settings.inline) {
@@ -588,9 +668,15 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Set the active color from a string.
      * @param {string} str String representing a color.
+=======
+    /**
+     * Set the active color from a string.
+     * @param {string} str String representing a color.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function setColorFromStr(str) {
       const rgba = strToRGBA(str);
@@ -611,10 +697,17 @@
       alphaMarker.style.left = `${hsva.a * 100}%`;
     }
 
+<<<<<<< HEAD
     /**
      * Guess the color format from a string.
      * @param {string} str String representing a color.
      * @return {string} The color format.
+=======
+    /**
+     * Guess the color format from a string.
+     * @param {string} str String representing a color.
+     * @return {string} The color format.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function getColorFormatFromStr(str) {
       const format = str.substring(0, 3).toLowerCase();
@@ -626,9 +719,15 @@
       return 'hex';
     }
 
+<<<<<<< HEAD
     /**
      * Copy the active color to the linked input field.
      * @param {number} [color] Color value to override the active color.
+=======
+    /**
+     * Copy the active color to the linked input field.
+     * @param {number} [color] Color value to override the active color.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function pickColor(color) {
       color = color !== undefined ? color : colorValue.value;
@@ -645,10 +744,17 @@
       document.dispatchEvent(new CustomEvent('coloris:pick', { detail: { color, currentEl } }));
     }
 
+<<<<<<< HEAD
     /**
      * Set the active color based on a specific point in the color gradient.
      * @param {number} x Left position.
      * @param {number} y Top position.
+=======
+    /**
+     * Set the active color based on a specific point in the color gradient.
+     * @param {number} x Left position.
+     * @param {number} y Top position.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function setColorAtPosition(x, y) {
       const hsva = {
@@ -664,10 +770,17 @@
       pickColor();
     }
 
+<<<<<<< HEAD
     /**
      * Update the color marker's accessibility label.
      * @param {number} saturation
      * @param {number} value
+=======
+    /**
+     * Update the color marker's accessibility label.
+     * @param {number} saturation
+     * @param {number} value
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function updateMarkerA11yLabel(saturation, value) {
       let label = settings.a11y.marker;
@@ -680,10 +793,17 @@
     }
 
     //
+<<<<<<< HEAD
     /**
      * Get the pageX and pageY positions of the pointer.
      * @param {object} event The MouseEvent or TouchEvent object.
      * @return {object} The pageX and pageY positions.
+=======
+    /**
+     * Get the pageX and pageY positions of the pointer.
+     * @param {object} event The MouseEvent or TouchEvent object.
+     * @return {object} The pageX and pageY positions.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function getPointerPosition(event) {
       return {
@@ -692,9 +812,15 @@
       };
     }
 
+<<<<<<< HEAD
     /**
      * Move the color marker when dragged.
      * @param {object} event The MouseEvent object.
+=======
+    /**
+     * Move the color marker when dragged.
+     * @param {object} event The MouseEvent object.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function moveMarker(event) {
       const pointer = getPointerPosition(event);
@@ -712,10 +838,17 @@
       event.stopPropagation();
     }
 
+<<<<<<< HEAD
     /**
      * Move the color marker when the arrow keys are pressed.
      * @param {number} offsetX The horizontal amount to move.
      * @param {number} offsetY The vertical amount to move.
+=======
+    /**
+     * Move the color marker when the arrow keys are pressed.
+     * @param {number} offsetX The horizontal amount to move.
+     * @param {number} offsetY The vertical amount to move.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function moveMarkerOnKeydown(offsetX, offsetY) {
       let x = colorMarker.style.left.replace('px', '') * 1 + offsetX;
@@ -724,10 +857,17 @@
       setMarkerPosition(x, y);
     }
 
+<<<<<<< HEAD
     /**
      * Set the color marker's position.
      * @param {number} x Left position.
      * @param {number} y Top position.
+=======
+    /**
+     * Set the color marker's position.
+     * @param {number} x Left position.
+     * @param {number} y Top position.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function setMarkerPosition(x, y) {
       // Make sure the marker doesn't go out of bounds
@@ -745,10 +885,17 @@
       colorMarker.focus();
     }
 
+<<<<<<< HEAD
     /**
      * Update the color picker's input field and preview thumb.
      * @param {Object} rgba Red, green, blue and alpha values.
      * @param {Object} [hsva] Hue, saturation, value and alpha values.
+=======
+    /**
+     * Update the color picker's input field and preview thumb.
+     * @param {Object} rgba Red, green, blue and alpha values.
+     * @param {Object} [hsva] Hue, saturation, value and alpha values.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function updateColor(rgba, hsva) {if (rgba === void 0) {rgba = {};}if (hsva === void 0) {hsva = {};}
       let format = settings.format;
@@ -799,8 +946,13 @@
       document.querySelector(`.clr-format [value="${format}"]`).checked = true;
     }
 
+<<<<<<< HEAD
     /**
      * Set the hue when its slider is moved.
+=======
+    /**
+     * Set the hue when its slider is moved.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function setHue() {
       const hue = hueSlider.value * 1;
@@ -813,8 +965,13 @@
       setColorAtPosition(x, y);
     }
 
+<<<<<<< HEAD
     /**
      * Set the alpha when its slider is moved.
+=======
+    /**
+     * Set the alpha when its slider is moved.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function setAlpha() {
       const alpha = alphaSlider.value / 100;
@@ -824,10 +981,17 @@
       pickColor();
     }
 
+<<<<<<< HEAD
     /**
      * Convert HSVA to RGBA.
      * @param {object} hsva Hue, saturation, value and alpha values.
      * @return {object} Red, green, blue and alpha values.
+=======
+    /**
+     * Convert HSVA to RGBA.
+     * @param {object} hsva Hue, saturation, value and alpha values.
+     * @return {object} Red, green, blue and alpha values.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function HSVAtoRGBA(hsva) {
       const saturation = hsva.s / 100;
@@ -853,10 +1017,17 @@
       };
     }
 
+<<<<<<< HEAD
     /**
      * Convert HSVA to HSLA.
      * @param {object} hsva Hue, saturation, value and alpha values.
      * @return {object} Hue, saturation, lightness and alpha values.
+=======
+    /**
+     * Convert HSVA to HSLA.
+     * @param {object} hsva Hue, saturation, value and alpha values.
+     * @return {object} Hue, saturation, lightness and alpha values.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function HSVAtoHSLA(hsva) {
       const value = hsva.v / 100;
@@ -875,10 +1046,17 @@
       };
     }
 
+<<<<<<< HEAD
     /**
      * Convert RGBA to HSVA.
      * @param {object} rgba Red, green, blue and alpha values.
      * @return {object} Hue, saturation, value and alpha values.
+=======
+    /**
+     * Convert RGBA to HSVA.
+     * @param {object} rgba Red, green, blue and alpha values.
+     * @return {object} Hue, saturation, value and alpha values.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function RGBAtoHSVA(rgba) {
       const red = rgba.r / 255;
@@ -908,10 +1086,17 @@
       };
     }
 
+<<<<<<< HEAD
     /**
      * Parse a string to RGBA.
      * @param {string} str String representing a color.
      * @return {object} Red, green, blue and alpha values.
+=======
+    /**
+     * Parse a string to RGBA.
+     * @param {string} str String representing a color.
+     * @return {object} Red, green, blue and alpha values.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function strToRGBA(str) {
       const regex = /^((rgba)|rgb)[\D]+([\d.]+)[\D]+([\d.]+)[\D]+([\d.]+)[\D]*?([\d.]+|$)/i;
@@ -945,10 +1130,17 @@
       return rgba;
     }
 
+<<<<<<< HEAD
     /**
      * Convert RGBA to Hex.
      * @param {object} rgba Red, green, blue and alpha values.
      * @return {string} Hex color string.
+=======
+    /**
+     * Convert RGBA to Hex.
+     * @param {object} rgba Red, green, blue and alpha values.
+     * @return {string} Hex color string.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function RGBAToHex(rgba) {
       let R = rgba.r.toString(16);
@@ -980,10 +1172,17 @@
       return '#' + R + G + B + A;
     }
 
+<<<<<<< HEAD
     /**
      * Convert RGBA values to a CSS rgb/rgba string.
      * @param {object} rgba Red, green, blue and alpha values.
      * @return {string} CSS color string.
+=======
+    /**
+     * Convert RGBA values to a CSS rgb/rgba string.
+     * @param {object} rgba Red, green, blue and alpha values.
+     * @return {string} CSS color string.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function RGBAToStr(rgba) {
       if (!settings.alpha || rgba.a === 1 && !settings.forceAlpha) {
@@ -993,10 +1192,17 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Convert HSLA values to a CSS hsl/hsla string.
      * @param {object} hsla Hue, saturation, lightness and alpha values.
      * @return {string} CSS color string.
+=======
+    /**
+     * Convert HSLA values to a CSS hsl/hsla string.
+     * @param {object} hsla Hue, saturation, lightness and alpha values.
+     * @return {string} CSS color string.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function HSLAToStr(hsla) {
       if (!settings.alpha || hsla.a === 1 && !settings.forceAlpha) {
@@ -1006,8 +1212,13 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Init the color picker.
+=======
+    /**
+     * Init the color picker.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function init() {
       if (document.getElementById('clr-picker')) return; //** DO NOT REMOVE: Prevent binding events multiple times
@@ -1208,9 +1419,15 @@
       addListener(alphaSlider, 'input', setAlpha);
     }
 
+<<<<<<< HEAD
     /**
      * Return a list of focusable elements within the color picker.
      * @return {array} The list of focusable DOM elemnts.
+=======
+    /**
+     * Return a list of focusable elements within the color picker.
+     * @return {array} The list of focusable DOM elemnts.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function getFocusableElements() {
       const controls = Array.from(picker.querySelectorAll('input, button'));
@@ -1219,21 +1436,37 @@
       return focusables;
     }
 
+<<<<<<< HEAD
     /**
      * Shortcut for getElementById to optimize the minified JS.
      * @param {string} id The element id.
      * @return {object} The DOM element with the provided id.
+=======
+    /**
+     * Shortcut for getElementById to optimize the minified JS.
+     * @param {string} id The element id.
+     * @return {object} The DOM element with the provided id.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function getEl(id) {
       return document.getElementById(id);
     }
 
+<<<<<<< HEAD
     /**
      * Shortcut for addEventListener to optimize the minified JS.
      * @param {object} context The context to which the listener is attached.
      * @param {string} type Event type.
      * @param {(string|function)} selector Event target if delegation is used, event handler if not.
      * @param {function} [fn] Event handler if delegation is used.
+=======
+    /**
+     * Shortcut for addEventListener to optimize the minified JS.
+     * @param {object} context The context to which the listener is attached.
+     * @param {string} type Event type.
+     * @param {(string|function)} selector Event target if delegation is used, event handler if not.
+     * @param {function} [fn] Event handler if delegation is used.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function addListener(context, type, selector, fn) {
       const matches = Element.prototype.matches || Element.prototype.msMatchesSelector;
@@ -1254,10 +1487,17 @@
       }
     }
 
+<<<<<<< HEAD
     /**
      * Call a function only when the DOM is ready.
      * @param {function} fn The function to call.
      * @param {array} [args] Arguments to pass to the function.
+=======
+    /**
+     * Call a function only when the DOM is ready.
+     * @param {function} fn The function to call.
+     * @param {array} [args] Arguments to pass to the function.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function DOMReady(fn, args) {
       args = args !== undefined ? args : [];
@@ -1280,10 +1520,17 @@
     //******* NPM: Custom code starts here ****************
     //*****************************************************
 
+<<<<<<< HEAD
     /**
      * Copy the active color to the linked input field and set the color.
      * @param {string} [color] Color value to override the active color.
      * @param {HTMLelement} [target] the element setting the color on
+=======
+    /**
+     * Copy the active color to the linked input field and set the color.
+     * @param {string} [color] Color value to override the active color.
+     * @param {HTMLelement} [target] the element setting the color on
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     function setColor(color, target) {
       currentEl = target;

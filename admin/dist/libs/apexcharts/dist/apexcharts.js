@@ -29154,6 +29154,630 @@
     return SVG;
   });
 
+<<<<<<< HEAD
+  /*! svg.filter.js - v2.0.2 - 2016-02-24
+  * https://github.com/wout/svg.filter.js
+  * Copyright (c) 2016 Wout Fierens; Licensed MIT */
+  (function() {
+
+    // Main filter class
+    SVG.Filter = SVG.invent({
+      create: 'filter',
+      inherit: SVG.Parent,
+      extend: {
+        // Static strings
+        source:           'SourceGraphic',
+        sourceAlpha:      'SourceAlpha',
+        background:       'BackgroundImage',
+        backgroundAlpha:  'BackgroundAlpha',
+        fill:             'FillPaint',
+        stroke:           'StrokePaint',
+
+        autoSetIn: true,
+        // Custom put method for leaner code
+        put: function(element, i) {
+          this.add(element, i);
+
+          if(!element.attr('in') && this.autoSetIn){
+            element.attr('in',this.source);
+          }
+          if(!element.attr('result')){
+            element.attr('result',element);
+          }
+
+          return element
+        },
+        // Blend effect
+        blend: function(in1, in2, mode) {
+          return this.put(new SVG.BlendEffect(in1, in2, mode))
+        },
+        // ColorMatrix effect
+        colorMatrix: function(type, values) {
+          return this.put(new SVG.ColorMatrixEffect(type, values))
+        },
+        // ConvolveMatrix effect
+        convolveMatrix: function(matrix) {
+          return this.put(new SVG.ConvolveMatrixEffect(matrix))
+        },
+        // ComponentTransfer effect
+        componentTransfer: function(components) {
+          return this.put(new SVG.ComponentTransferEffect(components))
+        },
+        // Composite effect
+        composite: function(in1, in2, operator) {
+          return this.put(new SVG.CompositeEffect(in1, in2, operator))
+        },
+        // Flood effect
+        flood: function(color, opacity) {
+          return this.put(new SVG.FloodEffect(color, opacity))
+        },
+        // Offset effect
+        offset: function(x, y) {
+          return this.put(new SVG.OffsetEffect(x,y))
+        },
+        // Image effect
+        image: function(src) {
+          return this.put(new SVG.ImageEffect(src))
+        },
+        // Merge effect
+        merge: function() {
+          //pass the array of arguments to the constructor because we dont know if the user gave us an array as the first arguemnt or wether they listed the effects in the arguments
+          var args = [undefined];
+          for(var i in arguments) args.push(arguments[i]);
+          return this.put(new (SVG.MergeEffect.bind.apply(SVG.MergeEffect,args)))
+        },
+        // Gaussian Blur effect
+        gaussianBlur: function(x,y) {
+          return this.put(new SVG.GaussianBlurEffect(x,y))
+        },
+        // Morphology effect
+        morphology: function(operator,radius){
+          return this.put(new SVG.MorphologyEffect(operator,radius))
+        },
+        // DiffuseLighting effect
+        diffuseLighting: function(surfaceScale,diffuseConstant,kernelUnitLength){
+          return this.put(new SVG.DiffuseLightingEffect(surfaceScale,diffuseConstant,kernelUnitLength))
+        },
+        // DisplacementMap effect
+        displacementMap: function(in1,in2,scale,xChannelSelector,yChannelSelector){
+          return this.put(new SVG.DisplacementMapEffect(in1,in2,scale,xChannelSelector,yChannelSelector))
+        },
+        // SpecularLighting effect
+        specularLighting: function(surfaceScale,diffuseConstant,specularExponent,kernelUnitLength){
+          return this.put(new SVG.SpecularLightingEffect(surfaceScale,diffuseConstant,specularExponent,kernelUnitLength))
+        },
+        // Tile effect
+        tile: function(){
+          return this.put(new SVG.TileEffect());
+        },
+        // Turbulence effect
+        turbulence: function(baseFrequency,numOctaves,seed,stitchTiles,type){
+          return this.put(new SVG.TurbulenceEffect(baseFrequency,numOctaves,seed,stitchTiles,type))
+        },
+        // Default string value
+        toString: function() {
+          return 'url(#' + this.attr('id') + ')'
+        }
+      }
+    });
+
+    //add .filter function
+    SVG.extend(SVG.Defs, {
+      // Define filter
+      filter: function(block) {
+        var filter = this.put(new SVG.Filter);
+
+        /* invoke passed block */
+        if (typeof block === 'function')
+          block.call(filter, filter);
+
+        return filter
+      }
+    });
+    SVG.extend(SVG.Container, {
+      // Define filter on defs
+      filter: function(block) {
+        return this.defs().filter(block)
+      }
+    });
+    SVG.extend(SVG.Element, SVG.G, SVG.Nested, {
+      // Create filter element in defs and store reference
+      filter: function(block) {
+        this.filterer = block instanceof SVG.Element ?
+          block : this.doc().filter(block);
+
+        if(this.doc() && this.filterer.doc() !== this.doc()){
+          this.doc().defs().add(this.filterer);
+        }
+
+        this.attr('filter', this.filterer);
+
+        return this.filterer
+      },
+      // Remove filter
+      unfilter: function(remove) {
+        /* also remove the filter node */
+        if (this.filterer && remove === true)
+          this.filterer.remove();
+
+        /* delete reference to filterer */
+        delete this.filterer;
+
+        /* remove filter attribute */
+        return this.attr('filter', null)
+      }
+    });
+
+    // Create SVG.Effect class
+    SVG.Effect = SVG.invent({
+      create: function(){
+        this.constructor.call(this);
+      },
+      inherit: SVG.Element,
+      extend: {
+        // Set in attribute
+        in: function(effect) {
+          return effect == null? this.parent() && this.parent().select('[result="'+this.attr('in')+'"]').get(0) || this.attr('in') : this.attr('in', effect)
+        },
+        // Named result
+        result: function(result) {
+          return result == null? this.attr('result') : this.attr('result',result)
+        },
+        // Stringification
+        toString: function() {
+          return this.result()
+        }
+      }
+    });
+
+    // create class for parent effects like merge
+    // Inherit from SVG.Parent
+    SVG.ParentEffect = SVG.invent({
+      create: function(){
+        this.constructor.call(this);
+      },
+      inherit: SVG.Parent,
+      extend: {
+        // Set in attribute
+        in: function(effect) {
+          return effect == null? this.parent() && this.parent().select('[result="'+this.attr('in')+'"]').get(0) || this.attr('in') : this.attr('in', effect)
+        },
+        // Named result
+        result: function(result) {
+          return result == null? this.attr('result') : this.attr('result',result)
+        },
+        // Stringification
+        toString: function() {
+          return this.result()
+        }
+      }
+    });
+
+    //chaining
+    var chainingEffects = {
+      // Blend effect
+      blend: function(in2, mode) {
+        return this.parent() && this.parent().blend(this, in2, mode) //pass this as the first input
+      },
+      // ColorMatrix effect
+      colorMatrix: function(type, values) {
+        return this.parent() && this.parent().colorMatrix(type, values).in(this)
+      },
+      // ConvolveMatrix effect
+      convolveMatrix: function(matrix) {
+        return this.parent() && this.parent().convolveMatrix(matrix).in(this)
+      },
+      // ComponentTransfer effect
+      componentTransfer: function(components) {
+        return this.parent() && this.parent().componentTransfer(components).in(this)
+      },
+      // Composite effect
+      composite: function(in2, operator) {
+        return this.parent() && this.parent().composite(this, in2, operator) //pass this as the first input
+      },
+      // Flood effect
+      flood: function(color, opacity) {
+        return this.parent() && this.parent().flood(color, opacity) //this effect dont have inputs
+      },
+      // Offset effect
+      offset: function(x, y) {
+        return this.parent() && this.parent().offset(x,y).in(this)
+      },
+      // Image effect
+      image: function(src) {
+        return this.parent() && this.parent().image(src) //this effect dont have inputs
+      },
+      // Merge effect
+      merge: function() {
+        return this.parent() && this.parent().merge.apply(this.parent(),[this].concat(arguments)) //pass this as the first argument
+      },
+      // Gaussian Blur effect
+      gaussianBlur: function(x,y) {
+        return this.parent() && this.parent().gaussianBlur(x,y).in(this)
+      },
+      // Morphology effect
+      morphology: function(operator,radius){
+        return this.parent() && this.parent().morphology(operator,radius).in(this)
+      },
+      // DiffuseLighting effect
+      diffuseLighting: function(surfaceScale,diffuseConstant,kernelUnitLength){
+        return this.parent() && this.parent().diffuseLighting(surfaceScale,diffuseConstant,kernelUnitLength).in(this)
+      },
+      // DisplacementMap effect
+      displacementMap: function(in2,scale,xChannelSelector,yChannelSelector){
+        return this.parent() && this.parent().displacementMap(this,in2,scale,xChannelSelector,yChannelSelector) //pass this as the first input
+      },
+      // SpecularLighting effect
+      specularLighting: function(surfaceScale,diffuseConstant,specularExponent,kernelUnitLength){
+        return this.parent() && this.parent().specularLighting(surfaceScale,diffuseConstant,specularExponent,kernelUnitLength).in(this)
+      },
+      // Tile effect
+      tile: function(){
+        return this.parent() && this.parent().tile().in(this)
+      },
+      // Turbulence effect
+      turbulence: function(baseFrequency,numOctaves,seed,stitchTiles,type){
+        return this.parent() && this.parent().turbulence(baseFrequency,numOctaves,seed,stitchTiles,type).in(this)
+      }
+    };
+    SVG.extend(SVG.Effect,chainingEffects);
+    SVG.extend(SVG.ParentEffect,chainingEffects);
+
+    //crea class for child effects, like MergeNode, FuncR and lights
+    SVG.ChildEffect = SVG.invent({
+      create: function(){
+        this.constructor.call(this);
+      },
+      inherit: SVG.Element,
+      extend: {
+      in: function(effect){
+        this.attr('in',effect);
+      }
+      //dont include any "result" functions because these types of nodes dont have them
+      }
+    });
+
+    // Create all different effects
+    var effects = {
+      blend: function(in1,in2,mode){
+        this.attr({
+          in: in1,
+          in2: in2,
+          mode: mode || 'normal'
+        });
+      },
+      colorMatrix: function(type,values){
+        if (type == 'matrix')
+          values = normaliseMatrix(values);
+
+        this.attr({
+          type:   type
+        , values: typeof values == 'undefined' ? null : values
+        });
+      },
+      convolveMatrix: function(matrix){
+        matrix = normaliseMatrix(matrix);
+
+        this.attr({
+          order:        Math.sqrt(matrix.split(' ').length)
+        , kernelMatrix: matrix
+        });
+      },
+      composite: function(in1, in2, operator){
+        this.attr({
+          in: in1,
+          in2: in2,
+          operator: operator
+        });
+      },
+      flood: function(color,opacity){
+        this.attr('flood-color',color);
+        if(opacity != null) this.attr('flood-opacity',opacity);
+      },
+      offset: function(x,y){
+        this.attr({
+          dx: x,
+          dy: y
+        });
+      },
+      image: function(src){
+        this.attr('href', src, SVG.xlink);
+      },
+      displacementMap: function(in1,in2,scale,xChannelSelector,yChannelSelector){
+        this.attr({
+          in: in1,
+          in2: in2,
+          scale: scale,
+          xChannelSelector: xChannelSelector,
+          yChannelSelector: yChannelSelector
+        });
+      },
+      gaussianBlur: function(x,y){
+        if(x != null || y != null)
+          this.attr('stdDeviation', listString(Array.prototype.slice.call(arguments)));
+        else
+          this.attr('stdDeviation', '0 0');
+      },
+      morphology: function(operator,radius){
+        this.attr({
+          operator: operator,
+          radius: radius
+        });
+      },
+      tile: function(){
+
+      },
+      turbulence: function(baseFrequency,numOctaves,seed,stitchTiles,type){
+        this.attr({
+          numOctaves: numOctaves,
+          seed: seed,
+          stitchTiles: stitchTiles,
+          baseFrequency: baseFrequency,
+          type: type
+        });
+      }
+    };
+
+    // Create all parent effects
+    var parentEffects = {
+      merge: function(){
+        var children;
+
+        //test to see if we have a set
+        if(arguments[0] instanceof SVG.Set){
+          var that = this;
+          arguments[0].each(function(i){
+            if(this instanceof SVG.MergeNode)
+              that.put(this);
+            else if(this instanceof SVG.Effect || this instanceof SVG.ParentEffect)
+              that.put(new SVG.MergeNode(this));
+          });
+        }
+        else {
+          //if the first argument is an array use it
+          if(Array.isArray(arguments[0]))
+            children = arguments[0];
+          else
+            children = arguments;
+
+          for(var i = 0; i < children.length; i++){
+            if(children[i] instanceof SVG.MergeNode){
+              this.put(children[i]);
+            }
+            else this.put(new SVG.MergeNode(children[i]));
+          }
+        }
+      },
+      componentTransfer: function(compontents){
+        /* create rgb set */
+        this.rgb = new SVG.Set
+
+        /* create components */
+        ;(['r', 'g', 'b', 'a']).forEach(function(c) {
+          /* create component */
+          this[c] = new SVG['Func' + c.toUpperCase()]('identity');
+
+          /* store component in set */
+          this.rgb.add(this[c]);
+
+          /* add component node */
+          this.node.appendChild(this[c].node);
+        }.bind(this)); //lost context in foreach
+
+        /* set components */
+        if (compontents) {
+          if (compontents.rgb) {
+  (['r', 'g', 'b']).forEach(function(c) {
+              this[c].attr(compontents.rgb);
+            }.bind(this));
+
+            delete compontents.rgb;
+          }
+
+          /* set individual components */
+          for (var c in compontents)
+            this[c].attr(compontents[c]);
+        }
+      },
+      diffuseLighting: function(surfaceScale,diffuseConstant,kernelUnitLength){
+        this.attr({
+          surfaceScale: surfaceScale,
+          diffuseConstant: diffuseConstant,
+          kernelUnitLength: kernelUnitLength
+        });
+      },
+      specularLighting: function(surfaceScale,diffuseConstant,specularExponent,kernelUnitLength){
+        this.attr({
+          surfaceScale: surfaceScale,
+          diffuseConstant: diffuseConstant,
+          specularExponent: specularExponent,
+          kernelUnitLength: kernelUnitLength
+        });
+      },
+    };
+
+    // Create child effects like PointLight and MergeNode
+    var childEffects = {
+      distantLight: function(azimuth, elevation){
+        this.attr({
+          azimuth: azimuth,
+          elevation: elevation
+        });
+      },
+      pointLight: function(x,y,z){
+        this.attr({
+          x: x,
+          y: y,
+          z: z
+        });
+      },
+      spotLight: function(x,y,z,pointsAtX,pointsAtY,pointsAtZ){
+        this.attr({
+          x: x,
+          y: y,
+          z: z,
+          pointsAtX: pointsAtX,
+          pointsAtY: pointsAtY,
+          pointsAtZ: pointsAtZ
+        });
+      },
+      mergeNode: function(in1){
+        this.attr('in',in1);
+      }
+    }
+
+    // Create compontent functions
+    ;(['r', 'g', 'b', 'a']).forEach(function(c) {
+      /* create class */
+      childEffects['Func' + c.toUpperCase()] = function(type) {
+        this.attr('type',type);
+
+        // take diffent arguments based on the type
+        switch(type){
+          case 'table':
+            this.attr('tableValues',arguments[1]);
+            break
+          case 'linear':
+            this.attr('slope',arguments[1]);
+            this.attr('intercept',arguments[2]);
+            break
+          case 'gamma':
+            this.attr('amplitude',arguments[1]);
+            this.attr('exponent',arguments[2]);
+            this.attr('offset',arguments[2]);
+            break
+        }
+      };
+    });
+
+    //create effects
+    foreach(effects,function(effect,i){
+
+      /* capitalize name */
+      var name = i.charAt(0).toUpperCase() + i.slice(1);
+      var proto = {};
+
+      /* create class */
+      SVG[name + 'Effect'] = SVG.invent({
+        create: function() {
+          //call super
+          this.constructor.call(this, SVG.create('fe' + name));
+
+          //call constructor for this effect
+          effect.apply(this,arguments);
+
+          //set the result
+          this.result(this.attr('id') + 'Out');
+        },
+        inherit: SVG.Effect,
+        extend: proto
+      });
+    });
+
+    //create parent effects
+    foreach(parentEffects,function(effect,i){
+
+      /* capitalize name */
+      var name = i.charAt(0).toUpperCase() + i.slice(1);
+      var proto = {};
+
+      /* create class */
+      SVG[name + 'Effect'] = SVG.invent({
+        create: function() {
+          //call super
+          this.constructor.call(this, SVG.create('fe' + name));
+
+          //call constructor for this effect
+          effect.apply(this,arguments);
+
+          //set the result
+          this.result(this.attr('id') + 'Out');
+        },
+        inherit: SVG.ParentEffect,
+        extend: proto
+      });
+    });
+
+    //create child effects
+    foreach(childEffects,function(effect,i){
+
+      /* capitalize name */
+      var name = i.charAt(0).toUpperCase() + i.slice(1);
+      var proto = {};
+
+      /* create class */
+      SVG[name] = SVG.invent({
+        create: function() {
+          //call super
+          this.constructor.call(this, SVG.create('fe' + name));
+
+          //call constructor for this effect
+          effect.apply(this,arguments);
+        },
+        inherit: SVG.ChildEffect,
+        extend: proto
+      });
+    });
+
+    // Effect-specific extensions
+    SVG.extend(SVG.MergeEffect,{
+      in: function(effect){
+        if(effect instanceof SVG.MergeNode)
+          this.add(effect,0);
+        else
+          this.add(new SVG.MergeNode(effect),0);
+
+        return this
+      }
+    });
+    SVG.extend(SVG.CompositeEffect,SVG.BlendEffect,SVG.DisplacementMapEffect,{
+      in2: function(effect){
+          return effect == null? this.parent() && this.parent().select('[result="'+this.attr('in2')+'"]').get(0) || this.attr('in2') : this.attr('in2', effect)
+      }
+    });
+
+    // Presets
+    SVG.filter = {
+      sepiatone:  [ .343, .669, .119, 0, 0
+                  , .249, .626, .130, 0, 0
+                  , .172, .334, .111, 0, 0
+                  , .000, .000, .000, 1, 0 ]
+    };
+
+    // Helpers
+    function normaliseMatrix(matrix) {
+      /* convert possible array value to string */
+      if (Array.isArray(matrix))
+        matrix = new SVG.Array(matrix);
+
+      /* ensure there are no leading, tailing or double spaces */
+      return matrix.toString().replace(/^\s+/, '').replace(/\s+$/, '').replace(/\s+/g, ' ')
+    }
+
+    function listString(list) {
+      if (!Array.isArray(list))
+        return list
+
+      for (var i = 0, l = list.length, s = []; i < l; i++)
+        s.push(list[i]);
+
+      return s.join(' ')
+    }
+
+    function foreach(){ //loops through mutiple objects
+      var fn = function(){};
+      if(typeof arguments[arguments.length-1] == 'function'){
+        fn = arguments[arguments.length-1];
+        Array.prototype.splice.call(arguments,arguments.length-1,1);
+      }
+      for(var k in arguments){
+        for(var i in arguments[k]){
+          fn(arguments[k][i],i,arguments[k]);
+        }
+      }
+    }
+
+=======
   /*! svg.filter.js - v2.0.2 - 2016-02-24
   * https://github.com/wout/svg.filter.js
   * Copyright (c) 2016 Wout Fierens; Licensed MIT */
@@ -30419,6 +31043,651 @@
 
     });
 
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
+  }).call(undefined);
+
+  (function() {
+
+<<<<<<< HEAD
+  SVG.extend(SVG.PathArray, {
+    morph: function(array) {
+
+      var startArr = this.value
+        ,  destArr = this.parse(array);
+
+      var startOffsetM = 0
+        ,  destOffsetM = 0;
+
+      var startOffsetNextM = false
+        ,  destOffsetNextM = false;
+
+      while(true){
+        // stop if there is no M anymore
+        if(startOffsetM === false && destOffsetM === false) break
+
+        // find the next M in path array
+        startOffsetNextM = findNextM(startArr, startOffsetM === false ? false : startOffsetM+1);
+         destOffsetNextM = findNextM( destArr,  destOffsetM === false ? false :  destOffsetM+1);
+
+        // We have to add one M to the startArray
+        if(startOffsetM === false){
+          var bbox = new SVG.PathArray(result.start).bbox();
+
+          // when the last block had no bounding box we simply take the first M we got
+          if(bbox.height == 0 || bbox.width == 0){
+            startOffsetM =  startArr.push(startArr[0]) - 1;
+          }else {
+            // we take the middle of the bbox instead when we got one
+            startOffsetM = startArr.push( ['M', bbox.x + bbox.width/2, bbox.y + bbox.height/2 ] ) - 1;
+          }
+        }
+
+        // We have to add one M to the destArray
+        if( destOffsetM === false){
+          var bbox = new SVG.PathArray(result.dest).bbox();
+
+          if(bbox.height == 0 || bbox.width == 0){
+            destOffsetM =  destArr.push(destArr[0]) - 1;
+          }else {
+            destOffsetM =  destArr.push( ['M', bbox.x + bbox.width/2, bbox.y + bbox.height/2 ] ) - 1;
+          }
+        }
+
+        // handle block from M to next M
+        var result = handleBlock(startArr, startOffsetM, startOffsetNextM, destArr, destOffsetM, destOffsetNextM);
+
+        // update the arrays to their new values
+        startArr = startArr.slice(0, startOffsetM).concat(result.start, startOffsetNextM === false ? [] : startArr.slice(startOffsetNextM));
+         destArr =  destArr.slice(0,  destOffsetM).concat(result.dest ,  destOffsetNextM === false ? [] :  destArr.slice( destOffsetNextM));
+
+        // update offsets
+        startOffsetM = startOffsetNextM === false ? false : startOffsetM + result.start.length;
+         destOffsetM =  destOffsetNextM === false ? false :  destOffsetM + result.dest.length;
+
+      }
+
+      // copy back arrays
+      this.value = startArr;
+      this.destination = new SVG.PathArray();
+      this.destination.value = destArr;
+
+      return this
+    }
+  });
+
+
+
+  // sorry for the long declaration
+  // slices out one block (from M to M) and syncronize it so the types and length match
+  function handleBlock(startArr, startOffsetM, startOffsetNextM, destArr, destOffsetM, destOffsetNextM, undefined$1){
+
+    // slice out the block we need
+    var startArrTemp = startArr.slice(startOffsetM, startOffsetNextM || undefined$1)
+      ,  destArrTemp =  destArr.slice( destOffsetM,  destOffsetNextM || undefined$1);
+
+    var i = 0
+      , posStart = {pos:[0,0], start:[0,0]}
+      , posDest  = {pos:[0,0], start:[0,0]};
+
+    do{
+
+      // convert shorthand types to long form
+      startArrTemp[i] = simplyfy.call(posStart, startArrTemp[i]);
+       destArrTemp[i] = simplyfy.call(posDest ,  destArrTemp[i]);
+
+      // check if both shape types match
+      // 2 elliptical arc curve commands ('A'), are considered different if the
+      // flags (large-arc-flag, sweep-flag) don't match
+      if(startArrTemp[i][0] != destArrTemp[i][0] || startArrTemp[i][0] == 'M' ||
+          (startArrTemp[i][0] == 'A' &&
+            (startArrTemp[i][4] != destArrTemp[i][4] || startArrTemp[i][5] != destArrTemp[i][5])
+          )
+        ) {
+
+        // if not, convert shapes to beziere
+        Array.prototype.splice.apply(startArrTemp, [i, 1].concat(toBeziere.call(posStart, startArrTemp[i])));
+         Array.prototype.splice.apply(destArrTemp, [i, 1].concat(toBeziere.call(posDest, destArrTemp[i])));
+
+      } else {
+
+        // only update positions otherwise
+        startArrTemp[i] = setPosAndReflection.call(posStart, startArrTemp[i]);
+         destArrTemp[i] = setPosAndReflection.call(posDest ,  destArrTemp[i]);
+
+      }
+
+      // we are at the end at both arrays. stop here
+      if(++i == startArrTemp.length && i == destArrTemp.length) break
+
+      // destArray is longer. Add one element
+      if(i == startArrTemp.length){
+        startArrTemp.push([
+          'C',
+          posStart.pos[0],
+          posStart.pos[1],
+          posStart.pos[0],
+          posStart.pos[1],
+          posStart.pos[0],
+          posStart.pos[1],
+        ]);
+      }
+
+      // startArr is longer. Add one element
+      if(i == destArrTemp.length){
+        destArrTemp.push([
+          'C',
+          posDest.pos[0],
+          posDest.pos[1],
+          posDest.pos[0],
+          posDest.pos[1],
+          posDest.pos[0],
+          posDest.pos[1]
+        ]);
+      }
+
+
+    }while(true)
+
+    // return the updated block
+    return {start:startArrTemp, dest:destArrTemp}
+  }
+
+  // converts shorthand types to long form
+  function simplyfy(val){
+
+    switch(val[0]){
+      case 'z': // shorthand line to start
+      case 'Z':
+        val[0] = 'L';
+        val[1] = this.start[0];
+        val[2] = this.start[1];
+        break
+      case 'H': // shorthand horizontal line
+        val[0] = 'L';
+        val[2] = this.pos[1];
+        break
+      case 'V': // shorthand vertical line
+        val[0] = 'L';
+        val[2] = val[1];
+        val[1] = this.pos[0];
+        break
+      case 'T': // shorthand quadratic beziere
+        val[0] = 'Q';
+        val[3] = val[1];
+        val[4] = val[2];
+        val[1] = this.reflection[1];
+        val[2] = this.reflection[0];
+        break
+      case 'S': // shorthand cubic beziere
+        val[0] = 'C';
+        val[6] = val[4];
+        val[5] = val[3];
+        val[4] = val[2];
+        val[3] = val[1];
+        val[2] = this.reflection[1];
+        val[1] = this.reflection[0];
+        break
+    }
+
+    return val
+
+  }
+
+  // updates reflection point and current position
+  function setPosAndReflection(val){
+
+    var len = val.length;
+
+    this.pos = [ val[len-2], val[len-1] ];
+
+    if('SCQT'.indexOf(val[0]) != -1)
+      this.reflection = [ 2 * this.pos[0] - val[len-4], 2 * this.pos[1] - val[len-3] ];
+
+    return val
+  }
+
+  // converts all types to cubic beziere
+  function toBeziere(val){
+    var retVal = [val];
+
+    switch(val[0]){
+      case 'M': // special handling for M
+        this.pos = this.start = [val[1], val[2]];
+        return retVal
+      case 'L':
+        val[5] = val[3] = val[1];
+        val[6] = val[4] = val[2];
+        val[1] = this.pos[0];
+        val[2] = this.pos[1];
+        break
+      case 'Q':
+        val[6] = val[4];
+        val[5] = val[3];
+        val[4] = val[4] * 1/3 + val[2] * 2/3;
+        val[3] = val[3] * 1/3 + val[1] * 2/3;
+        val[2] = this.pos[1] * 1/3 + val[2] * 2/3;
+        val[1] = this.pos[0] * 1/3 + val[1] * 2/3;
+        break
+      case 'A':
+        retVal = arcToBeziere(this.pos, val);
+        val = retVal[0];
+        break
+    }
+
+    val[0] = 'C';
+    this.pos = [val[5], val[6]];
+    this.reflection = [2 * val[5] - val[3], 2 * val[6] - val[4]];
+
+    return retVal
+
+  }
+
+  // finds the next position of type M
+  function findNextM(arr, offset){
+
+    if(offset === false) return false
+
+    for(var i = offset, len = arr.length;i < len;++i){
+
+      if(arr[i][0] == 'M') return i
+
+    }
+
+    return false
+  }
+
+
+
+  // Convert an arc segment into equivalent cubic Bezier curves
+  // Depending on the arc, up to 4 curves might be used to represent it since a
+  // curve gives a good approximation for only a quarter of an ellipse
+  // The curves are returned as an array of SVG curve commands:
+  // [ ['C', x1, y1, x2, y2, x, y] ... ]
+  function arcToBeziere(pos, val) {
+      // Parameters extraction, handle out-of-range parameters as specified in the SVG spec
+      // See: https://www.w3.org/TR/SVG11/implnote.html#ArcOutOfRangeParameters
+      var rx = Math.abs(val[1]), ry = Math.abs(val[2]), xAxisRotation = val[3] % 360
+        , largeArcFlag = val[4], sweepFlag = val[5], x = val[6], y = val[7]
+        , A = new SVG.Point(pos), B = new SVG.Point(x, y)
+        , primedCoord, lambda, mat, k, c, cSquare, t, O, OA, OB, tetaStart, tetaEnd
+        , deltaTeta, nbSectors, f, arcSegPoints, angle, sinAngle, cosAngle, pt, i, il
+        , retVal = [], x1, y1, x2, y2;
+
+      // Ensure radii are non-zero
+      if(rx === 0 || ry === 0 || (A.x === B.x && A.y === B.y)) {
+        // treat this arc as a straight line segment
+        return [['C', A.x, A.y, B.x, B.y, B.x, B.y]]
+      }
+
+      // Ensure radii are large enough using the algorithm provided in the SVG spec
+      // See: https://www.w3.org/TR/SVG11/implnote.html#ArcCorrectionOutOfRangeRadii
+      primedCoord = new SVG.Point((A.x-B.x)/2, (A.y-B.y)/2).transform(new SVG.Matrix().rotate(xAxisRotation));
+      lambda = (primedCoord.x * primedCoord.x) / (rx * rx) + (primedCoord.y * primedCoord.y) / (ry * ry);
+      if(lambda > 1) {
+        lambda = Math.sqrt(lambda);
+        rx = lambda*rx;
+        ry = lambda*ry;
+      }
+
+      // To simplify calculations, we make the arc part of a unit circle (rayon is 1) instead of an ellipse
+      mat = new SVG.Matrix().rotate(xAxisRotation).scale(1/rx, 1/ry).rotate(-xAxisRotation);
+      A = A.transform(mat);
+      B = B.transform(mat);
+
+      // Calculate the horizontal and vertical distance between the initial and final point of the arc
+      k = [B.x-A.x, B.y-A.y];
+
+      // Find the length of the chord formed by A and B
+      cSquare = k[0]*k[0] + k[1]*k[1];
+      c = Math.sqrt(cSquare);
+
+      // Calculate the ratios of the horizontal and vertical distance on the length of the chord
+      k[0] /= c;
+      k[1] /= c;
+
+      // Calculate the distance between the circle center and the chord midpoint
+      // using this formula: t = sqrt(r^2 - c^2 / 4)
+      // where t is the distance between the cirle center and the chord midpoint,
+      //       r is the rayon of the circle and c is the chord length
+      // From: http://www.ajdesigner.com/phpcircle/circle_segment_chord_t.php
+      // Because of the imprecision of floating point numbers, cSquare might end
+      // up being slightly above 4 which would result in a negative radicand
+      // To prevent that, a test is made before computing the square root
+      t = (cSquare < 4) ? Math.sqrt(1 - cSquare/4) : 0;
+
+      // For most situations, there are actually two different ellipses that
+      // satisfy the constraints imposed by the points A and B, the radii rx and ry,
+      // and the xAxisRotation
+      // When the flags largeArcFlag and sweepFlag are equal, it means that the
+      // second ellipse is used as a solution
+      // See: https://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+      if(largeArcFlag === sweepFlag) {
+          t *= -1;
+      }
+
+      // Calculate the coordinates of the center of the circle from the midpoint of the chord
+      // This is done by multiplying the ratios calculated previously by the distance between
+      // the circle center and the chord midpoint and using these values to go from the midpoint
+      // to the center of the circle
+      // The negative of the vertical distance ratio is used to modify the x coordinate while
+      // the horizontal distance ratio is used to modify the y coordinate
+      // That is because the center of the circle is perpendicular to the chord and perpendicular
+      // lines are negative reciprocals
+      O = new SVG.Point((B.x+A.x)/2 + t*-k[1], (B.y+A.y)/2 + t*k[0]);
+      // Move the center of the circle at the origin
+      OA = new SVG.Point(A.x-O.x, A.y-O.y);
+      OB = new SVG.Point(B.x-O.x, B.y-O.y);
+
+      // Calculate the start and end angle
+      tetaStart = Math.acos(OA.x/Math.sqrt(OA.x*OA.x + OA.y*OA.y));
+      if (OA.y < 0) {
+        tetaStart *= -1;
+      }
+      tetaEnd = Math.acos(OB.x/Math.sqrt(OB.x*OB.x + OB.y*OB.y));
+      if (OB.y < 0) {
+        tetaEnd *= -1;
+      }
+
+      // If sweep-flag is '1', then the arc will be drawn in a "positive-angle" direction,
+      // make sure that the end angle is above the start angle
+      if (sweepFlag && tetaStart > tetaEnd) {
+        tetaEnd += 2*Math.PI;
+      }
+      // If sweep-flag is '0', then the arc will be drawn in a "negative-angle" direction,
+      // make sure that the end angle is below the start angle
+      if (!sweepFlag && tetaStart < tetaEnd) {
+        tetaEnd -= 2*Math.PI;
+      }
+
+      // Find the number of Bezier curves that are required to represent the arc
+      // A cubic Bezier curve gives a good enough approximation when representing at most a quarter of a circle
+      nbSectors = Math.ceil(Math.abs(tetaStart-tetaEnd) * 2/Math.PI);
+
+      // Calculate the coordinates of the points of all the Bezier curves required to represent the arc
+      // For an in-depth explanation of this part see: http://pomax.github.io/bezierinfo/#circles_cubic
+      arcSegPoints = [];
+      angle = tetaStart;
+      deltaTeta = (tetaEnd-tetaStart)/nbSectors;
+      f = 4*Math.tan(deltaTeta/4)/3;
+      for (i = 0; i <= nbSectors; i++) { // The <= is because a Bezier curve have a start and a endpoint
+        cosAngle = Math.cos(angle);
+        sinAngle = Math.sin(angle);
+
+        pt = new SVG.Point(O.x+cosAngle, O.y+sinAngle);
+        arcSegPoints[i] = [new SVG.Point(pt.x+f*sinAngle, pt.y-f*cosAngle), pt, new SVG.Point(pt.x-f*sinAngle, pt.y+f*cosAngle)];
+
+        angle += deltaTeta;
+      }
+
+      // Remove the first control point of the first segment point and remove the second control point of the last segment point
+      // These two control points are not used in the approximation of the arc, that is why they are removed
+      arcSegPoints[0][0] = arcSegPoints[0][1].clone();
+      arcSegPoints[arcSegPoints.length-1][2] = arcSegPoints[arcSegPoints.length-1][1].clone();
+
+      // Revert the transformation that was applied to make the arc part of a unit circle instead of an ellipse
+      mat = new SVG.Matrix().rotate(xAxisRotation).scale(rx, ry).rotate(-xAxisRotation);
+      for (i = 0, il = arcSegPoints.length; i < il; i++) {
+        arcSegPoints[i][0] = arcSegPoints[i][0].transform(mat);
+        arcSegPoints[i][1] = arcSegPoints[i][1].transform(mat);
+        arcSegPoints[i][2] = arcSegPoints[i][2].transform(mat);
+      }
+
+
+      // Convert the segments points to SVG curve commands
+      for (i = 1, il = arcSegPoints.length; i < il; i++) {
+        pt = arcSegPoints[i-1][2];
+        x1 = pt.x;
+        y1 = pt.y;
+
+        pt = arcSegPoints[i][0];
+        x2 = pt.x;
+        y2 = pt.y;
+
+        pt = arcSegPoints[i][1];
+        x = pt.x;
+        y = pt.y;
+
+        retVal.push(['C', x1, y1, x2, y2, x, y]);
+      }
+
+      return retVal
+  }
+  }());
+
+  /*! svg.draggable.js - v2.2.2 - 2019-01-08
+  * https://github.com/svgdotjs/svg.draggable.js
+  * Copyright (c) 2019 Wout Fierens; Licensed MIT */
+  (function() {
+
+    // creates handler, saves it
+    function DragHandler(el){
+      el.remember('_draggable', this);
+      this.el = el;
+    }
+
+
+    // Sets new parameter, starts dragging
+    DragHandler.prototype.init = function(constraint, val){
+      var _this = this;
+      this.constraint = constraint;
+      this.value = val;
+      this.el.on('mousedown.drag', function(e){ _this.start(e); });
+      this.el.on('touchstart.drag', function(e){ _this.start(e); });
+    };
+
+    // transforms one point from screen to user coords
+    DragHandler.prototype.transformPoint = function(event, offset){
+        event = event || window.event;
+        var touches = event.changedTouches && event.changedTouches[0] || event;
+        this.p.x = touches.clientX - (offset || 0);
+        this.p.y = touches.clientY;
+        return this.p.matrixTransform(this.m)
+    };
+
+    // gets elements bounding box with special handling of groups, nested and use
+    DragHandler.prototype.getBBox = function(){
+
+      var box = this.el.bbox();
+
+      if(this.el instanceof SVG.Nested) box = this.el.rbox();
+
+      if (this.el instanceof SVG.G || this.el instanceof SVG.Use || this.el instanceof SVG.Nested) {
+        box.x = this.el.x();
+        box.y = this.el.y();
+      }
+
+      return box
+    };
+
+    // start dragging
+    DragHandler.prototype.start = function(e){
+
+      // check for left button
+      if(e.type == 'click'|| e.type == 'mousedown' || e.type == 'mousemove'){
+        if((e.which || e.buttons) != 1){
+            return
+        }
+      }
+
+      var _this = this;
+
+      // fire beforedrag event
+      this.el.fire('beforedrag', { event: e, handler: this });
+      if(this.el.event().defaultPrevented) return;
+
+      // prevent browser drag behavior as soon as possible
+      e.preventDefault();
+
+      // prevent propagation to a parent that might also have dragging enabled
+      e.stopPropagation();
+
+      // search for parent on the fly to make sure we can call
+      // draggable() even when element is not in the dom currently
+      this.parent = this.parent || this.el.parent(SVG.Nested) || this.el.parent(SVG.Doc);
+      this.p = this.parent.node.createSVGPoint();
+
+      // save current transformation matrix
+      this.m = this.el.node.getScreenCTM().inverse();
+
+      var box = this.getBBox();
+
+      var anchorOffset;
+
+      // fix text-anchor in text-element (#37)
+      if(this.el instanceof SVG.Text){
+        anchorOffset = this.el.node.getComputedTextLength();
+
+        switch(this.el.attr('text-anchor')){
+          case 'middle':
+            anchorOffset /= 2;
+            break
+          case 'start':
+            anchorOffset = 0;
+            break;
+        }
+      }
+
+      this.startPoints = {
+        // We take absolute coordinates since we are just using a delta here
+        point: this.transformPoint(e, anchorOffset),
+        box:   box,
+        transform: this.el.transform()
+      };
+
+      // add drag and end events to window
+      SVG.on(window, 'mousemove.drag', function(e){ _this.drag(e); });
+      SVG.on(window, 'touchmove.drag', function(e){ _this.drag(e); });
+      SVG.on(window, 'mouseup.drag', function(e){ _this.end(e); });
+      SVG.on(window, 'touchend.drag', function(e){ _this.end(e); });
+
+      // fire dragstart event
+      this.el.fire('dragstart', {event: e, p: this.startPoints.point, m: this.m, handler: this});
+    };
+
+    // while dragging
+    DragHandler.prototype.drag = function(e){
+
+      var box = this.getBBox()
+        , p   = this.transformPoint(e)
+        , x   = this.startPoints.box.x + p.x - this.startPoints.point.x
+        , y   = this.startPoints.box.y + p.y - this.startPoints.point.y
+        , c   = this.constraint
+        , gx  = p.x - this.startPoints.point.x
+        , gy  = p.y - this.startPoints.point.y;
+
+      this.el.fire('dragmove', {
+          event: e
+        , p: p
+        , m: this.m
+        , handler: this
+      });
+
+      if(this.el.event().defaultPrevented) return p
+
+      // move the element to its new position, if possible by constraint
+      if (typeof c == 'function') {
+
+        var coord = c.call(this.el, x, y, this.m);
+
+        // bool, just show us if movement is allowed or not
+        if (typeof coord == 'boolean') {
+          coord = {
+            x: coord,
+            y: coord
+          };
+        }
+
+        // if true, we just move. If !false its a number and we move it there
+        if (coord.x === true) {
+          this.el.x(x);
+        } else if (coord.x !== false) {
+          this.el.x(coord.x);
+        }
+
+        if (coord.y === true) {
+          this.el.y(y);
+        } else if (coord.y !== false) {
+          this.el.y(coord.y);
+        }
+
+      } else if (typeof c == 'object') {
+
+        // keep element within constrained box
+        if (c.minX != null && x < c.minX) {
+          x = c.minX;
+          gx = x - this.startPoints.box.x;
+        } else if (c.maxX != null && x > c.maxX - box.width) {
+          x = c.maxX - box.width;
+          gx = x - this.startPoints.box.x;
+        } if (c.minY != null && y < c.minY) {
+          y = c.minY;
+          gy = y - this.startPoints.box.y;
+        } else if (c.maxY != null && y > c.maxY - box.height) {
+          y = c.maxY - box.height;
+          gy = y - this.startPoints.box.y;
+        }
+
+        if (c.snapToGrid != null) {
+          x = x - (x % c.snapToGrid);
+          y = y - (y % c.snapToGrid);
+          gx = gx - (gx % c.snapToGrid);
+          gy = gy - (gy % c.snapToGrid);
+        }
+
+        if(this.el instanceof SVG.G)
+          this.el.matrix(this.startPoints.transform).transform({x:gx, y: gy}, true);
+        else
+          this.el.move(x, y);
+      }
+
+      // so we can use it in the end-method, too
+      return p
+    };
+
+    DragHandler.prototype.end = function(e){
+
+      // final drag
+      var p = this.drag(e);
+
+      // fire dragend event
+      this.el.fire('dragend', { event: e, p: p, m: this.m, handler: this });
+
+      // unbind events
+      SVG.off(window, 'mousemove.drag');
+      SVG.off(window, 'touchmove.drag');
+      SVG.off(window, 'mouseup.drag');
+      SVG.off(window, 'touchend.drag');
+
+    };
+
+    SVG.extend(SVG.Element, {
+      // Make element draggable
+      // Constraint might be an object (as described in readme.md) or a function in the form "function (x, y)" that gets called before every move.
+      // The function can return a boolean or an object of the form {x, y}, to which the element will be moved. "False" skips moving, true moves to raw x, y.
+      draggable: function(value, constraint) {
+
+        // Check the parameters and reassign if needed
+        if (typeof value == 'function' || typeof value == 'object') {
+          constraint = value;
+          value = true;
+        }
+
+        var dragHandler = this.remember('_draggable') || new DragHandler(this);
+
+        // When no parameter is given, value is true
+        value = typeof value === 'undefined' ? true : value;
+
+        if(value) dragHandler.init(constraint || {}, value);
+        else {
+          this.off('mousedown.drag');
+          this.off('touchstart.drag');
+        }
+
+        return this
+      }
+
+    });
+
   }).call(undefined);
 
   (function() {
@@ -30829,10 +32098,419 @@
       rotationPoint: true,                     // If true, rotation point is drawn. Needed for rotation!
       deepSelect: false,                       // If true, moving of single points is possible (only line, polyline, polyon)
       pointType: 'circle'                      // Point type: circle or rect, default circle
+=======
+  function SelectHandler(el) {
+
+      this.el = el;
+      el.remember('_selectHandler', this);
+      this.pointSelection = {isSelected: false};
+      this.rectSelection = {isSelected: false};
+
+      // helper list with position settings of each type of point
+      this.pointsList = {
+        lt: [ 0, 0 ],
+        rt: [ 'width', 0 ],
+        rb: [ 'width', 'height' ],
+        lb: [ 0, 'height' ],
+        t: [ 'width', 0 ],
+        r: [ 'width', 'height' ],
+        b: [ 'width', 'height' ],
+        l: [ 0, 'height' ]
+      };
+
+      // helper function to get point coordinates based on settings above and an object (bbox in our case)
+      this.pointCoord = function (setting, object, isPointCentered) {
+        var coord = typeof setting !== 'string' ? setting : object[setting];
+        // Top, bottom, right and left points are placed in the center of element width/height
+        return isPointCentered ? coord / 2 : coord
+      };
+
+      this.pointCoords = function (point, object) {
+        var settings = this.pointsList[point];
+
+        return {
+          x: this.pointCoord(settings[0], object, (point === 't' || point === 'b')),
+          y: this.pointCoord(settings[1], object, (point === 'r' || point === 'l'))
+        }
+      };
+  }
+
+  SelectHandler.prototype.init = function (value, options) {
+
+      var bbox = this.el.bbox();
+      this.options = {};
+
+      // store defaults list of points in order to verify users config
+      var points = this.el.selectize.defaults.points;
+
+      // Merging the defaults and the options-object together
+      for (var i in this.el.selectize.defaults) {
+          this.options[i] = this.el.selectize.defaults[i];
+          if (options[i] !== undefined) {
+              this.options[i] = options[i];
+          }
+      }
+
+      // prepare & validate list of points to be added (or excluded)
+      var pointsLists = ['points', 'pointsExclude'];
+
+      for (var i in pointsLists) {
+        var option = this.options[pointsLists[i]];
+
+        if (typeof option === 'string') {
+          if (option.length > 0) {
+            // if set as comma separated string list => convert it into an array
+            option = option.split(/\s*,\s*/i);
+          } else {
+            option = [];
+          }
+        } else if (typeof option === 'boolean' && pointsLists[i] === 'points') {
+          // this is not needed, but let's have it for legacy support
+          option = option ? points : [];
+        }
+
+        this.options[pointsLists[i]] = option;
+      }
+
+      // intersect correct all points options with users config (exclude unwanted points)
+      // ES5 -> NO arrow functions nor Array.includes()
+      this.options.points = [ points, this.options.points ].reduce(
+        function (a, b) {
+          return a.filter(
+            function (c) {
+              return b.indexOf(c) > -1;
+            }
+          )
+        }
+      );
+
+      // exclude pointsExclude, if wanted
+      this.options.points = [ this.options.points, this.options.pointsExclude ].reduce(
+        function (a, b) {
+          return a.filter(
+            function (c) {
+              return b.indexOf(c) < 0;
+            }
+          )
+        }
+      );
+
+      this.parent = this.el.parent();
+      this.nested = (this.nested || this.parent.group());
+      this.nested.matrix(new SVG.Matrix(this.el).translate(bbox.x, bbox.y));
+
+      // When deepSelect is enabled and the element is a line/polyline/polygon, draw only points for moving
+      if (this.options.deepSelect && ['line', 'polyline', 'polygon'].indexOf(this.el.type) !== -1) {
+          this.selectPoints(value);
+      } else {
+          this.selectRect(value);
+      }
+
+      this.observe();
+      this.cleanup();
+
+  };
+
+  SelectHandler.prototype.selectPoints = function (value) {
+
+      this.pointSelection.isSelected = value;
+
+      // When set is already there we dont have to create one
+      if (this.pointSelection.set) {
+          return this;
+      }
+
+      // Create our set of elements
+      this.pointSelection.set = this.parent.set();
+      // draw the points and mark the element as selected
+      this.drawPoints();
+
+      return this;
+
+  };
+
+  // create the point-array which contains the 2 points of a line or simply the points-array of polyline/polygon
+  SelectHandler.prototype.getPointArray = function () {
+      var bbox = this.el.bbox();
+
+      return this.el.array().valueOf().map(function (el) {
+          return [el[0] - bbox.x, el[1] - bbox.y];
+      });
+  };
+
+  // Draws a points
+  SelectHandler.prototype.drawPoints = function () {
+
+      var _this = this, array = this.getPointArray();
+
+      // go through the array of points
+      for (var i = 0, len = array.length; i < len; ++i) {
+
+          var curriedEvent = (function (k) {
+              return function (ev) {
+                  ev = ev || window.event;
+                  ev.preventDefault ? ev.preventDefault() : ev.returnValue = false;
+                  ev.stopPropagation();
+
+                  var x = ev.pageX || ev.touches[0].pageX;
+                  var y = ev.pageY || ev.touches[0].pageY;
+                  _this.el.fire('point', {x: x, y: y, i: k, event: ev});
+              };
+          })(i);
+
+          // add every point to the set
+          // add css-classes and a touchstart-event which fires our event for moving points
+          var point = this.drawPoint(array[i][0], array[i][1])
+                          .addClass(this.options.classPoints)
+                          .addClass(this.options.classPoints + '_point')
+                          .on('touchstart', curriedEvent)
+                          .on('mousedown', curriedEvent);
+          this.pointSelection.set.add(point);
+      }
+  };
+
+  // The function to draw single point
+  SelectHandler.prototype.drawPoint = function (cx, cy) {
+      var pointType = this.options.pointType;
+
+      switch (pointType) {
+          case 'circle':
+              return this.drawCircle(cx, cy);
+          case 'rect':
+              return this.drawRect(cx, cy);
+          default:
+              if (typeof pointType === 'function') {
+                  return pointType.call(this, cx, cy);
+              }
+
+              throw new Error('Unknown ' + pointType + ' point type!');
+      }
+  };
+
+  // The function to draw the circle point
+  SelectHandler.prototype.drawCircle = function (cx, cy) {
+      return this.nested.circle(this.options.pointSize)
+                        .center(cx, cy);
+  };
+
+  // The function to draw the rect point
+  SelectHandler.prototype.drawRect = function (cx, cy) {
+      return this.nested.rect(this.options.pointSize, this.options.pointSize)
+                        .center(cx, cy);
+  };
+
+  // every time a point is moved, we have to update the positions of our point
+  SelectHandler.prototype.updatePointSelection = function () {
+      var array = this.getPointArray();
+
+      this.pointSelection.set.each(function (i) {
+          if (this.cx() === array[i][0] && this.cy() === array[i][1]) {
+              return;
+          }
+          this.center(array[i][0], array[i][1]);
+      });
+  };
+
+  SelectHandler.prototype.updateRectSelection = function () {
+      var _this = this, bbox = this.el.bbox();
+
+      this.rectSelection.set.get(0).attr({
+          width: bbox.width,
+          height: bbox.height
+      });
+
+      // set.get(1) is always in the upper left corner. no need to move it
+      if (this.options.points.length) {
+        this.options.points.map(function (point, index) {
+          var coords = _this.pointCoords(point, bbox);
+
+          _this.rectSelection.set.get(index + 1).center(coords.x, coords.y);
+        });
+      }
+
+      if (this.options.rotationPoint) {
+          var length = this.rectSelection.set.length();
+
+          this.rectSelection.set.get(length - 1).center(bbox.width / 2, 20);
+      }
+  };
+
+  SelectHandler.prototype.selectRect = function (value) {
+
+      var _this = this, bbox = this.el.bbox();
+
+      this.rectSelection.isSelected = value;
+
+      // when set is already p
+      this.rectSelection.set = this.rectSelection.set || this.parent.set();
+
+      // helperFunction to create a mouse-down function which triggers the event specified in `eventName`
+      function getMoseDownFunc(eventName) {
+          return function (ev) {
+              ev = ev || window.event;
+              ev.preventDefault ? ev.preventDefault() : ev.returnValue = false;
+              ev.stopPropagation();
+
+              var x = ev.pageX || ev.touches[0].pageX;
+              var y = ev.pageY || ev.touches[0].pageY;
+              _this.el.fire(eventName, {x: x, y: y, event: ev});
+          };
+      }
+
+      // create the selection-rectangle and add the css-class
+      if (!this.rectSelection.set.get(0)) {
+          this.rectSelection.set.add(this.nested.rect(bbox.width, bbox.height).addClass(this.options.classRect));
+      }
+
+      // Draw Points at the edges, if enabled
+      if (this.options.points.length && this.rectSelection.set.length() < 2) {
+          var ename ="touchstart", mname = "mousedown";
+
+          this.options.points.map(function (point, index) {
+              var coords = _this.pointCoords(point, bbox);
+
+              var pointElement = _this.drawPoint(coords.x, coords.y)
+                                      .attr('class', _this.options.classPoints + '_' + point)
+                                      .on(mname, getMoseDownFunc(point))
+                                      .on(ename, getMoseDownFunc(point));
+              _this.rectSelection.set.add(pointElement);
+          });
+
+          this.rectSelection.set.each(function () {
+              this.addClass(_this.options.classPoints);
+          });
+      }
+
+      // draw rotationPint, if enabled
+      if (this.options.rotationPoint && ((this.options.points && !this.rectSelection.set.get(9)) || (!this.options.points && !this.rectSelection.set.get(1)))) {
+
+          var curriedEvent = function (ev) {
+              ev = ev || window.event;
+              ev.preventDefault ? ev.preventDefault() : ev.returnValue = false;
+              ev.stopPropagation();
+
+              var x = ev.pageX || ev.touches[0].pageX;
+              var y = ev.pageY || ev.touches[0].pageY;
+              _this.el.fire('rot', {x: x, y: y, event: ev});
+          };
+
+          var pointElement = this.drawPoint(bbox.width / 2, 20)
+                                .attr('class', this.options.classPoints + '_rot')
+                                .on("touchstart", curriedEvent)
+                                .on("mousedown", curriedEvent);
+          this.rectSelection.set.add(pointElement);
+      }
+
+  };
+
+  SelectHandler.prototype.handler = function () {
+
+      var bbox = this.el.bbox();
+      this.nested.matrix(new SVG.Matrix(this.el).translate(bbox.x, bbox.y));
+
+      if (this.rectSelection.isSelected) {
+          this.updateRectSelection();
+      }
+
+      if (this.pointSelection.isSelected) {
+          this.updatePointSelection();
+      }
+
+  };
+
+  SelectHandler.prototype.observe = function () {
+      var _this = this;
+
+      if (MutationObserver) {
+          if (this.rectSelection.isSelected || this.pointSelection.isSelected) {
+              this.observerInst = this.observerInst || new MutationObserver(function () {
+                  _this.handler();
+              });
+              this.observerInst.observe(this.el.node, {attributes: true});
+          } else {
+              try {
+                  this.observerInst.disconnect();
+                  delete this.observerInst;
+              } catch (e) {
+              }
+          }
+      } else {
+          this.el.off('DOMAttrModified.select');
+
+          if (this.rectSelection.isSelected || this.pointSelection.isSelected) {
+              this.el.on('DOMAttrModified.select', function () {
+                  _this.handler();
+              });
+          }
+      }
+  };
+
+  SelectHandler.prototype.cleanup = function () {
+
+      //var _this = this;
+
+      if (!this.rectSelection.isSelected && this.rectSelection.set) {
+          // stop watching the element, remove the selection
+          this.rectSelection.set.each(function () {
+              this.remove();
+          });
+
+          this.rectSelection.set.clear();
+          delete this.rectSelection.set;
+      }
+
+      if (!this.pointSelection.isSelected && this.pointSelection.set) {
+          // Remove all points, clear the set, stop watching the element
+          this.pointSelection.set.each(function () {
+              this.remove();
+          });
+
+          this.pointSelection.set.clear();
+          delete this.pointSelection.set;
+      }
+
+      if (!this.pointSelection.isSelected && !this.rectSelection.isSelected) {
+          this.nested.remove();
+          delete this.nested;
+
+      }
+  };
+
+
+  SVG.extend(SVG.Element, {
+      // Select element with mouse
+      selectize: function (value, options) {
+
+          // Check the parameters and reassign if needed
+          if (typeof value === 'object') {
+              options = value;
+              value = true;
+          }
+
+          var selectHandler = this.remember('_selectHandler') || new SelectHandler(this);
+
+          selectHandler.init(value === undefined ? true : value, options || {});
+
+          return this;
+
+      }
+  });
+
+  SVG.Element.prototype.selectize.defaults = {
+      points: ['lt', 'rt', 'rb', 'lb', 't', 'r', 'b', 'l'],    // which points to draw, default all
+      pointsExclude: [],                       // easier option if to exclude few than rewrite all
+      classRect: 'svg_select_boundingRect',    // Css-class added to the rect
+      classPoints: 'svg_select_points',        // Css-class added to the points
+      pointSize: 7,                            // size of point
+      rotationPoint: true,                     // If true, rotation point is drawn. Needed for rotation!
+      deepSelect: false,                       // If true, moving of single points is possible (only line, polyline, polyon)
+      pointType: 'circle'                      // Point type: circle or rect, default circle
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
   };
   }());
 
   (function() {
+<<<<<<< HEAD
   (function () {
 
       function ResizeHandler(el) {
@@ -31313,6 +32991,488 @@
           saveAspectRatio: false  // Save aspect ratio when resizing using lt, rt, rb or lb points
       };
 
+=======
+  (function () {
+
+      function ResizeHandler(el) {
+
+          el.remember('_resizeHandler', this);
+
+          this.el = el;
+          this.parameters = {};
+          this.lastUpdateCall = null;
+          this.p = el.doc().node.createSVGPoint();
+      }
+
+      ResizeHandler.prototype.transformPoint = function(x, y, m){
+
+          this.p.x = x - (this.offset.x - window.pageXOffset);
+          this.p.y = y - (this.offset.y - window.pageYOffset);
+
+          return this.p.matrixTransform(m || this.m);
+
+      };
+
+      ResizeHandler.prototype._extractPosition = function(event) {
+          // Extract a position from a mouse/touch event.
+          // Returns { x: .., y: .. }
+          return {
+              x: event.clientX != null ? event.clientX : event.touches[0].clientX,
+              y: event.clientY != null ? event.clientY : event.touches[0].clientY
+          }
+      };
+
+      ResizeHandler.prototype.init = function (options) {
+
+          var _this = this;
+
+          this.stop();
+
+          if (options === 'stop') {
+              return;
+          }
+
+          this.options = {};
+
+          // Merge options and defaults
+          for (var i in this.el.resize.defaults) {
+              this.options[i] = this.el.resize.defaults[i];
+              if (typeof options[i] !== 'undefined') {
+                  this.options[i] = options[i];
+              }
+          }
+
+          // We listen to all these events which are specifying different edges
+          this.el.on('lt.resize', function(e){ _this.resize(e || window.event); });  // Left-Top
+          this.el.on('rt.resize', function(e){ _this.resize(e || window.event); });  // Right-Top
+          this.el.on('rb.resize', function(e){ _this.resize(e || window.event); });  // Right-Bottom
+          this.el.on('lb.resize', function(e){ _this.resize(e || window.event); });  // Left-Bottom
+
+          this.el.on('t.resize', function(e){ _this.resize(e || window.event); });   // Top
+          this.el.on('r.resize', function(e){ _this.resize(e || window.event); });   // Right
+          this.el.on('b.resize', function(e){ _this.resize(e || window.event); });   // Bottom
+          this.el.on('l.resize', function(e){ _this.resize(e || window.event); });   // Left
+
+          this.el.on('rot.resize', function(e){ _this.resize(e || window.event); }); // Rotation
+
+          this.el.on('point.resize', function(e){ _this.resize(e || window.event); }); // Point-Moving
+
+          // This call ensures, that the plugin reacts to a change of snapToGrid immediately
+          this.update();
+
+      };
+
+      ResizeHandler.prototype.stop = function(){
+          this.el.off('lt.resize');
+          this.el.off('rt.resize');
+          this.el.off('rb.resize');
+          this.el.off('lb.resize');
+
+          this.el.off('t.resize');
+          this.el.off('r.resize');
+          this.el.off('b.resize');
+          this.el.off('l.resize');
+
+          this.el.off('rot.resize');
+
+          this.el.off('point.resize');
+
+          return this;
+      };
+
+      ResizeHandler.prototype.resize = function (event) {
+
+          var _this = this;
+
+          this.m = this.el.node.getScreenCTM().inverse();
+          this.offset = { x: window.pageXOffset, y: window.pageYOffset };
+
+          var txPt = this._extractPosition(event.detail.event);
+          this.parameters = {
+              type: this.el.type, // the type of element
+              p: this.transformPoint(txPt.x, txPt.y),
+              x: event.detail.x,      // x-position of the mouse when resizing started
+              y: event.detail.y,      // y-position of the mouse when resizing started
+              box: this.el.bbox(),    // The bounding-box of the element
+              rotation: this.el.transform().rotation  // The current rotation of the element
+          };
+
+          // Add font-size parameter if the element type is text
+          if (this.el.type === "text") {
+              this.parameters.fontSize = this.el.attr()["font-size"];
+          }
+
+          // the i-param in the event holds the index of the point which is moved, when using `deepSelect`
+          if (event.detail.i !== undefined) {
+
+              // get the point array
+              var array = this.el.array().valueOf();
+
+              // Save the index and the point which is moved
+              this.parameters.i = event.detail.i;
+              this.parameters.pointCoords = [array[event.detail.i][0], array[event.detail.i][1]];
+          }
+
+          // Lets check which edge of the bounding-box was clicked and resize the this.el according to this
+          switch (event.type) {
+
+              // Left-Top-Edge
+              case 'lt':
+                  // We build a calculating function for every case which gives us the new position of the this.el
+                  this.calc = function (diffX, diffY) {
+                      // The procedure is always the same
+                      // First we snap the edge to the given grid (snapping to 1px grid is normal resizing)
+                      var snap = this.snapToGrid(diffX, diffY);
+
+                      // Now we check if the new height and width still valid (> 0)
+                      if (this.parameters.box.width - snap[0] > 0 && this.parameters.box.height - snap[1] > 0) {
+                          // ...if valid, we resize the this.el (which can include moving because the coord-system starts at the left-top and this edge is moving sometimes when resized)
+
+                          /*
+                           * but first check if the element is text box, so we can change the font size instead of
+                           * the width and height
+                           */
+
+                          if (this.parameters.type === "text") {
+                              this.el.move(this.parameters.box.x + snap[0], this.parameters.box.y);
+                              this.el.attr("font-size", this.parameters.fontSize - snap[0]);
+                              return;
+                          }
+
+                          snap = this.checkAspectRatio(snap);
+
+                          this.el.move(this.parameters.box.x + snap[0], this.parameters.box.y + snap[1]).size(this.parameters.box.width - snap[0], this.parameters.box.height - snap[1]);
+                      }
+                  };
+                  break;
+
+              // Right-Top
+              case 'rt':
+                  // s.a.
+                  this.calc = function (diffX, diffY) {
+                      var snap = this.snapToGrid(diffX, diffY, 1 << 1);
+                      if (this.parameters.box.width + snap[0] > 0 && this.parameters.box.height - snap[1] > 0) {
+                          if (this.parameters.type === "text") {
+                              this.el.move(this.parameters.box.x - snap[0], this.parameters.box.y);
+                              this.el.attr("font-size", this.parameters.fontSize + snap[0]);
+                              return;
+                          }
+
+                          snap = this.checkAspectRatio(snap, true);
+
+                          this.el.move(this.parameters.box.x, this.parameters.box.y + snap[1]).size(this.parameters.box.width + snap[0], this.parameters.box.height - snap[1]);
+                      }
+                  };
+                  break;
+
+              // Right-Bottom
+              case 'rb':
+                  // s.a.
+                  this.calc = function (diffX, diffY) {
+                      var snap = this.snapToGrid(diffX, diffY, 0);
+                      if (this.parameters.box.width + snap[0] > 0 && this.parameters.box.height + snap[1] > 0) {
+                          if (this.parameters.type === "text") {
+                              this.el.move(this.parameters.box.x - snap[0], this.parameters.box.y);
+                              this.el.attr("font-size", this.parameters.fontSize + snap[0]);
+                              return;
+                          }
+
+                          snap = this.checkAspectRatio(snap);
+
+                          this.el.move(this.parameters.box.x, this.parameters.box.y).size(this.parameters.box.width + snap[0], this.parameters.box.height + snap[1]);
+                      }
+                  };
+                  break;
+
+              // Left-Bottom
+              case 'lb':
+                  // s.a.
+                  this.calc = function (diffX, diffY) {
+                      var snap = this.snapToGrid(diffX, diffY, 1);
+                      if (this.parameters.box.width - snap[0] > 0 && this.parameters.box.height + snap[1] > 0) {
+                          if (this.parameters.type === "text") {
+                              this.el.move(this.parameters.box.x + snap[0], this.parameters.box.y);
+                              this.el.attr("font-size", this.parameters.fontSize - snap[0]);
+                              return;
+                          }
+
+                          snap = this.checkAspectRatio(snap, true);
+
+                          this.el.move(this.parameters.box.x + snap[0], this.parameters.box.y).size(this.parameters.box.width - snap[0], this.parameters.box.height + snap[1]);
+                      }
+                  };
+                  break;
+
+              // Top
+              case 't':
+                  // s.a.
+                  this.calc = function (diffX, diffY) {
+                      var snap = this.snapToGrid(diffX, diffY, 1 << 1);
+                      if (this.parameters.box.height - snap[1] > 0) {
+                          // Disable the font-resizing if it is not from the corner of bounding-box
+                          if (this.parameters.type === "text") {
+                              return;
+                          }
+
+                          this.el.move(this.parameters.box.x, this.parameters.box.y + snap[1]).height(this.parameters.box.height - snap[1]);
+                      }
+                  };
+                  break;
+
+              // Right
+              case 'r':
+                  // s.a.
+                  this.calc = function (diffX, diffY) {
+                      var snap = this.snapToGrid(diffX, diffY, 0);
+                      if (this.parameters.box.width + snap[0] > 0) {
+                          if (this.parameters.type === "text") {
+                              return;
+                          }
+
+                          this.el.move(this.parameters.box.x, this.parameters.box.y).width(this.parameters.box.width + snap[0]);
+                      }
+                  };
+                  break;
+
+              // Bottom
+              case 'b':
+                  // s.a.
+                  this.calc = function (diffX, diffY) {
+                      var snap = this.snapToGrid(diffX, diffY, 0);
+                      if (this.parameters.box.height + snap[1] > 0) {
+                          if (this.parameters.type === "text") {
+                              return;
+                          }
+
+                          this.el.move(this.parameters.box.x, this.parameters.box.y).height(this.parameters.box.height + snap[1]);
+                      }
+                  };
+                  break;
+
+              // Left
+              case 'l':
+                  // s.a.
+                  this.calc = function (diffX, diffY) {
+                      var snap = this.snapToGrid(diffX, diffY, 1);
+                      if (this.parameters.box.width - snap[0] > 0) {
+                          if (this.parameters.type === "text") {
+                              return;
+                          }
+
+                          this.el.move(this.parameters.box.x + snap[0], this.parameters.box.y).width(this.parameters.box.width - snap[0]);
+                      }
+                  };
+                  break;
+
+              // Rotation
+              case 'rot':
+                  // s.a.
+                  this.calc = function (diffX, diffY) {
+
+                      // yes this is kinda stupid but we need the mouse coords back...
+                      var current = {x: diffX + this.parameters.p.x, y: diffY + this.parameters.p.y};
+
+                      // start minus middle
+                      var sAngle = Math.atan2((this.parameters.p.y - this.parameters.box.y - this.parameters.box.height / 2), (this.parameters.p.x - this.parameters.box.x - this.parameters.box.width / 2));
+
+                      // end minus middle
+                      var pAngle = Math.atan2((current.y - this.parameters.box.y - this.parameters.box.height / 2), (current.x - this.parameters.box.x - this.parameters.box.width / 2));
+
+                      var angle = this.parameters.rotation + (pAngle - sAngle) * 180 / Math.PI + this.options.snapToAngle / 2;
+
+                      // We have to move the element to the center of the box first and change the rotation afterwards
+                      // because rotation always works around a rotation-center, which is changed when moving the element
+                      // We also set the new rotation center to the center of the box.
+                      this.el.center(this.parameters.box.cx, this.parameters.box.cy).rotate(angle - (angle % this.options.snapToAngle), this.parameters.box.cx, this.parameters.box.cy);
+                  };
+                  break;
+
+              // Moving one single Point (needed when an element is deepSelected which means you can move every single point of the object)
+              case 'point':
+                  this.calc = function (diffX, diffY) {
+
+                      // Snapping the point to the grid
+                      var snap = this.snapToGrid(diffX, diffY, this.parameters.pointCoords[0], this.parameters.pointCoords[1]);
+
+                      // Get the point array
+                      var array = this.el.array().valueOf();
+
+                      // Changing the moved point in the array
+                      array[this.parameters.i][0] = this.parameters.pointCoords[0] + snap[0];
+                      array[this.parameters.i][1] = this.parameters.pointCoords[1] + snap[1];
+
+                      // And plot the new this.el
+                      this.el.plot(array);
+                  };
+          }
+
+          this.el.fire('resizestart', {dx: this.parameters.x, dy: this.parameters.y, event: event});
+          // When resizing started, we have to register events for...
+          // Touches.
+          SVG.on(window, 'touchmove.resize', function(e) {
+              _this.update(e || window.event);
+          });
+          SVG.on(window, 'touchend.resize', function() {
+              _this.done();
+          });
+          // Mouse.
+          SVG.on(window, 'mousemove.resize', function (e) {
+              _this.update(e || window.event);
+          });
+          SVG.on(window, 'mouseup.resize', function () {
+              _this.done();
+          });
+
+      };
+
+      // The update-function redraws the element every time the mouse is moving
+      ResizeHandler.prototype.update = function (event) {
+
+          if (!event) {
+              if (this.lastUpdateCall) {
+                  this.calc(this.lastUpdateCall[0], this.lastUpdateCall[1]);
+              }
+              return;
+          }
+
+          // Calculate the difference between the mouseposition at start and now
+          var txPt = this._extractPosition(event);
+          var p = this.transformPoint(txPt.x, txPt.y);
+
+          var diffX = p.x - this.parameters.p.x,
+              diffY = p.y - this.parameters.p.y;
+
+          this.lastUpdateCall = [diffX, diffY];
+
+          // Calculate the new position and height / width of the element
+          this.calc(diffX, diffY);
+
+         // Emit an event to say we have changed.
+          this.el.fire('resizing', {dx: diffX, dy: diffY, event: event});
+      };
+
+      // Is called on mouseup.
+      // Removes the update-function from the mousemove event
+      ResizeHandler.prototype.done = function () {
+          this.lastUpdateCall = null;
+          SVG.off(window, 'mousemove.resize');
+          SVG.off(window, 'mouseup.resize');
+          SVG.off(window, 'touchmove.resize');
+          SVG.off(window, 'touchend.resize');
+          this.el.fire('resizedone');
+      };
+
+      // The flag is used to determine whether the resizing is used with a left-Point (first bit) and top-point (second bit)
+      // In this cases the temp-values are calculated differently
+      ResizeHandler.prototype.snapToGrid = function (diffX, diffY, flag, pointCoordsY) {
+
+          var temp;
+
+          // If `pointCoordsY` is given, a single Point has to be snapped (deepSelect). That's why we need a different temp-value
+          if (typeof pointCoordsY !== 'undefined') {
+              // Note that flag = pointCoordsX in this case
+              temp = [(flag + diffX) % this.options.snapToGrid, (pointCoordsY + diffY) % this.options.snapToGrid];
+          } else {
+              // We check if the flag is set and if not we set a default-value (both bits set - which means upper-left-edge)
+              flag = flag == null ? 1 | 1 << 1 : flag;
+              temp = [(this.parameters.box.x + diffX + (flag & 1 ? 0 : this.parameters.box.width)) % this.options.snapToGrid, (this.parameters.box.y + diffY + (flag & (1 << 1) ? 0 : this.parameters.box.height)) % this.options.snapToGrid];
+          }
+
+          if(diffX < 0) {
+              temp[0] -= this.options.snapToGrid;
+          }
+          if(diffY < 0) {
+              temp[1] -= this.options.snapToGrid;
+          }
+
+          diffX -= (Math.abs(temp[0]) < this.options.snapToGrid / 2 ?
+                    temp[0] :
+                    temp[0] - (diffX < 0 ? -this.options.snapToGrid : this.options.snapToGrid));
+          diffY -= (Math.abs(temp[1]) < this.options.snapToGrid / 2 ?
+                    temp[1] :
+                    temp[1] - (diffY < 0 ? -this.options.snapToGrid : this.options.snapToGrid));
+
+          return this.constraintToBox(diffX, diffY, flag, pointCoordsY);
+
+      };
+
+      // keep element within constrained box
+      ResizeHandler.prototype.constraintToBox = function (diffX, diffY, flag, pointCoordsY) {
+          //return [diffX, diffY]
+          var c = this.options.constraint || {};
+          var orgX, orgY;
+
+          if (typeof pointCoordsY !== 'undefined') {
+            orgX = flag;
+            orgY = pointCoordsY;
+          } else {
+            orgX = this.parameters.box.x + (flag & 1 ? 0 : this.parameters.box.width);
+            orgY = this.parameters.box.y + (flag & (1<<1) ? 0 : this.parameters.box.height);
+          }
+
+          if (typeof c.minX !== 'undefined' && orgX + diffX < c.minX) {
+            diffX = c.minX - orgX;
+          }
+
+          if (typeof c.maxX !== 'undefined' && orgX + diffX > c.maxX) {
+            diffX = c.maxX - orgX;
+          }
+
+          if (typeof c.minY !== 'undefined' && orgY + diffY < c.minY) {
+            diffY = c.minY - orgY;
+          }
+
+          if (typeof c.maxY !== 'undefined' && orgY + diffY > c.maxY) {
+            diffY = c.maxY - orgY;
+          }
+
+          return [diffX, diffY];
+      };
+
+      ResizeHandler.prototype.checkAspectRatio = function (snap, isReverse) {
+          if (!this.options.saveAspectRatio) {
+              return snap;
+          }
+
+          var updatedSnap = snap.slice();
+          var aspectRatio = this.parameters.box.width / this.parameters.box.height;
+          var newW = this.parameters.box.width + snap[0];
+          var newH = this.parameters.box.height - snap[1];
+          var newAspectRatio = newW / newH;
+
+          if (newAspectRatio < aspectRatio) {
+              // Height is too big. Adapt it
+              updatedSnap[1] = newW / aspectRatio - this.parameters.box.height;
+              isReverse && (updatedSnap[1] = -updatedSnap[1]);
+          } else if (newAspectRatio > aspectRatio) {
+              // Width is too big. Adapt it
+              updatedSnap[0] = this.parameters.box.width - newH * aspectRatio;
+              isReverse && (updatedSnap[0] = -updatedSnap[0]);
+          }
+
+          return updatedSnap;
+      };
+
+      SVG.extend(SVG.Element, {
+          // Resize element with mouse
+          resize: function (options) {
+
+              (this.remember('_resizeHandler') || new ResizeHandler(this)).init(options || {});
+
+              return this;
+
+          }
+
+      });
+
+      SVG.Element.prototype.resize.defaults = {
+          snapToAngle: 0.1,       // Specifies the speed the rotation is happening when moving the mouse
+          snapToGrid: 1,          // Snaps to a grid of `snapToGrid` Pixels
+          constraint: {},         // keep element within constrained box
+          saveAspectRatio: false  // Save aspect ratio when resizing using lt, rt, rb or lb points
+      };
+
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
   }).call(this);
   }());
 

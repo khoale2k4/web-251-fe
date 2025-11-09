@@ -59,10 +59,17 @@ typeof navigator === "object" && (function (global, factory) {
   }
 
   (function (global) {
+<<<<<<< HEAD
     /**
      * Polyfill URLSearchParams
      *
      * Inspired from : https://github.com/WebReflection/url-search-params/blob/master/src/url-search-params.js
+=======
+    /**
+     * Polyfill URLSearchParams
+     *
+     * Inspired from : https://github.com/WebReflection/url-search-params/blob/master/src/url-search-params.js
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
 
     var checkIfIteratorIsSupported = function () {
@@ -91,9 +98,15 @@ typeof navigator === "object" && (function (global, factory) {
       return iterator;
     };
 
+<<<<<<< HEAD
     /**
      * Search param name and values should be encoded according to https://url.spec.whatwg.org/#urlencoded-serializing
      * encodeURIComponent() produces the same result except encoding spaces as `%20` instead of `+`.
+=======
+    /**
+     * Search param name and values should be encoded according to https://url.spec.whatwg.org/#urlencoded-serializing
+     * encodeURIComponent() produces the same result except encoding spaces as `%20` instead of `+`.
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
     var serializeParam = function (value) {
       return encodeURIComponent(value).replace(/%20/g, '+');
@@ -276,10 +289,17 @@ typeof navigator === "object" && (function (global, factory) {
     // HTMLAnchorElement
   })(typeof commonjsGlobal !== 'undefined' ? commonjsGlobal : typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : commonjsGlobal);
   (function (global) {
+<<<<<<< HEAD
     /**
      * Polyfill URL
      *
      * Inspired from : https://github.com/arv/DOM-URL-Polyfill/blob/master/src/url.js
+=======
+    /**
+     * Polyfill URL
+     *
+     * Inspired from : https://github.com/arv/DOM-URL-Polyfill/blob/master/src/url.js
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
      */
 
     var checkIfURLIsSupported = function () {

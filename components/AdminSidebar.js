@@ -8,8 +8,11 @@ export function AdminSidebar({ current = '' } = {}) {
     { href: '../news/index.html', key: 'admin-news', label: 'Quản lý Bài viết', icon: 'ti ti-news' },
     { href: '../faq/index.html', key: 'admin-faq', label: 'Quản lý FAQ', icon: 'ti ti-help' },
     { href: '../comments/index.html', key: 'comments', label: 'Quản lý Comments', icon: 'ti ti-message' },
+<<<<<<< HEAD
     { href: '../about/about.html', key: 'about', label: 'Giới Thiệu', icon: 'ti ti-message' },
   
+=======
+>>>>>>> 57af7556f01f0f68333a2dd3e40f3d237a370b7c
   ];
 
   if (current === 'dashboard') {
