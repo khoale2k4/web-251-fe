@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin – Quản lý nội dung trang Giới thiệu</title>
+
+    <!-- Tabler CSS (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler-flags.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler-payments.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler-vendors.min.css" rel="stylesheet" />
+
+    <!-- App styles -->
+    <link href="./styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="page">
+      <!-- Navbar -->
+      <header class="navbar navbar-expand-md d-print-none">
+        <div class="container-xl">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+            <span class="me-2 avatar avatar-sm brand-bg">CM</span>
+            <span>Content Manager</span>
+          </h1>
+          <div class="navbar-nav flex-row order-md-last">
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                <span class="avatar">SV</span>
+                <div class="d-none d-xl-block ps-2">
+                  <div>Student</div>
+                  <div class="mt-1 small text-muted">Administrator</div>
+                </div>
+              </a>
+              <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <a href="#" class="dropdown-item">Cài đặt tài khoản</a>
+                <a href="#" class="dropdown-item">Đăng xuất</a>
+              </div>
+            </div>
+          </div>
+          <div class="collapse navbar-collapse" id="navbar-menu">
+            <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+              <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" data-route="list" href="#"><span class="nav-link-title">Trang</span></a></li>
+                <li class="nav-item"><a class="nav-link" data-route="editor" href="#"><span class="nav-link-title">Chỉnh sửa</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-wrapper">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+          <div class="container-xl">
+            <div class="row g-2 align-items-center">
+              <div class="col">
+                <h2 class="page-title">Quản lý thông tin trên các trang</h2>
+                <div class="text-muted">Cho phép thay đổi nội dung giới thiệu, hình ảnh, SEO,...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Page body -->
+        <div class="page-body">
+          <div class="container-xl">
+
+            <!-- VIEW: LIST PAGES -->
+            <div id="view-list" data-view class="active">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">Danh sách trang</h3>
+                  <div class="ms-auto">
+                    <div class="d-flex">
+                      <input id="search" type="text" class="form-control" placeholder="Tìm theo tên trang..." />
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-vcenter card-table" id="pages-table">
+                    <thead>
+                      <tr>
+                        <th>Tên trang</th>
+                        <th>Slug</th>
+                        <th>Cập nhật</th>
+                        <th>Trạng thái</th>
+                        <th class="w-1"></th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div class="card-footer d-flex align-items-center">
+                  <p class="m-0 text-muted">Hiển thị <span id="count">0</span> trang</p>
+                  <ul class="pagination m-0 ms-auto" id="pager"></ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW: EDITOR -->
+            <div id="view-editor" data-view>
+              <form id="editor-form" class="card">
+                <div class="card-header">
+                  <div>
+                    <div class="chip me-2"><span class="status-dot status-green me-2"></span><span id="status-chip">Published</span></div>
+                    <small class="text-muted">Lần cập nhật cuối: <span id="updated-at">—</span></small>
+                  </div>
+                  <div class="ms-auto">
+                    <div class="btn-list">
+                      <button type="button" class="btn" id="btn-preview">Xem nhanh</button>
+                      <button type="button" class="btn" id="btn-draft">Lưu nháp</button>
+                      <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-body">
+                  <div class="row g-3">
+                    <div class="col-md-8">
+                      <div class="mb-3">
+                        <label class="form-label">Tiêu đề trang <span class="text-danger">*</span></label>
+                        <input required name="title" type="text" class="form-control" placeholder="Ví dụ: Trang Giới thiệu" />
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Đường dẫn (slug)</label>
+                        <div class="input-group">
+                          <span class="input-group-text">/</span>
+                          <input name="slug" type="text" class="form-control" placeholder="gioi-thieu" />
+                        </div>
+                      </div>
+
+                      <!-- WYSIWYG đơn giản bằng contenteditable -->
+                      <div class="mb-2 d-flex align-items-center wys-toolbar">
+                        <span class="me-2 text-muted">Soạn thảo:</span>
+                        <button class="btn btn-sm" type="button" data-cmd="bold" title="Đậm"><svg class="icon"><use xlink:href="#icon-bold"/></svg></button>
+                        <button class="btn btn-sm" type="button" data-cmd="italic" title="Nghiêng"><svg class="icon"><use xlink:href="#icon-italic"/></svg></button>
+                        <button class="btn btn-sm" type="button" data-cmd="underline" title="Gạch chân"><svg class="icon"><use xlink:href="#icon-underline"/></svg></button>
+                        <button class="btn btn-sm" type="button" data-cmd="insertUnorderedList" title="Danh sách chấm"><svg class="icon"><use xlink:href="#icon-ul"/></svg></button>
+                        <button class="btn btn-sm" type="button" data-cmd="insertOrderedList" title="Danh sách số"><svg class="icon"><use xlink:href="#icon-ol"/></svg></button>
+                        <button class="btn btn-sm" type="button" id="btn-link" title="Chèn liên kết"><svg class="icon"><use xlink:href="#icon-link"/></svg></button>
+                      </div>
+                      <label class="form-label">Nội dung giới thiệu</label>
+                      <div id="editor" class="wys-area" contenteditable="true" aria-label="Nội dung giới thiệu"></div>
+                      <input type="hidden" name="content" id="content-hidden" />
+
+                      <div class="mt-4">
+                        <label class="form-label">Các khối nội dung</label>
+                        <div id="blocks"></div>
+                        <button id="btn-add-block" class="btn mt-2" type="button">+ Thêm khối</button>
+                      </div>
+                    </div>
+
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label class="form-label">Xuất bản</label>
+                        <label class="form-check form-switch">
+                          <input name="published" class="form-check-input" type="checkbox" checked>
+                          <span class="form-check-label">Public</span>
+                        </label>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Hình ảnh/hero</label>
+                        <div id="hero-dropzone" class="dropzone" role="button" tabindex="0" aria-describedby="hero-help">
+                          Kéo thả ảnh vào đây hoặc bấm để chọn
+                          <input id="hero-input" class="visually-hidden" type="file" accept="image/*" />
+                        </div>
+                        <div class="dz-preview" id="hero-preview" hidden>
+                          <img class="dz-thumb" id="hero-thumb" alt="Xem trước hero" />
+                          <div>
+                            <div class="strong" id="hero-name">hero.jpg</div>
+                            <div class="text-muted" id="hero-meta">—</div>
+                          </div>
+                          <button type="button" id="hero-remove" class="btn btn-link">Xoá</button>
+                        </div>
+                        <div id="hero-help" class="form-hint">Ảnh tỷ lệ đề xuất ~16:9, &lt; 1MB</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">SEO</label>
+                        <input name="metaTitle" type="text" class="form-control mb-2" placeholder="Meta title" />
+                        <textarea name="metaDesc" class="form-control" rows="3" placeholder="Meta description"></textarea>
+                        <div class="form-hint">Tối đa ~60 ký tự cho title, ~160 cho description</div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Từ khoá</label>
+                        <input id="tags" type="text" class="form-control" placeholder="vd: công ty, dịch vụ, ..." />
+                        <div class="form-hint">Nhấn Enter để thêm thẻ</div>
+                        <div id="tags-wrap" class="mt-2"></div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label class="form-label">Ghi chú nội bộ</label>
+                        <textarea name="notes" class="form-control" rows="3" placeholder="Ghi chú cho team"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer footer-transparent d-print-none">
+          <div class="container-xl">
+            <div class="row text-center align-items-center flex-row-reverse">
+              <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                Built with Tabler · Demo front-end only
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- SVG Icons -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+      <symbol id="icon-bold" viewBox="0 0 24 24"><path d="M7 5h6a4 4 0 1 1 0 8H7zM7 13h7a4 4 0 1 1 0 8H7z" fill="currentColor" /></symbol>
+      <symbol id="icon-italic" viewBox="0 0 24 24"><path d="M10 5h10M4 19h10M14 5l-4 14" stroke="currentColor" stroke-width="2" fill="none"/></symbol>
+      <symbol id="icon-underline" viewBox="0 0 24 24"><path d="M6 4v7a6 6 0 1 0 12 0V4M4 20h16" stroke="currentColor" stroke-width="2" fill="none"/></symbol>
+      <symbol id="icon-ul" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h0M4 12h0M4 18h0" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></symbol>
+      <symbol id="icon-ol" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12" stroke="currentColor" stroke-width="2" fill="none"/><text x="2" y="7" font-size="6" font-family="monospace">1</text><text x="2" y="13" font-size="6" font-family="monospace">2</text><text x="2" y="19" font-size="6" font-family="monospace">3</text></symbol>
+      <symbol id="icon-link" viewBox="0 0 24 24"><path d="M10 14a3 3 0 0 1 0-4l4-4a3 3 0 1 1 4 4l-1 1" stroke="currentColor" stroke-width="2" fill="none"/><path d="M14 10a3 3 0 0 1 0 4l-4 4a3 3 0 1 1-4-4l1-1" stroke="currentColor" stroke-width="2" fill="none"/></symbol>
+    </svg>
+
+    <!-- Tabler Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+    <!-- App scripts -->
+    <script defer src="./app.js?v=2"></script>
+
+  </body>
+</html>

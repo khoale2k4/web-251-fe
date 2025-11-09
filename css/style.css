@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Base layout */
 * {
     box-sizing: border-box;
@@ -77,3 +78,81 @@ main {
 
 /* Import common styles */
 @import url('common.css');
+=======
+/* Base layout */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+    color: #111827;
+    background: #ffffff;
+}
+
+a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* Header */
+.site-header {
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffffcc;
+    backdrop-filter: saturate(180%) blur(6px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.site-header .site-title {
+    font-size: 20px;
+    margin: 0;
+}
+
+.site-header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+}
+
+.site-nav a {
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: #111827;
+}
+
+.site-nav a.active {
+    background: #e5e7eb;
+}
+
+/* Footer */
+.site-footer {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 40px;
+    padding: 20px 0;
+    color: #6b7280;
+}
+
+.site-footer p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Main spacing */
+main {
+    padding: 24px 0;
+}
+>>>>>>> fd06cc4569a6982f7b46b54b50aed7ebf617085a

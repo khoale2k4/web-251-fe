@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý bài viết - Admin</title>
+
+    <!-- Tabler CSS cho Sidebar -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+
+    <!-- Admin Sidebar CSS -->
+    <link rel="stylesheet" href="../admin-sidebar.css?v=102">
+
+    <!-- FINAL FIXED SIDEBAR CSS -->
+    <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+    
+    <style>
+        .table-actions button {
+            margin-right: 4px;
+        }
+        
+        /* Giữ nguyên style cho nội dung chính */
+        .page-body {
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <!-- Tabler Sidebar -->
+        <div class="mount-admin-sidebar"></div>
+
+        <!-- Nội dung chính - GIỮ NGUYÊN GIAO DIỆN CŨ -->
+        <div class="page-wrapper">
+            <div class="page-header">
+                <div class="container-xl">
+                    <h2 class="page-title">Quản lý bài viết</h2>
+                </div>
+            </div>
+
+            <div class="page-body">
+                <div class="container-xl">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách bài viết</h3>
+                            <div class="ms-auto d-flex gap-2">
+                                <input type="text" id="searchPost" class="form-control" placeholder="Tìm kiếm..."
+                                    style="width: 200px;">
+                                <button class="btn btn-primary" id="btnAdd">Thêm bài viết</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tiêu đề</th>
+                                        <th>Tác giả</th>
+                                        <th>Ngày tạo</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="newsTableBody">
+                                    <!-- Render động bằng JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal thêm/sửa -->
+            <div class="modal modal-blur fade" id="postModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTitle">Thêm bài viết</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Tiêu đề</label>
+                                <input type="text" class="form-control" id="title" placeholder="Nhập tiêu đề">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nội dung</label>
+                                <textarea class="form-control" id="content" rows="4"
+                                    placeholder="Nhập nội dung"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tác giả (ID)</label>
+                                <input type="number" class="form-control" id="author_id" value="1">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-link link-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button class="btn btn-primary" id="btnSave">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+    
+    <!-- SIDEBAR FIX SCRIPT -->
+    <script src="../sidebar-fix.js?v=2"></script>
+    
+    <!-- JS gốc -->
+    <script type="module" src="admin_news.js?v=6"></script>
+    <script type="module">
+      import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+      document.addEventListener('DOMContentLoaded', () => {
+        mountAdminSidebar('.mount-admin-sidebar', 'admin-news');
+      });
+    </script>
+</body>
+</html>

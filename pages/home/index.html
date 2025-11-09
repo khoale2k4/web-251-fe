@@ -3,11 +3,290 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Shoe Store - Cửa hàng giày chất lượng cao</title>
+    <meta name="description" id="pageDescription" content="Chuyên cung cấp các loại giày thể thao, giày da, boots chính hãng">
+    <meta name="keywords" id="pageKeywords" content="giày, giày thể thao, sneakers, boots">
+    <link rel="icon" type="image/x-icon" id="pageFavicon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="home.css">
     <style>
         .mount-header, .mount-footer { display: contents; }
+        
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            animation: fadeInUp 1s;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        /* About Section */
+        .about-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .about-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .about-content h2 {
+            color: #1e40af;
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .about-text {
+            color: #4b5563;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: #f8f9fa;
+            padding: 60px 20px;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 36px;
+            color: #1e40af;
+            margin-bottom: 40px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #374151;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Contact Info Section */
+        .contact-info-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .contact-info-title {
+            text-align: center;
+            font-size: 36px;
+            color: #1e40af;
+            margin-bottom: 40px;
+        }
+
+        .contact-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .contact-info-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .contact-info-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .contact-info-card h3 {
+            color: #374151;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .contact-info-card p {
+            color: #6b7280;
+            margin: 0;
+        }
+
+        /* Social Links */
+        .social-links {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .social-links h3 {
+            color: #374151;
+            margin-bottom: 20px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-facebook {
+            background: #1877f2;
+            color: white;
+        }
+
+        .social-instagram {
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+            color: white;
+        }
+
+        .social-youtube {
+            background: #ff0000;
+            color: white;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
     </style>
 </head>
 
@@ -15,14 +294,109 @@
     <div class="mount-header"></div>
 
     <main>
-        <h2>Chào mừng bạn đến website!</h2>
-        <p>Nội dung trang chủ...</p>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title" id="heroTitle">Chào mừng đến với Shoe Store</h1>
+                <p class="hero-subtitle" id="heroSubtitle">
+                    Cửa hàng giày chất lượng cao với đa dạng sản phẩm chính hãng
+                </p>
+                <div class="hero-buttons">
+                    <a href="../products/products.html" class="btn btn-primary">Mua sắm ngay</a>
+                    <a href="./contact.html" class="btn btn-secondary">Liên hệ</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section">
+            <div class="about-content">
+                <h2>Về chúng tôi</h2>
+                <div class="about-text" id="aboutText">
+                    <div class="skeleton" style="height: 20px; margin-bottom: 10px;"></div>
+                    <div class="skeleton" style="height: 20px; margin-bottom: 10px;"></div>
+                    <div class="skeleton" style="height: 20px; width: 70%;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="features-container">
+                <h2 class="features-title">Tại sao chọn chúng tôi?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">✓</div>
+                        <h3>Chính hãng 100%</h3>
+                        <p>Cam kết sản phẩm chính hãng, nguồn gốc rõ ràng</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🚚</div>
+                        <h3>Giao hàng toàn quốc</h3>
+                        <p>Miễn phí vận chuyển cho đơn hàng trên 500.000đ</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Đổi trả dễ dàng</h3>
+                        <p>Đổi trả trong vòng 7 ngày nếu có vấn đề</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💰</div>
+                        <h3>Giá cả hợp lý</h3>
+                        <p>Giá tốt nhất thị trường với chất lượng đảm bảo</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Info Section -->
+        <section class="contact-info-section">
+            <h2 class="contact-info-title">Thông tin liên hệ</h2>
+            <div class="contact-info-grid">
+                <div class="contact-info-card">
+                    <div class="contact-info-icon">📧</div>
+                    <h3>Email</h3>
+                    <p id="contactEmail">contact@shoestore.vn</p>
+                </div>
+                <div class="contact-info-card">
+                    <div class="contact-info-icon">📱</div>
+                    <h3>Điện thoại</h3>
+                    <p id="contactPhone">0123-456-789</p>
+                </div>
+                <div class="contact-info-card">
+                    <div class="contact-info-icon">📍</div>
+                    <h3>Địa chỉ</h3>
+                    <p id="contactAddress">123 Nguyễn Huệ, Quận 1, TP.HCM</p>
+                </div>
+                <div class="contact-info-card">
+                    <div class="contact-info-icon">🕐</div>
+                    <h3>Giờ làm việc</h3>
+                    <p id="contactHours">Thứ 2 - Thứ 7: 8:00 - 21:00</p>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="social-links" id="socialLinks" style="display: none;">
+                <h3>Kết nối với chúng tôi</h3>
+                <div class="social-icons">
+                    <a href="#" class="social-icon social-facebook" id="socialFacebook" target="_blank" rel="noopener">
+                        <span>f</span>
+                    </a>
+                    <a href="#" class="social-icon social-instagram" id="socialInstagram" target="_blank" rel="noopener">
+                        <span>📷</span>
+                    </a>
+                    <a href="#" class="social-icon social-youtube" id="socialYoutube" target="_blank" rel="noopener">
+                        <span>▶</span>
+                    </a>
+                </div>
+            </div>
+        </section>
     </main>
 
     <div class="mount-footer"></div>
 
     <script type="module" src="../../js/main.js"></script>
-    <script type="module" src="home.js"></script>
+    <script src="./index.js"></script>
 </body>
 
 </html>
