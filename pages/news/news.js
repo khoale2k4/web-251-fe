@@ -1,6 +1,6 @@
-const API_BASE = window.__ENV__?.API_BASE || "http://localhost:8000";
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
+const API_BASE = window.__ENV__?.API_BASE || "http://localhost:8000";
 
 document.addEventListener("DOMContentLoaded", () => {
     mountHeader('.mount-header', 'news');
@@ -41,5 +41,3 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load mặc định
     loadPosts();
 });
-
-

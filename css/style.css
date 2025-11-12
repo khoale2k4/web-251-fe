@@ -1,11 +1,10 @@
-/* Base layout */
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+    font-family: -apple-system, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
     color: #111827;
     background: #ffffff;
 }
@@ -25,78 +24,50 @@ a:hover {
     padding: 0 16px;
 }
 
-/* Header */
 .site-header {
-    border-bottom: 1px solid #e5e7eb;
-    background: #ffffffcc;
-    backdrop-filter: saturate(180%) blur(6px);
     position: sticky;
     top: 0;
     z-index: 10;
+    background: #ffffffcc;
+    backdrop-filter: saturate(180%) blur(6px);
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.site-header .site-title {
-    font-size: 20px;
-    margin: 0;
-}
-
-.site-header .container {
+.site-header .container,
+.navbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 56px;
-}
-
-.site-nav a {
-    padding: 8px 10px;
-    border-radius: 6px;
-    color: #111827;
-}
-
-.site-nav a.active {
-    background: #e5e7eb;
-}
-
-/* Footer */
-.site-footer {
-    border-top: 1px solid #e5e7eb;
-    margin-top: 40px;
-    padding: 20px 0;
-    color: #6b7280;
-}
-
-.site-footer p {
-    margin: 0;
-    font-size: 14px;
-}
-
-/* Main spacing */
-main {
-    padding: 24px 0;
-}
-
-/* Header */
-.site-header {
-    background-color: #ffffff;
-    padding: 15px 30px;
-    border-bottom: 1px solid #e0e0e0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 30px;
 }
 
+.site-header .site-title,
 .nav-left .logo {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     color: #333;
+    margin: 0;
     text-decoration: none;
+}
+
+.site-nav a,
+.nav-links li a {
+    padding: 8px 10px;
+    border-radius: 6px;
+    color: #111827;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease, background 0.3s ease;
+}
+
+.site-nav a.active,
+.nav-links li a.active {
+    background: #e5e7eb;
 }
 
 .nav-links {
@@ -105,13 +76,6 @@ main {
     margin: 0;
     padding: 0;
     gap: 25px;
-}
-
-.nav-links li a {
-    text-decoration: none;
-    color: #555;
-    font-weight: 500;
-    transition: color 0.3s ease;
 }
 
 .nav-links li a:hover {
@@ -129,6 +93,7 @@ main {
     border: 1px solid #ccc;
     border-radius: 20px;
     overflow: hidden;
+    background-color: #fff;
 }
 
 .search-bar input[type="search"] {
@@ -136,6 +101,7 @@ main {
     padding: 8px 12px;
     outline: none;
     font-size: 14px;
+    width: 160px;
 }
 
 .search-bar .search-button {
@@ -146,6 +112,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background-color 0.2s ease;
 }
 
 .search-bar .search-button:hover {
@@ -163,14 +130,12 @@ main {
     position: absolute;
     top: -8px;
     right: -10px;
-
     background-color: red;
     color: white;
     border-radius: 50%;
     padding: 2px 6px;
     font-size: 12px;
     font-weight: 700;
-
     min-width: 14px;
     text-align: center;
     line-height: 14px;
@@ -210,8 +175,24 @@ main {
     0% {
         background-color: #e0e0e0;
     }
-
     100% {
         background-color: #cfcfcf;
     }
+}
+
+main {
+    padding: 24px 0;
+}
+
+.site-footer {
+    border-top: 1px solid #e5e7eb;
+    margin-top: 40px;
+    padding: 20px 0;
+    color: #6b7280;
+    text-align: center;
+}
+
+.site-footer p {
+    margin: 0;
+    font-size: 14px;
 }

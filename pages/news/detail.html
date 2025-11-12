@@ -4,11 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Chi tiết tin tức</title>
-    <!-- env meta will be populated by server or build; fallback uses env.js defaults -->
+    <!-- Thông tin môi trường (sử dụng khi build hoặc chạy server) -->
     <meta name="app-env" content='{"API_BASE":"http://localhost:8000"}'>
+
+    <!-- CSS chính -->
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="news.css">
+
     <style>
+        /* Đảm bảo phần header/footer được mount không phá layout */
         .mount-header,
         .mount-footer {
             display: contents;
@@ -17,16 +21,22 @@
 </head>
 
 <body>
+    <!-- Header sẽ được render bởi JS -->
     <div class="mount-header"></div>
 
-    <main>
+    <main class="container">
         <h1>Chi tiết tin tức</h1>
+
         <article class="news-detail">
             <h2>Ra mắt website mới</h2>
-            <p class="news-meta">Đăng bởiLê Khoa - 15/12/2024</p>
+            <p class="news-meta">Đăng bởi <strong>Lê Khoa</strong> - 15/12/2024</p>
+
             <div class="news-content">
-                <p>Website demo củaLê Khoa đã được hoàn thành với đầy đủ tính năng và giao diện hiện đại. Dự án này được
-                    phát triển nhằm mục đích học tập và thực hành các kỹ năng web development.</p>
+                <p>
+                    Website demo của <strong>Lê Khoa</strong> đã được hoàn thành với đầy đủ tính năng và giao diện hiện
+                    đại.
+                    Dự án này được phát triển nhằm mục đích học tập và thực hành các kỹ năng web development.
+                </p>
 
                 <h3>Tính năng chính:</h3>
                 <ul>
@@ -39,29 +49,33 @@
                 <p>Website được xây dựng với cấu trúc rõ ràng, dễ bảo trì và mở rộng trong tương lai.</p>
             </div>
         </article>
-        <div class="post-detail">
-            <h1 id="postTitle"></h1>
+
+        <!-- Phần chi tiết bài viết được load động -->
+        <section class="post-detail">
+            <h2 id="postTitle"></h2>
             <div id="postContent"></div>
             <p id="postAuthor"></p>
-        </div>
+        </section>
 
-        <div class="comments">
+        <!-- Phần bình luận -->
+        <section class="comments">
             <h3>Bình luận</h3>
             <div id="commentList"></div>
 
             <form id="commentForm">
-                <textarea id="commentContent" placeholder="Nhập bình luận của bạn..."></textarea>
+                <textarea id="commentContent" placeholder="Nhập bình luận của bạn..." required></textarea>
                 <button type="submit">Gửi</button>
             </form>
-        </div>
+        </section>
     </main>
 
+    <!-- Footer sẽ được render bởi JS -->
     <div class="mount-footer"></div>
 
+    <!-- Scripts -->
     <script src="../../js/env.js"></script>
     <script type="module" src="../../js/main.js"></script>
     <script type="module" src="news.js"></script>
 </body>
 
 </html>
-

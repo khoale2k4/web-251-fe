@@ -3,6 +3,7 @@ import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 
 const API_BASE = 'http://localhost:8000';
+let products = [];
 
 ready(async () => {
   mountHeader('.mount-header', 'products');
@@ -35,7 +36,7 @@ async function fetchAndRenderProductDetail(id) {
     const hasDiscount = parseFloat(product.discount) > 0;
     const price = parseFloat(product.price);
     const finalPrice = parseFloat(product.final_price);
-    const imageUrl = `http://localhost:8000${product.image}`;
+    const imageUrl = `${API_BASE}${product.image}`;
 
     main.innerHTML = `
       <h1>Chi tiết sản phẩm</h1>
@@ -45,26 +46,24 @@ async function fetchAndRenderProductDetail(id) {
         </div>
         <div class="product-info">
           <h2>${product.name}</h2>
-
           <div class="price-section">
             <p class="price">${finalPrice.toLocaleString()} VNĐ</p>
             ${hasDiscount ? `<p class="old-price">${price.toLocaleString()} VNĐ</p>` : ''}
             ${hasDiscount ? `<span class="discount-badge">-${product.discount}%</span>` : ''}
           </div>
-
           <p class="description">${product.description}</p>
-
           <ul class="features">
             <li>Kích thước: ${product.size}</li>
             <li>Màu sắc: ${product.color}</li>
             <li>Danh mục: ${product.category_name}</li>
             <li>Còn lại: ${product.stock} sản phẩm</li>
           </ul>
-
           <button class="btn-primary add-btn" data-id="${product.id}">Thêm vào giỏ hàng</button>
         </div>
       </div>
     `;
+
+    attachProductEvents();
 
   } catch (err) {
     main.innerHTML = `<p class="error">Lỗi khi tải chi tiết sản phẩm: ${err.message}</p>`;
@@ -73,6 +72,8 @@ async function fetchAndRenderProductDetail(id) {
 
 async function fetchAndRenderProducts(query) {
   const grid = document.querySelector('.products-grid');
+  if (!grid) return;
+
   if (query) grid.innerHTML = `<p>Đang tải sản phẩm cho từ khóa: <strong>${query}</strong>...</p>`;
 
   try {
@@ -84,12 +85,14 @@ async function fetchAndRenderProducts(query) {
       return;
     }
 
-    grid.innerHTML = result.data.products
+    products = result.data.products;
+
+    grid.innerHTML = products
       .map(product => {
         const hasDiscount = parseFloat(product.discount) > 0;
         const price = parseFloat(product.price);
         const finalPrice = parseFloat(product.final_price);
-        const imageUrl = `${API_BASE}/${product.image}`;
+        const imageUrl = `${API_BASE}${product.image}`;
         return `
           <div class="product-card">
             <img src="${imageUrl}" alt="${product.name}" class="product-image" onerror="this.src='/fe/assets/placeholder.png'">
@@ -100,7 +103,7 @@ async function fetchAndRenderProducts(query) {
               <div class="price-wrapper">
                 <span class="price">${finalPrice.toLocaleString()} VNĐ</span>
                 ${hasDiscount ? `<span class="old-price">${price.toLocaleString()} VNĐ</span>
-                  <span class="discount-badge">-${(parseFloat(product.discount) || 0).toFixed(0)}%</span>` : ''}
+                <span class="discount-badge">-${(parseFloat(product.discount) || 0).toFixed(0)}%</span>` : ''}
               </div>
               <div class="btn-group">
                 <button class="btn-secondary view-btn" data-id="${product.id}">Xem chi tiết</button>
@@ -113,12 +116,14 @@ async function fetchAndRenderProducts(query) {
       .join('');
 
     attachProductEvents();
+
   } catch (err) {
     grid.innerHTML = `<p class="error">Lỗi khi tải sản phẩm: ${err.message}</p>`;
   }
 }
 
 function attachProductEvents() {
+  // Xem chi tiết
   document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       const id = e.target.dataset.id;
@@ -126,11 +131,14 @@ function attachProductEvents() {
     });
   });
 
+  // Thêm vào giỏ
   document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       const card = e.target.closest('.product-card');
-      const name = card.querySelector('h3').textContent;
-      alert(`Đã thêm "${name}" vào giỏ hàng!`);
+      const id = btn.dataset.id;
+      const product = products.find(p => p.id == id);
+      if (product) addToCart(product);
+      alert(`Đã thêm "${product.name}" vào giỏ hàng!`);
     });
   });
 }
@@ -148,15 +156,6 @@ export function addToCart(product) {
   localStorage.setItem('cart', JSON.stringify(cart));
   updateCartCounter();
 }
-
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('add-btn')) {
-    const id = e.target.dataset.id;
-    const product = products.find(p => p.id == id);
-    addToCart(product);
-    alert("Đã thêm vào giỏ hàng!");
-  }
-});
 
 export function updateCartCounter() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
