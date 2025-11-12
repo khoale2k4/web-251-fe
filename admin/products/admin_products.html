@@ -13,13 +13,36 @@
     <link rel="stylesheet" href="../admin-sidebar.css?v=102">
     
     <!-- CSS gốc -->
-    <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../admin.css">
     <link rel="stylesheet" href="../../css/popUp.css">
     <link rel="stylesheet" href="./product_popup.css">
     
-    <!-- FINAL FIXED SIDEBAR CSS -->
+    <!-- FINAL FIXED SIDEBAR CSS - Phải load sau cùng để override -->
     <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+    
+    <style>
+        /* Đảm bảo sidebar không bị đè bởi nội dung */
+        .fixed-sidebar {
+            z-index: 1000 !important;
+        }
+        
+        /* Đảm bảo page-wrapper có margin-left để không đè lên sidebar */
+        .page .page-wrapper {
+            margin-left: 260px !important;
+        }
+        
+        /* Đảm bảo main không có width 100% hoặc position absolute */
+        .page-wrapper main {
+            width: auto !important;
+            max-width: none !important;
+            position: relative !important;
+        }
+        
+        /* Override style.css nếu có */
+        .page-wrapper main {
+            padding: 0 !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -82,13 +105,13 @@
     
     <!-- JS gốc -->
     <script type="module" src="../../js/main.js?v=6"></script>
+    <script type="module" src="admin_products.js?v=6"></script>
     <script type="module">
       import { mountAdminSidebar } from '../../components/AdminSidebar.js';
       document.addEventListener('DOMContentLoaded', () => {
         mountAdminSidebar('.mount-admin-sidebar', 'admin-products');
       });
     </script>
-    <script type="module" src="admin_products.js?v=6"></script>
 </body>
 </html>
 
