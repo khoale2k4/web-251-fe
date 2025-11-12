@@ -3,7 +3,7 @@ import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 
 document.addEventListener("DOMContentLoaded", () => {
-    mountHeader('.mount-header', 'products');
+    mountHeader('.mount-header', 'news');
     mountFooter('.mount-footer');
     const listContainer = document.querySelector(".news-list");
     const searchInput = document.querySelector("#searchInput");

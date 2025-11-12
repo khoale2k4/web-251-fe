@@ -1,5 +1,3 @@
-// Contact Form - User Side
-
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 
@@ -144,7 +142,7 @@ function setupRealtimeValidation() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function () {
-    mountHeader('.mount-header', 'login');
+    mountHeader('.mount-header', 'contact');
     mountFooter('.mount-footer');
     loadContactInfo();
     setupRealtimeValidation();

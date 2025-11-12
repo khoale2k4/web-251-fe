@@ -175,3 +175,43 @@ main {
     text-align: center;
     line-height: 14px;
 }
+
+.skeleton * {
+    animation: skeleton-loading 1.2s infinite linear alternate;
+    background: #eee;
+    border-radius: 4px;
+}
+
+.skeleton-logo {
+    width: 100px;
+    height: 24px;
+    margin: 8px 0;
+}
+
+.skeleton-nav {
+    width: 300px;
+    height: 16px;
+    margin: 8px 0;
+}
+
+.skeleton-search {
+    width: 150px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.skeleton-cart {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-color: #e0e0e0;
+    }
+
+    100% {
+        background-color: #cfcfcf;
+    }
+}
