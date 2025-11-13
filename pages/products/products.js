@@ -5,8 +5,10 @@ import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 import { addToCart } from '../../js/addToCart.js';
 import { updateCartCounter } from '../../js/updateCartCounter.js';
+import getUserId from '../../js/getUserId.js';
+import { BASE_URL } from '../../js/config.js';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = BASE_URL;
 
 // --- 1. DOM SELECTORS ---
 // (Lấy các element chúng ta cần để cập nhật)
@@ -31,7 +33,6 @@ const state = {
 ready(async () => {
   mountHeader('.mount-header', 'products');
   mountFooter('.mount-footer');
-  await updateCartCounter(2);
 
   // Lấy tham số từ URL
   const params = new URLSearchParams(window.location.search);
@@ -180,6 +181,7 @@ function renderPagination() {
 
 // (Hàm này giữ nguyên code cũ của bạn)
 function attachProductEvents() {
+  const userId = getUserId();
   // Xem chi tiết
   document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', e => {
@@ -190,9 +192,10 @@ function attachProductEvents() {
 
   // Thêm vào giỏ
   document.querySelectorAll('.add-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
+    btn.addEventListener('click', async () => {
       const id = btn.dataset.id;
-      if (id) addToCart(id, 2);
+      await updateCartCounter(userId);
+      if (id) addToCart(id, userId);
     });
   });
 }

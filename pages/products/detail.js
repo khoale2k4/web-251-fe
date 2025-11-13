@@ -3,6 +3,7 @@ import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 import { addToCart } from '../../js/addToCart.js';
 import { updateCartCounter } from '../../js/updateCartCounter.js';
+import getUserId from '../../js/getUserId.js';
 
 const API_BASE = 'http://localhost:8000';
 let products = [];
@@ -10,7 +11,6 @@ let products = [];
 ready(async () => {
     mountHeader('.mount-header', 'products');
     mountFooter('.mount-footer');
-    await updateCartCounter(2);
 
     const params = new URLSearchParams(window.location.search);
     const productId = params.get('id');
@@ -41,7 +41,7 @@ async function fetchAndRenderProductDetail(id) {
 
         main.innerHTML = `
 
-            <button class="btn-back" onclick="window.location.href='/fe/pages/products/prodyc'">
+            <button class="btn-back" onclick="window.location.href='/fe/pages/products/products.html'">
                 &larr; Quay lại sản phẩm
             </button>
             
@@ -87,10 +87,11 @@ async function fetchAndRenderProductDetail(id) {
 }
 
 function attachProductEvents() {
+    const userId = getUserId();
     document.querySelectorAll('.add-btn').forEach(btn => {
         btn.addEventListener('click', e => {
             const id = btn.dataset.id;
-            if (id) addToCart(id, 2);
+            if (id) addToCart(id, userId);
         });
     });
 }

@@ -175,6 +175,7 @@ a:hover {
     0% {
         background-color: #e0e0e0;
     }
+
     100% {
         background-color: #cfcfcf;
     }
@@ -195,4 +196,64 @@ main {
 .site-footer p {
     margin: 0;
     font-size: 14px;
+}
+
+/* Thêm vào file style.css hoặc file CSS của header */
+
+.nav-right {
+    /* Đảm bảo các item được căn giữa theo chiều dọc */
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* Khoảng cách giữa các item */
+}
+
+.nav-auth {
+    /* Định dạng cho link "Đăng nhập" */
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+    white-space: nowrap;
+    /* Đảm bảo không bị xuống hàng */
+}
+
+.nav-auth-link:hover {
+    color: #2563eb;
+    /* Màu primary */
+}
+
+/* Định dạng cho menu khi đã đăng nhập */
+.user-profile-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.user-profile-menu .profile-link {
+    font-weight: 600;
+    color: #111827;
+    text-decoration: none;
+}
+
+.user-profile-menu .profile-link:hover {
+    color: #2563eb;
+}
+
+/* Nút đăng xuất */
+.btn-logout {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.85rem;
+    color: #6b7280;
+    /* Màu xám */
+    cursor: pointer;
+}
+
+.btn-logout:hover {
+    color: #ef4444;
+    /* Màu đỏ khi hover */
+    text-decoration: underline;
 }

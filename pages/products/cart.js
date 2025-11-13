@@ -3,14 +3,14 @@ import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 import { updateCartCounter } from '../../js/updateCartCounter.js';
 import { Popup } from '../../components/PopUp.js';
+import getUserId from '../../js/getUserId.js';
 
 const API_BASE = 'http://localhost:8000';
-const userId = 2; // Giả định userId, bạn có thể thay đổi sau
+const userId = getUserId();
 
 ready(async () => {
     mountHeader('.mount-header', 'products');
     mountFooter('.mount-footer');
-    await updateCartCounter(userId);
     await fetchAndRenderCart(userId);
 });
 

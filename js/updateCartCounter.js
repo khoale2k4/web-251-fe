@@ -1,6 +1,6 @@
 const API_BASE = 'http://localhost:8000';
 
-export async function updateCartCounter(userId = 2) {
+export async function updateCartCounter(userId) {
   try {
     const response = await fetch(`${API_BASE}/carts/${userId}`);
     const result = await response.json();
