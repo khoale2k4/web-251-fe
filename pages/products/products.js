@@ -1,120 +1,132 @@
+// products.js (PHIÊN BẢN NÂNG CẤP)
+
 import { ready } from '../../js/main.js';
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
+import { addToCart } from '../../js/addToCart.js';
+import { updateCartCounter } from '../../js/updateCartCounter.js';
 
 const API_BASE = 'http://localhost:8000';
-let products = [];
 
+// --- 1. DOM SELECTORS ---
+// (Lấy các element chúng ta cần để cập nhật)
+const grid = document.querySelector('.products-grid');
+const title = document.getElementById('page-title');
+const clearBtn = document.getElementById('clear-filter');
+const paginationContainer = document.getElementById('pagination-container');
+const paginationSummary = document.getElementById('pagination-summary');
+const paginationControls = document.getElementById('pagination-controls');
+
+// --- 2. STATE ---
+// (Quản lý trạng thái của trang)
+const state = {
+  products: [],
+  currentPage: 1,
+  totalPages: 1,
+  totalItems: 0,
+  keyword: ''
+};
+
+// --- 3. HÀM KHỞI ĐỘNG (READY) ---
 ready(async () => {
   mountHeader('.mount-header', 'products');
   mountFooter('.mount-footer');
+  await updateCartCounter(2);
 
+  // Lấy tham số từ URL
   const params = new URLSearchParams(window.location.search);
-  const productId = params.get('id');
-  const query = params.get('product_query');
+  const keyword = params.get('product_query') || '';
+  const page = parseInt(params.get('page')) || 1; // Lấy 'page' từ URL
 
-  if (productId) {
-    await fetchAndRenderProductDetail(productId);
-  }
-  await fetchAndRenderProducts(query);
+  // Cập nhật state ban đầu
+  state.keyword = keyword;
+  state.currentPage = page;
+
+  // Tải dữ liệu
+  await fetchAndRenderProducts(page, keyword);
+
+  // Gắn các sự kiện (Nút xóa filter, nút phân trang)
+  attachPageEventListeners();
 });
 
-async function fetchAndRenderProductDetail(id) {
-  const main = document.querySelector('main');
-  main.innerHTML = `<p>Đang tải chi tiết sản phẩm...</p>`;
-
-  try {
-    const response = await fetch(`${API_BASE}/products/${id}`);
-    const result = await response.json();
-
-    if (!result.success || !result.data) {
-      main.innerHTML = `<p>Không tìm thấy sản phẩm với ID = ${id}</p>`;
-      return;
-    }
-
-    const product = result.data;
-    const hasDiscount = parseFloat(product.discount) > 0;
-    const price = parseFloat(product.price);
-    const finalPrice = parseFloat(product.final_price);
-    const imageUrl = `${API_BASE}${product.image}`;
-
-    main.innerHTML = `
-      <h1>Chi tiết sản phẩm</h1>
-      <div class="product-detail">
-        <div class="product-image">
-          <img src="${imageUrl}" alt="${product.name}" onerror="this.src='/fe/assets/placeholder.png'">
-        </div>
-        <div class="product-info">
-          <h2>${product.name}</h2>
-          <div class="price-section">
-            <p class="price">${finalPrice.toLocaleString()} VNĐ</p>
-            ${hasDiscount ? `<p class="old-price">${price.toLocaleString()} VNĐ</p>` : ''}
-            ${hasDiscount ? `<span class="discount-badge">-${product.discount}%</span>` : ''}
-          </div>
-          <p class="description">${product.description}</p>
-          <ul class="features">
-            <li>Kích thước: ${product.size}</li>
-            <li>Màu sắc: ${product.color}</li>
-            <li>Danh mục: ${product.category_name}</li>
-            <li>Còn lại: ${product.stock} sản phẩm</li>
-          </ul>
-          <button class="btn-primary add-btn" data-id="${product.id}">Thêm vào giỏ hàng</button>
-        </div>
-      </div>
-    `;
-
-    attachProductEvents();
-
-  } catch (err) {
-    main.innerHTML = `<p class="error">Lỗi khi tải chi tiết sản phẩm: ${err.message}</p>`;
-  }
-}
-
-async function fetchAndRenderProducts(query) {
-  const grid = document.querySelector('.products-grid');
+// --- 4. HÀM TẢI VÀ RENDER DỮ LIỆU ---
+async function fetchAndRenderProducts(page = 1, query = '') {
   if (!grid) return;
 
-  if (query) grid.innerHTML = `<p>Đang tải sản phẩm cho từ khóa: <strong>${query}</strong>...</p>`;
+  // Cập nhật UI (tiêu đề, nút xóa filter)
+  if (query) {
+    title.textContent = `Tìm sản phẩm cho "${query}"`;
+    clearBtn.style.display = 'inline-block';
+    grid.innerHTML = `<p>Đang tải sản phẩm cho từ khóa: <strong>${query}</strong>...</p>`;
+  } else {
+    title.textContent = 'Sản phẩm';
+    clearBtn.style.display = 'none';
+    grid.innerHTML = `<p>Đang tải danh sách sản phẩm...</p>`;
+  }
+  paginationContainer.style.display = 'none'; // Ẩn pagination khi đang tải
 
   try {
-    const response = await fetch(`${API_BASE}/products${query ? `?search=${encodeURIComponent(query)}` : ''}`);
+    // --- THAY ĐỔI QUAN TRỌNG ---
+    // Gửi yêu cầu lấy ĐÚNG TRANG (page) và từ khóa (search)
+    const url = `${API_BASE}/products?page=${page}${query ? `&search=${encodeURIComponent(query)}` : ''}`;
+    const response = await fetch(url);
     const result = await response.json();
 
-    if (!result.success || !result.data?.products?.length) {
-      grid.innerHTML = `<p>Không tìm thấy sản phẩm nào phù hợp với từ khóa "<strong>${query}</strong>".</p>`;
+    // --- THAY ĐỔI QUAN TRỌNG ---
+    // Kiểm tra API response (giả sử có `pagination` object)
+    if (!result.success || !result.data?.products) {
+      grid.innerHTML = `<p>Không tìm thấy sản phẩm nào.</p>`;
       return;
     }
 
-    products = result.data.products;
+    // Cập nhật state
+    state.products = result.data.products;
+    // (Giả sử API trả về cấu trúc giống admin: data.pagination.total_pages)
+    state.totalPages = result.data.pagination?.total_pages || 1;
+    state.totalItems = result.data.pagination?.total || 0;
+    state.currentPage = result.data.pagination?.page || 1;
 
-    grid.innerHTML = products
-      .map(product => {
+    // Render products
+    if (state.products.length === 0) {
+      grid.innerHTML = `<p>Không tìm thấy sản phẩm nào phù hợp.</p>`;
+    } else {
+      grid.innerHTML = state.products.map(product => {
+        // (Code render thẻ sản phẩm của bạn)
         const hasDiscount = parseFloat(product.discount) > 0;
         const price = parseFloat(product.price);
         const finalPrice = parseFloat(product.final_price);
         const imageUrl = `${API_BASE}${product.image}`;
         return `
-          <div class="product-card">
-            <img src="${imageUrl}" alt="${product.name}" class="product-image" onerror="this.src='/fe/assets/placeholder.png'">
-            <div class="product-info">
-              <h3>${product.name}</h3>
-              <p>${product.description}</p>
-              <p class="category">Danh mục: <strong>${product.category_name}</strong></p>
-              <div class="price-wrapper">
-                <span class="price">${finalPrice.toLocaleString()} VNĐ</span>
-                ${hasDiscount ? `<span class="old-price">${price.toLocaleString()} VNĐ</span>
-                <span class="discount-badge">-${(parseFloat(product.discount) || 0).toFixed(0)}%</span>` : ''}
-              </div>
-              <div class="btn-group">
-                <button class="btn-secondary view-btn" data-id="${product.id}">Xem chi tiết</button>
-                <button class="btn-primary add-btn" data-id="${product.id}">Thêm vào giỏ</button>
+            <div class="product-card">
+              <a href="/fe/pages/products/detail.html?id=${product.id}" class="product-image-link">
+                <img src="${imageUrl}" alt="${product.name}" class="product-image" onerror="this.src='/fe/assets/placeholder.png'">
+              </a>
+              <div class="product-info">
+                <div class="info-top">
+                  <h3><a href="/fe/pages/products/detail.html?id=${product.id}" class="product-name-link">${product.name}</a></h3>
+                  <p>${product.description || ''}</p>
+                  <p class="category">Danh mục: <strong>${product.category_name}</strong></p>
+                </div>
+                <div class="info-bottom">
+                  <div class="price-wrapper">
+                    <span class="price">${finalPrice.toLocaleString()} VNĐ</span>
+                    ${hasDiscount ? `<span class="old-price">${price.toLocaleString()} VNĐ</span><span class="discount-badge">-${(parseFloat(product.discount) || 0).toFixed(0)}%</span>` : ''}
+                  </div>
+                  <div class="btn-group">
+                    <button class="btn-secondary view-btn" data-id="${product.id}">Xem</button>
+                    <button class="btn-primary add-btn" data-id="${product.id}">Thêm vào giỏ</button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        `;
+          `;
       })
-      .join('');
+        .join('');
+    }
 
+    // Render pagination
+    renderPagination();
+    // Gắn sự kiện cho các nút "Xem", "Thêm vào giỏ"
     attachProductEvents();
 
   } catch (err) {
@@ -122,6 +134,51 @@ async function fetchAndRenderProducts(query) {
   }
 }
 
+// --- 5. HÀM RENDER PAGINATION ---
+// (Hàm này giống hệt hàm chúng ta đã dùng cho trang admin)
+function renderPagination() {
+  const { currentPage, totalPages, totalItems } = state;
+
+  if (totalPages <= 1) {
+    paginationContainer.style.display = 'none';
+    return;
+  }
+  paginationContainer.style.display = 'flex';
+  paginationSummary.textContent = `Hiển thị trang ${currentPage} / ${totalPages} (Tổng cộng ${totalItems} sản phẩm)`;
+
+  let html = '';
+
+  // Nút "Previous"
+  html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage - 1}"><i class="ti ti-chevron-left"></i></a></li>`;
+
+  // Logic hiển thị các nút số (logic "thông minh")
+  const maxPagesToShow = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+  if (endPage - startPage + 1 < maxPagesToShow) {
+    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+  }
+  if (startPage > 1) {
+    html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+    if (startPage > 2) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+  }
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+  }
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+    html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+  }
+
+  // Nút "Next"
+  html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage + 1}"><i class="ti ti-chevron-right"></i></a></li>`;
+
+  paginationControls.innerHTML = html;
+}
+
+// --- 6. HÀM GẮN SỰ KIỆN ---
+
+// (Hàm này giữ nguyên code cũ của bạn)
 function attachProductEvents() {
   // Xem chi tiết
   document.querySelectorAll('.view-btn').forEach(btn => {
@@ -134,34 +191,41 @@ function attachProductEvents() {
   // Thêm vào giỏ
   document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', e => {
-      const card = e.target.closest('.product-card');
       const id = btn.dataset.id;
-      const product = products.find(p => p.id == id);
-      if (product) addToCart(product);
-      alert(`Đã thêm "${product.name}" vào giỏ hàng!`);
+      if (id) addToCart(id, 2);
     });
   });
 }
 
-export function addToCart(product) {
-  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+// (Hàm này chứa các sự kiện của trang)
+function attachPageEventListeners() {
+  // Sự kiện cho NÚT XÓA FILTER
+  document.getElementById('clear-filter')?.addEventListener('click', (e) => {
+    window.location.href = '/fe/pages/products/products.html'; // Tải lại trang không có query
+  });
 
-  const existing = cart.find(item => item.id === product.id);
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    cart.push({ ...product, quantity: 1 });
-  }
+  // --- THÊM MỚI: Sự kiện cho PHÂN TRANG ---
+  document.getElementById('pagination-controls')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const pageLink = e.target.closest('.page-link');
+    if (pageLink) {
+      const pageItem = pageLink.closest('.page-item');
+      // Không làm gì nếu nút bị tắt (disabled) hoặc đang active
+      if (pageItem.classList.contains('disabled') || pageItem.classList.contains('active')) {
+        return;
+      }
 
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateCartCounter();
+      const newPage = parseInt(pageLink.dataset.page);
+      if (newPage) {
+        // Tải lại trang với page mới, giữ nguyên keyword
+        const params = new URLSearchParams(window.location.search);
+        params.set('page', newPage); // Đặt (hoặc cập nhật) tham số 'page'
+        // Tải lại trang với URL mới
+        window.location.search = params.toString();
+      }
+    }
+  });
 }
 
-export function updateCartCounter() {
-  const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const counter = document.getElementById('cart-counter');
-  if (counter) counter.textContent = total;
-}
-
-document.addEventListener('DOMContentLoaded', updateCartCounter);
+// XÓA BỎ HÀM `fetchAndRenderProductDetail` (vì nó thuộc về trang detail.js)
+// XÓA BỎ CÁC SỰ KIỆN `addEventListener` LẺ TẺ (đã đưa vào hàm attachPageEventListeners)

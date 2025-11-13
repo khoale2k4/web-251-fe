@@ -6,6 +6,8 @@
   <title>Danh sách sản phẩm</title>
   <link rel="stylesheet" href="../../css/style.css">
   <link rel="stylesheet" href="products.css">
+
+  <link rel="stylesheet" href="../../css/popUp.css">
   <style>
     .mount-header,
     .mount-footer {
@@ -18,73 +20,16 @@
   <div class="mount-header"></div>
 
   <main>
-    <h1>Sản phẩm</h1>
+    <div class="product-header">
+      <h1 id="page-title">Sản phẩm</h1>
+      <button id="clear-filter" class="btn-secondary" style="display:none;">Xóa bộ lọc</button>
+    </div>
 
-    <div class="products-grid">
-      <!-- Sản phẩm 1 -->
-      <div class="product-card">
-        <img src="../../assets/images/product-portfolio.jpg" alt="Website Portfolio" class="product-image" />
-        <div class="product-info">
-          <h3>Website Portfolio</h3>
-          <p>Thiết kế website cá nhân chuyên nghiệp, hiện đại và tối ưu SEO.</p>
-          <div class="price-wrapper">
-            <span class="price">2,000,000 VNĐ</span>
-            <span class="old-price">3,000,000 VNĐ</span>
-            <span class="discount-badge">-33%</span>
-          </div>
-          <div class="btn-group">
-            <button class="btn-primary">Xem chi tiết</button>
-            <button class="btn-secondary">Thêm vào giỏ</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sản phẩm 2 -->
-      <div class="product-card">
-        <img src="../../assets/images/product-business.jpg" alt="Website Doanh nghiệp" class="product-image" />
-        <div class="product-info">
-          <h3>Website Doanh nghiệp</h3>
-          <p>Website cho doanh nghiệp vừa và nhỏ, tích hợp quản lý nội dung dễ dùng.</p>
-          <div class="price-wrapper">
-            <span class="price">5,000,000 VNĐ</span>
-          </div>
-          <div class="btn-group">
-            <button class="btn-primary">Xem chi tiết</button>
-            <button class="btn-secondary">Thêm vào giỏ</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sản phẩm 3 -->
-      <div class="product-card">
-        <img src="../../assets/images/product-mobile.jpg" alt="Ứng dụng Mobile" class="product-image" />
-        <div class="product-info">
-          <h3>Ứng dụng Mobile</h3>
-          <p>Phát triển ứng dụng di động cross-platform (React Native, Flutter,...).</p>
-          <div class="price-wrapper">
-            <span class="price">10,000,000 VNĐ</span>
-          </div>
-          <div class="btn-group">
-            <button class="btn-primary">Xem chi tiết</button>
-            <button class="btn-secondary">Thêm vào giỏ</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sản phẩm 4 -->
-      <div class="product-card">
-        <img src="../../assets/images/product-system.jpg" alt="Hệ thống quản lý" class="product-image" />
-        <div class="product-info">
-          <h3>Hệ thống quản lý</h3>
-          <p>Phần mềm quản lý nội bộ doanh nghiệp: nhân sự, kho, bán hàng...</p>
-          <div class="price-wrapper">
-            <span class="price">15,000,000 VNĐ</span>
-          </div>
-          <div class="btn-group">
-            <button class="btn-primary">Xem chi tiết</button>
-            <button class="btn-secondary">Thêm vào giỏ</button>
-          </div>
-        </div>
+    <div class="products-grid"></div>
+    <div class="pagination-wrapper">
+      <div id="pagination-container" class="pagination-container" style="display: none;">
+        <div id="pagination-summary" class="pagination-summary"></div>
+        <ul id="pagination-controls" class="pagination"></ul>
       </div>
     </div>
   </main>

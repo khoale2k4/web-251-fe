@@ -1,0 +1,297 @@
+/* --- Cài đặt chung & Typography --- */
+body {
+    /* Đặt font chữ đẹp làm mặc định */
+    font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f9fafb;
+    /* Chuyển nền xám ra body */
+    color: #374151;
+    /* Màu chữ chính tối hơn */
+    line-height: 1.6;
+}
+
+/* --- Container chính & Nút quay lại --- */
+.product-detail-container {
+    /* Căn giữa container và cho nó chiều rộng tối đa */
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 60px;
+    /* Thêm padding để nút "Quay lại" thẳng hàng */
+    box-sizing: border-box;
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 24px 0;
+    /* Căn lề đơn giản hơn */
+    transition: color 0.2s;
+}
+
+.btn-back:hover {
+    color: #1d4ed8;
+}
+
+/* --- Bố cục 2 cột --- */
+.product-detail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    /* Bóng mờ nhẹ hơn */
+    margin: 0 auto;
+    overflow: hidden;
+    /* Đảm bảo mọi thứ bên trong đều bị bo góc */
+    padding: 40px;
+    gap: 40px;
+}
+
+/* === 1. THƯ VIỆN ẢNH === */
+.product-gallery {
+    flex: 1 1 400px;
+    /* Tự động co giãn */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.main-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    aspect-ratio: 1 / 1;
+    /* Giữ ảnh vuông (tốt cho sản phẩm) */
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+    /* Thêm viền nhẹ */
+}
+
+.thumbnail-images {
+    display: flex;
+    flex-wrap: wrap;
+    /* Cho phép xuống hàng nếu nhiều ảnh */
+    gap: 10px;
+    justify-content: flex-start;
+    /* Căn trái */
+}
+
+.thumbnail-images img {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    /* Viền trong suốt để giữ kích thước */
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.thumbnail-images img:hover {
+    border-color: #d1d5db;
+    /* Viền xám khi hover */
+    transform: scale(1.05);
+}
+
+.thumbnail-images img.active {
+    border-color: #2563eb;
+    /* Viền xanh cho ảnh đang chọn */
+    box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
+}
+
+
+/* === 2. THÔNG TIN SẢN PHẨM === */
+.product-info {
+    flex: 1 1 450px;
+    /* Cho nhiều không gian hơn 1 chút */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* Tăng khoảng cách giữa các mục */
+}
+
+.product-title {
+    font-size: 2.25rem;
+    /* To hơn, rõ ràng hơn */
+    font-weight: 700;
+    margin: 0;
+    color: #111827;
+    /* Màu đen tuyền */
+    line-height: 1.2;
+}
+
+.product-category {
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    /* In hoa cho danh mục */
+    letter-spacing: 0.5px;
+}
+
+.product-description {
+    color: #4b5563;
+    /* Màu xám đậm cho mô tả */
+    font-size: 1rem;
+    margin-top: 8px;
+}
+
+/* Giá và giảm giá */
+.price-section {
+    margin-top: 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.price {
+    color: #111827;
+    /* Giá có màu đen/đậm */
+    font-weight: 700;
+    font-size: 2rem;
+    /* To, rõ */
+}
+
+.old-price {
+    color: #9ca3af;
+    text-decoration: line-through;
+    font-size: 1.1rem;
+}
+
+.discount-badge {
+    background: #ef4444;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+/* Tùy chọn (Size, Màu) */
+.options-section {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.options-section label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.options-section select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 1rem;
+    background-color: #f9fafb;
+}
+
+/* Nút hành động */
+.action-buttons {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    /* Xuống hàng trên mobile */
+    gap: 12px;
+    /* Khoảng cách giữa các nút */
+}
+
+.btn-primary,
+.btn-secondary {
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    /* Nút to hơn */
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex-grow: 1;
+    /* Cho các nút tự co giãn */
+    text-align: center;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    /* Hiệu ứng nhấc lên */
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+/* Nút phụ (ví dụ: Thêm vào yêu thích) */
+.btn-secondary {
+    background: #f3f4f6;
+    /* Nền xám nhạt */
+    color: #1f2937;
+    /* Chữ đen */
+    border: 1px solid #d1d5db;
+    /* Thêm viền */
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+/* --- Responsive (Tinh chỉnh) --- */
+@media (max-width: 900px) {
+    .product-detail-container {
+        padding: 0 24px 40px;
+    }
+
+    .product-detail {
+        flex-direction: column;
+        padding: 24px;
+        gap: 32px;
+    }
+
+    .product-title {
+        font-size: 1.8rem;
+    }
+
+    .price {
+        font-size: 1.75rem;
+    }
+
+    .thumbnail-images {
+        justify-content: center;
+        /* Căn giữa thumbnail trên mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .product-detail-container {
+        padding: 0 16px 30px;
+    }
+
+    .btn-back {
+        margin: 16px 0;
+    }
+
+    .product-detail {
+        padding: 20px;
+    }
+
+    /* Làm cho các nút chiếm toàn bộ chiều rộng, xếp chồng lên nhau */
+    .action-buttons {
+        flex-direction: column;
+    }
+}

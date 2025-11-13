@@ -4,10 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Chi tiết sản phẩm</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="../../css/popUp.css">
+    <link rel="stylesheet" href="detail.css">
     <style>
-        .mount-header, .mount-footer { display: contents; }
+        .mount-header,
+        .mount-footer {
+            display: contents;
+        }
     </style>
 </head>
 
@@ -15,27 +23,36 @@
     <div class="mount-header"></div>
 
     <main>
-        <h1>Chi tiết sản phẩm</h1>
-        <div class="product-detail">
-            <div class="product-image">
-                <img src="../../assets/images/product-placeholder.jpg" alt="Product Image"
-                     style="width: 100%; max-width: 400px; height: auto;">
-            </div>
-            <div class="product-info">
-                <h2>Website Portfolio</h2>
-                <p class="price">2,000,000 VNĐ</p>
-                <p class="description">
-                    Thiết kế website cá nhân chuyên nghiệp với giao diện hiện đại, responsive, 
-                    tối ưu SEO và tích hợp các tính năng cần thiết.
-                </p>
-                <ul class="features">
-                    <li>Thiết kế responsive</li>
-                    <li>Tối ưu SEO</li>
-                    <li>Form liên hệ</li>
-                    <li>Quản lý nội dung</li>
-                    <li>Hỗ trợ 24/7</li>
-                </ul>
-                <button class="btn-primary">Đặt hàng ngay</button>
+        <div class="product-detail-container">
+            <button class="btn-back" onclick="window.location.href='/fe/pages/products/index.html'">
+                &larr; Quay lại sản phẩm
+            </button>
+            
+            <div class="product-detail">
+                <div class="product-gallery">
+                    <div class="main-image">
+                        <img src="https://via.placeholder.com/600x600.png?text=Ảnh+chính" alt="Main product" id="main-product-image">
+                    </div>
+                </div>
+
+                <div class="product-info">
+                    <span class="product-category">Danh mục sản phẩm</span>
+                    <h1 class="product-title">Tên sản phẩm cao cấp rất dài</h1>
+                    <p class="product-description">
+                        Mô tả ngắn gọn về sản phẩm, nêu bật các tính năng chính và lợi ích.
+                        Nội dung này cần đủ hấp dẫn để giữ chân người dùng.
+                    </p>
+
+                    <div class="price-section">
+                        <span class="price">2.500.000đ</span>
+                        <span class="old-price">3.000.000đ</span>
+                        <span class="discount-badge">-17%</span>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-primary">Thêm vào giỏ hàng</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -43,6 +60,7 @@
     <div class="mount-footer"></div>
 
     <script type="module" src="../../js/main.js"></script>
-    <script type="module" src="products.js"></script>
-</body>
+    <script type="module" src="detail.js"></script>
+    </body>
+
 </html>

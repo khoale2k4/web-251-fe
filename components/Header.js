@@ -10,7 +10,9 @@ export async function Header({ current, userName = "Lê Khoa" }) {
     { href: '/fe/pages/home/login.html', label: 'Login', key: 'login' },
   ];
 
-  const cartHref = '/fe/pages/products/cart.html';
+  const cartHref = {
+    href: '/fe/pages/products/cart.html', label: 'Cart', key: 'cart' 
+  }
 
   const navLinks = navItems
     .map(({ href, label, key }) => {
@@ -36,9 +38,9 @@ export async function Header({ current, userName = "Lê Khoa" }) {
             <button type="submit" class="search-button">&#128269;</button>
           </form>
 
-          <a href="${cartHref}" class="cart-icon">
+          <a href=${cartHref.href} className="cart-icon" key=${cartHref.key}>
             &#128722;
-            <span class="cart-counter" id="cart-counter">0</span>
+            <span className="cart-counter" id="cart-counter">0</span>
           </a>
         </div>
       </nav>
