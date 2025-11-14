@@ -3,6 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/header.css">
     <title>Chi tiết sản phẩm</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,6 +18,12 @@
         .mount-footer {
             display: contents;
         }
+
+        main {
+            /* Tùy chỉnh nhỏ để 2 card tách biệt */
+            background-color: #f9fafb;
+            padding-bottom: 60px;
+        }
     </style>
 </head>
 
@@ -24,36 +32,10 @@
 
     <main>
         <div class="product-detail-container">
-            <button class="btn-back" onclick="window.location.href='/fe/pages/products/index.html'">
-                &larr; Quay lại sản phẩm
-            </button>
-            
-            <div class="product-detail">
-                <div class="product-gallery">
-                    <div class="main-image">
-                        <img src="https://via.placeholder.com/600x600.png?text=Ảnh+chính" alt="Main product" id="main-product-image">
-                    </div>
-                </div>
+            <p class="loading-text">Đang tải chi tiết sản phẩm...</p>
+        </div>
 
-                <div class="product-info">
-                    <span class="product-category">Danh mục sản phẩm</span>
-                    <h1 class="product-title">Tên sản phẩm cao cấp rất dài</h1>
-                    <p class="product-description">
-                        Mô tả ngắn gọn về sản phẩm, nêu bật các tính năng chính và lợi ích.
-                        Nội dung này cần đủ hấp dẫn để giữ chân người dùng.
-                    </p>
-
-                    <div class="price-section">
-                        <span class="price">2.500.000đ</span>
-                        <span class="old-price">3.000.000đ</span>
-                        <span class="discount-badge">-17%</span>
-                    </div>
-
-                    <div class="action-buttons">
-                        <button class="btn-primary">Thêm vào giỏ hàng</button>
-                    </div>
-                </div>
-            </div>
+        <div class="comment-section-container">
         </div>
     </main>
 
@@ -61,6 +43,6 @@
 
     <script type="module" src="../../js/main.js"></script>
     <script type="module" src="detail.js"></script>
-    </body>
+</body>
 
 </html>

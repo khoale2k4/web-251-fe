@@ -29,9 +29,9 @@ async function uploadImage(file) {
         if (!response.ok || !result.success) {
             throw new Error(result.message || 'Upload ảnh thất bại');
         }
-        
+
         // Trả về kết quả (VD: { success: true, url: '/storage/...' })
-        return result; 
+        return result;
 
     } catch (err) {
         console.error("Lỗi khi upload ảnh:", err);
@@ -54,18 +54,12 @@ async function fetchUserProfile(userId) {
             }
             throw new Error(`HTTP ${response.status} - Không tìm thấy người dùng`);
         }
-        
-        // SỬA LOGIC: Giả sử API trả về { success: true, data: { ...user } }
+
         const result = await response.json();
         if (result.success && result.data) {
-             return result.data; // Trả về object user
+            return { ...result.data, password: '' };
         } else {
-             // Hoặc nếu API chỉ trả về user object:
-             // return result; 
-             // -> Tùy vào API của bạn, tôi thấy code `ready()` của bạn
-             // đang mong đợi object user được trả về trực tiếp.
-             // Tôi sẽ dùng logic gốc của bạn:
-             return result;
+            return result;
         }
 
     } catch (err) {
@@ -74,9 +68,6 @@ async function fetchUserProfile(userId) {
     }
 }
 
-/**
- * HÀM ĐÃ SỬA: Thêm xác thực (Authorization)
- */
 async function updateUserProfile(userId, data) {
     try {
         const response = await fetch(`${BASE_URL}/users/${userId}`, {
@@ -106,10 +97,13 @@ function renderProfile(user, isOwner) {
     const container = document.querySelector('.profile-container');
     const readonlyClass = isOwner ? '' : 'is-readonly';
     const readonlyAttr = isOwner ? '' : 'readonly';
-    const avatarUrl = user.avatar ? `${BASE_URL}${user.avatar}` : '/fe/assets/placeholder.png';
+    const avatarUrl = user.avatar ? `${BASE_URL}${user.avatar}` : '../../assets/images/noAvatar.png';
 
     const profileHTML = `
-        <form id="profileForm" class="${readonlyClass}">
+        <form id="profileForm" class="${readonlyClass}" autocomplete="off">
+            <input type="text" name="fake-username" autocomplete="username" style="display:none;">
+            <input type="password" name="fake-password" autocomplete="new-password" style="display:none;">
+
             <div class="profile-avatar-column">
                 <img src="${avatarUrl}" alt="Avatar" class="avatar-preview" id="avatarPreview">
                 <label for="avatar-upload" class="avatar-upload-label">
@@ -117,29 +111,55 @@ function renderProfile(user, isOwner) {
                 </label>
                 <input type="file" id="avatar-upload" name="avatar" accept="image/*">
             </div>
+
             <div class="profile-info-column">
                 <h2>Thông tin Hồ sơ</h2>
+
                 <div class="form-group">
                     <label for="name">Họ và tên</label>
-                    <input type="text" id="name" name="name" value="${user.name}" ${readonlyAttr}>
+                    <input type="text" id="name" name="name" value="${user.name}" ${readonlyAttr} autocomplete="off">
                 </div>
+
                 <div class="form-group">
                     <label for="phone">Số điện thoại</label>
-                    <input type="tel" id="phone" name="phone" value="${user.phone || ''}" ${readonlyAttr}>
+                    <input 
+                        type="tel" 
+                        id="phone" 
+                        name="phone" 
+                        value="${user.phone || ''}" 
+                        ${readonlyAttr} 
+                        autocomplete="off"
+                    >
                 </div>
+
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        value="${user.password || ''}" 
+                        autocomplete="new-password"
+                    >
+                </div>
+
                 <div class="form-group">
                     <label>Email</label>
                     <span>${user.email}</span>
                 </div>
+
                 <div class="form-group">
                     <label>Vai trò</label>
                     <span>${user.role}</span>
                 </div>
+
                 <div class="form-actions">
                     <button type="submit" class="btn-save">Lưu thay đổi</button>
                 </div>
             </div>
+
         </form>
+
     `;
     container.innerHTML = profileHTML;
 }
@@ -148,7 +168,7 @@ function renderProfile(user, isOwner) {
 // --- 3. HÀM GẮN SỰ KIỆN (ĐÃ CẬP NHẬT) ---
 
 function attachProfileEvents(user, isOwner, popup) {
-    if (!isOwner) return; 
+    if (!isOwner) return;
 
     const form = document.getElementById('profileForm');
     const avatarInput = document.getElementById('avatar-upload');
@@ -177,15 +197,27 @@ function attachProfileEvents(user, isOwner, popup) {
             // Lấy file và text từ form
             const formData = new FormData(form);
             const file = avatarInput.files[0];
-            
+
             // Bắt đầu với URL ảnh hiện tại
-            let newAvatarUrl = user.avatar; 
+            let newAvatarUrl = user.avatar;
+            console.log(phone);
+
+            if (phone && !/^0\d{9,10}$/.test(formData.get('phone'))) {
+                popup.show({
+                    title: "Lỗi",
+                    content: `<p>Số điện thoại không hợp lệ. Vui lòng kiểm tra lại (phải bắt đầu bằng 0, và có 10 hoặc 11 chữ số).</p>`,
+                    actions: [{ label: 'Đóng', type: 'btn-secondary', close: true }]
+                });
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Lưu thay đổi';
+                return; // Dừng hàm
+            }
 
             // --- BƯỚC 1: UPLOAD ẢNH (NẾU CÓ) ---
             if (file && file.size > 0) {
                 // Chỉ upload nếu người dùng chọn file mới
                 const uploadResult = await uploadImage(file);
-                
+
                 if (uploadResult && uploadResult.url) {
                     newAvatarUrl = uploadResult.url; // Lấy URL mới từ server
                 } else {
@@ -198,6 +230,7 @@ function attachProfileEvents(user, isOwner, popup) {
             const dataToUpdate = {
                 name: formData.get('name'),
                 phone: formData.get('phone'),
+                password: formData.get('password'),
                 avatar: newAvatarUrl // Gửi URL (cũ hoặc mới) lên server
             };
 
@@ -246,7 +279,7 @@ ready(async () => {
 
         // Tải hồ sơ (đã sửa hàm fetch)
         const user = await fetchUserProfile(profileId);
-        
+
         if (!user) {
             throw new Error("Không tìm thấy hồ sơ người dùng.");
         }

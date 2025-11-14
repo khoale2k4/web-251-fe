@@ -42,32 +42,33 @@ async function fetchAndRenderCart(userId) {
 
         main.innerHTML = `
       <h1>Giỏ hàng của bạn</h1>
-      <div class="cart-items">
-        ${items.map(item => `
-          <div class="cart-item" data-id="${item.id}" data-product_id="${item.product_id}">
-            <img src="${API_BASE}${item.image}" alt="${item.product_name}" class="cart-image" onerror="this.src='/fe/assets/placeholder.png'">
-            <div class="cart-info">
-              <h3>${item.product_name}</h3>
-              <p>${parseFloat(item.final_price).toLocaleString()} VNĐ</p>
-              <div class="quantity-control">
-                <button class="btn-decrease" data-product_id="${item.product_id}">−</button>
-                <span class="quantity">${item.quantity}</span>
-                <button class="btn-increase" data-product_id="${item.product_id}">+</button>
+      
+      <div class="cart-layout">
+      
+        <div class="cart-items">
+          ${items.map(item => `
+            <div class="cart-item" data-id="${item.id}" data-product_id="${item.product_id}">
+              <a href="/fe/pages/products/detail.html?id=${item.product_id}" class="product-image-link">
+                <img src="${API_BASE}${item.image}" alt="${item.product_name}" class="cart-image" onerror="this.src='/fe/assets/placeholder.png'">
+              </a>
+              <div class="cart-info">
+                <h3><a href="/fe/pages/products/detail.html?id=${item.product_id}" class="product-name-link">${item.product_name}</a></h3>
+                <p>${parseFloat(item.final_price).toLocaleString()} VNĐ</p>
+                <div class="quantity-control">
+                  <button class="btn-decrease" data-product_id="${item.product_id}">−</button>
+                  <span class="quantity">${item.quantity}</span>
+                  <button class="btn-increase" data-product_id="${item.product_id}">+</button>
+                </div>
+                <p><strong>Tạm tính:</strong> ${parseFloat(item.subtotal).toLocaleString()} VNĐ</p>
               </div>
-              <p><strong>Tạm tính:</strong> ${parseFloat(item.subtotal).toLocaleString()} VNĐ</p>
+              <button class="btn-remove" data-id="${item.id}">&times;</button>
             </div>
-            <button class="btn-remove" data-id="${item.id}">Xóa</button>
-          </div>
-        `).join('')}
-      </div>
-
-      <div class="cart-summary">
-        <p><strong>Tổng sản phẩm:</strong> ${item_count}</p>
-        <p><strong>Tổng cộng:</strong> ${parseFloat(total).toLocaleString()} VNĐ</p>
-        <button id="checkout-btn" class="btn-primary">Đặt hàng</button>
-      </div>
-
-      <form id="order-form" class="order-form hidden">
+          `).join('')}
+        </div> <div class="cart-summary">
+          <p><strong>Tổng sản phẩm:</strong> <span>${item_count}</span></p>
+          <p><strong>Tổng cộng:</strong> <span>${parseFloat(total).toLocaleString()} VNĐ</span></p>
+          <button id="checkout-btn" class="btn-primary">Đặt hàng</button>
+        </div> </div> <form id="order-form" class="order-form hidden">
         <h2>Thông tin giao hàng</h2>
         <label>Địa chỉ giao hàng</label>
         <input type="text" id="shipping_address" placeholder="VD: 123 Đường ABC, Quận 1" required />

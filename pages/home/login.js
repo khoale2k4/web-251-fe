@@ -31,7 +31,6 @@ async function handleLogin(e, popup) {
     popup.show({
       title: "Thành công!",
       content: "Đăng nhập thành công. Đang chuyển hướng bạn...",
-      actions: [{ label: 'OK', type: 'btn-primary', close: true }]
     });
 
     setTimeout(() => {
@@ -67,12 +66,11 @@ async function handleRegister(e, popup) {
   }
 
   try {
-    // 2. Gọi API /auth/register (Bạn cần tạo API này ở backend)
-    const response = await fetch(`${API_BASE}/auth/register`, {
+    const response = await fetch(`${API_BASE}/users`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username: data.username,
+        email: data.username,
         password: data.password
       }),
     });

@@ -3,8 +3,8 @@ import { updateCartCounter } from "../js/updateCartCounter.js";
 const API_BASE = 'http://localhost:8000';
 
 /**
- * --- HÀM 1: fetchUser (HÀM MỚI) ---
- * Hàm này sẽ được gọi khi mount để lấy chi tiết user
+ * --- HÀM 1: fetchUser (ĐÃ SỬA LỖI) ---
+ * Sửa lại logic kiểm tra response và parse JSON
  */
 async function fetchUser(userId) {
   if (!userId) return null;
@@ -12,15 +12,24 @@ async function fetchUser(userId) {
   try {
     const response = await fetch(`${API_BASE}/users/${userId}`);
 
-    if (!response) {
+    // Sửa 1: Kiểm tra response.ok thay vì !response
+    if (!response.ok) {
+      console.error(`Lỗi ${response.status} khi tải user`);
       return null;
     }
 
     const result = await response.json();
-    if (result) {
-      return result;
+
+    // Sửa 2: Giả sử API trả về trực tiếp object user
+    // hoặc { success: true, data: { ... } }
+    if (result.success && result.data) {
+      return result.data; // Nếu API có bọc 'data'
     }
-    return null;
+    if (result.id) {
+      return result; // Nếu API trả về trực tiếp user
+    }
+
+    return null; // Trả về null nếu data không hợp lệ
 
   } catch (err) {
     console.error("Lỗi khi tải thông tin user:", err);
@@ -29,8 +38,8 @@ async function fetchUser(userId) {
 }
 
 /**
- * --- HÀM 2: Header (Giữ nguyên) ---
- * Hàm này chỉ render, không thay đổi
+ * --- HÀM 2: Header (ĐÃ CẬP NHẬT HTML) ---
+ * Đã thêm nút toggle và di chuyển .nav-auth
  */
 export async function Header({ current, userName = null, userId = null }) {
   const navItems = [
@@ -53,7 +62,7 @@ export async function Header({ current, userName = null, userId = null }) {
     .join('');
 
   let userAuthBlock = '';
-  if (userName) {
+  if (userName != null) {
     userAuthBlock = `
       <div class="user-profile-menu">
         <a href="/fe/pages/profile/profile.html?id=${userId}" class="profile-link">
@@ -77,7 +86,13 @@ export async function Header({ current, userName = null, userId = null }) {
           <a href="/fe/" class="logo">${site_name}</a>
         </div>
 
-        <nav class="site-nav">${navLinks}</nav>
+        <nav class="site-nav">
+          ${navLinks}
+          
+          <div class="nav-auth">
+            ${userAuthBlock}
+          </div>
+        </nav>
 
         <div class="nav-right">
           <form class="search-bar" id="search-form">
@@ -90,15 +105,20 @@ export async function Header({ current, userName = null, userId = null }) {
             <span class="cart-counter" id="cart-counter">0</span>
           </a>
 
-          <div class="nav-auth">
-            ${userAuthBlock}
-          </div>
+          <button id="mobile-nav-toggle" class="mobile-nav-toggle" aria-label="Mở menu">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
         </div>
       </nav>
     </header>
   `;
 }
 
+/**
+ * --- HÀM 3: loadSiteSettings (Giữ nguyên) ---
+ */
 async function loadSiteSettings() {
   try {
     const response = await fetch(`${API_BASE}/site-settings`);
@@ -112,6 +132,10 @@ async function loadSiteSettings() {
   }
 }
 
+/**
+ * --- HÀM 4: mountHeader (ĐÃ CẬP NHẬT) ---
+ * Thêm logic cho nút toggle
+ */
 export async function mountHeader(containerSelector, current) {
   const container =
     typeof containerSelector === 'string'
@@ -119,43 +143,35 @@ export async function mountHeader(containerSelector, current) {
       : containerSelector;
   if (!container) return;
 
-  // 1. Render skeleton (giữ nguyên)
+  // 1. Render skeleton
   container.innerHTML = `
     <header class="site-header skeleton">
-      <nav class="navbar">
-        <div class="nav-left"><div class="skeleton-logo"></div></div>
-        <div class="nav-middle"><div class="skeleton-nav"></div></div>
-        <div class="nav-right">
-          <div class="skeleton-search"></div>
-          <div class="skeleton-cart"></div>
-        </div>
-      </nav>
-    </header>
+      </header>
   `;
 
-  // 2. Lấy thông tin user (giữ nguyên)
+  // 2. Lấy thông tin user
   let userName = null;
   const userId = localStorage.getItem('userId');
 
   if (userId) {
     const user = await fetchUser(userId);
-    // KHÔNG gọi updateCartCounter ở đây
     if (user) {
       userName = user.name;
     }
   }
 
-  // 3. Render HTML header thật (giữ nguyên)
+  // 3. Render HTML header thật
   const headerHTML = await Header({ current, userName, userId });
-  container.innerHTML = headerHTML; // <-- Thẻ #cart-counter bây giờ mới tồn tại
+  container.innerHTML = headerHTML;
+  // Lấy element header sau khi render
+  const headerElement = container.querySelector('.site-header');
 
-  // 4. --- SỬA LỖI ---
-  // Gọi updateCartCounter SAU KHI header đã được render
+  // 4. Gọi updateCartCounter
   if (userId) {
-    await updateCartCounter(userId); // <-- VỊ TRÍ ĐÚNG
+    await updateCartCounter(userId);
   }
 
-  // 5. Gắn các sự kiện (giữ nguyên)
+  // 5. Gắn sự kiện tìm kiếm
   const searchForm = container.querySelector('#search-form');
   if (searchForm) {
     searchForm.addEventListener('submit', (e) => {
@@ -167,15 +183,22 @@ export async function mountHeader(containerSelector, current) {
     });
   }
 
+  // 6. Gắn sự kiện đăng xuất
   const logoutBtn = container.querySelector('#logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('userId');
-      // Tùy chọn: Xóa cả token nếu bạn có
-      // localStorage.removeItem('authToken'); 
-
       alert('Bạn đã đăng xuất.');
       window.location.href = '/fe/pages/home/login.html';
+    });
+  }
+
+  // 7. --- THÊM MỚI: Gắn sự kiện cho nút Mobile Toggle ---
+  const mobileToggle = container.querySelector('#mobile-nav-toggle');
+  if (mobileToggle && headerElement) {
+    mobileToggle.addEventListener('click', () => {
+      // Thêm/xóa class vào header để CSS bắt
+      headerElement.classList.toggle('mobile-nav-open');
     });
   }
 }
