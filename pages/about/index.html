@@ -1,68 +1,31 @@
 <!doctype html>
-<!--
-* Tabler - Premium and Open Source dashboard template with responsive and high quality UI.
-* @version 1.4.0
-* @link https://tabler.io
-* Copyright 2018-2025 The Tabler Authors
-* Copyright 2018-2025 codecalm.net Paweł Kuna
-* Licensed under MIT (https://github.com/tabler/tabler/blob/master/LICENSE)
--->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>About - Tabler - Premium and Open Source dashboard template with responsive and high quality UI.</title>
+    <title>About - Tabler</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/header.css">
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <!-- <link href="../../admin/dist/css/" rel="stylesheet" /> -->
-    <!-- <link href="../../admin/dist/css/tabler.css?1760059267" rel="stylesheet" /> -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css" />
+    
+    <link rel="stylesheet" href="../../css/header.css"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-flags.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-social.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-payments.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-vendors.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-marketing.min.css" />
-
-     <!-- END GLOBAL MANDATORY STYLES -->
-    <!-- BEGIN PLUGINS STYLES -->
-    <!-- <link href="../../admin/dist/css/tabler-flags.css?1760059267" rel="stylesheet" /> -->
-    <!-- <link href="../../admin/dist/css/tabler-socials.css?1760059267" rel="stylesheet" /> -->
-    <!-- <link href="../../admin/dist/css/tabler-payments.css?1760059267" rel="stylesheet" /> -->
-    <!-- <link href="../../admin/dist/css/tabler-vendors.css?1760059267" rel="stylesheet" /> -->
-    <!-- <link href="../../admin/dist/css/tabler-marketing.css?1760059267" rel="stylesheet" /> -->
-    <!-- <link href="../../admin/dist/css/tabler-themes.css?1760059267" rel="stylesheet" /> -->
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="about.css">
 
-    <!-- END PLUGINS STYLES -->
-    <!-- BEGIN DEMO STYLES -->
-    <!-- <link href="../preview/css/demo.css?1760059267" rel="stylesheet" /> -->
-
-    <!-- END DEMO STYLES -->
-    <!-- BEGIN CUSTOM FONT -->
-    <style>
-      .brand-calligraphy {
-    font-family: "Great Vibes", "Segoe Script", "Dancing Script", cursive;
-    font-weight: 400;
-    font-size: clamp(22px, 3.2vw, 30px);
-    line-height: 1;
-    color: var(--tblr-primary);
-    letter-spacing: .5px;
-  }
-      @import url("https://rsms.me/inter/inter.css");
-    </style>
-    <!-- END CUSTOM FONT -->
   </head>
   <body class="body-marketing body-gradient">
-    <!-- BEGIN GLOBAL THEME SCRIPT -->
     <script src="../dist/js/tabler-theme.min.js?1760059267"></script>
-    <!-- END GLOBAL THEME SCRIPT -->
     <div class="mount-header"></div>
+
     <div class="hero">
       <div class="container">
-        <h1 class="hero-title">About Us</h1>
-        <p class="hero-description hero-description-wide">
+        <h1 class="hero-title" id="about-title">About Us</h1>
+        <p class="hero-description hero-description-wide" id="about-content">
           We are a mid-range footwear provider committed to offering high-quality, 
           stylish, and comfortable shoes for modern, active customers. 
           Every pair is carefully selected for its materials, design, and durability, 
@@ -70,13 +33,13 @@
         </p>
       </div>
     </div>
+
     <div class="section pt-0">
       <div class="container">
         <div class="row gx-3">
           <div class="col mb-3">
             <div class="bg-cover rounded bg-body-tertiary" style="height: 15rem">
-              <img src="../about/images/shoes/white.png" alt="White Shoes" class="bg-cover rounded" style="height: 15rem; width: 100%; object-fit: cover;">  
-
+              <img src="../about/images/shoes/white.png" alt="About Image" class="bg-cover rounded" style="height: 15rem; width: 100%; object-fit: cover;" id="about-image">
             </div>
           </div>
           <div class="col-3 d-none d-md-block mb-3">
@@ -103,525 +66,28 @@
           <div class="col">
             <div class="bg-cover rounded bg-body-tertiary" style="height: 15rem">
               <img src="../about/images/shoes/brown.png" alt="Brown Shoes" class="bg-cover rounded" style="height: 15rem; width: 100%; object-fit: cover;">
-              
             </div>
           </div>
         </div>
       </div>
     </div>
+    
     <footer class="footer">
-      <div class="container">
-        <div class="py-3">
-          <div class="row g-lg-4">
-            <div class="col-lg-7">
-              <div class="row g-lg-4">
-                <div class="col-md">
-                  <div class="subheader mb-3">Our products</div>
-                  <ul class="list-unstyled list-separated gap-2">
-                    <li><a class="link-secondary" href="">UI Kit</a></li>
-                    <li>
-                      <a class="link-secondary" href="">Open source icons</a>
-                    </li>
-                    <li>
-                      <a class="link-secondary" href="">Email templates</a>
-                    </li>
-                    <li><a class="link-secondary" href="">Pricing</a></li>
-                  </ul>
-                </div>
-                <div class="col-md">
-                  <div class="subheader mb-3">Support</div>
-                  <ul class="list-unstyled list-separated gap-2">
-                    <li><a class="link-secondary" href="">Blog</a></li>
-                    <li><a class="link-secondary" href="">Documentation</a></li>
-                    <li><a class="link-secondary" href="">Support</a></li>
-                    <li>
-                      <a href="https://status.tabler.io" class="link-secondary" target="_blank" rel="noreferrer">Status</a>
-                    </li>
-                  </ul>
-                </div>
-                <div class="col-md">
-                  <div class="subheader mb-3">Tabler</div>
-                  <ul class="list-unstyled list-separated gap-2">
-                    <li><a class="link-secondary" href="">About</a></li>
-                    <li><a class="link-secondary" href="">Blog</a></li>
-                    <li><a class="link-secondary" href="">Changelog</a></li>
-                    <li>
-                      <a href="https://github.com/tabler/tabler" class="link-secondary" target="_blank" rel="noreferrer">Github</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 ml-auto">
-              <div class="text-secondary">
-                Tabler comes with tons of well-designed components and features. Start your adventure with Tabler and make your dashboard great again. For free!
-              </div>
-            </div>
-          </div>
-          <div class="row g-lg-4 justify-content-between mt-0 mt-md-2">
-            <div class="col-sm-7 col-md-6 col-lg-4">
-              <h5 class="subheader">Payment &amp; Security</h5>
-              <ul class="list-inline mb-0 mt-3">
-                <li class="list-inline-item">
-                  <a href="#"><span class="payment payment-1 payment-provider-paypal"></span> </a>
-                </li>
-                <li class="list-inline-item">
-                  <a href="#"><span class="payment payment-1 payment-provider-visa"></span> </a>
-                </li>
-                <li class="list-inline-item">
-                  <a href="#"><span class="payment payment-1 payment-provider-mastercard"></span> </a>
-                </li>
-                <li class="list-inline-item">
-                  <a href="#"><span class="payment payment-1 payment-provider-americanexpress"></span> </a>
-                </li>
-              </ul>
-            </div>
-            <div class="col-sm-5 col-md-6 col-lg-3 text-sm-end">
-              <h5 class="subheader">Follow us on</h5>
-              <ul class="list-inline mb-0 mt-3">
-                <li class="list-inline-item">
-                  <a class="btn btn-icon btn-facebook" href="#"
-                    ><!-- Download SVG icon from http://tabler.io/icons/icon/brand-facebook -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="icon icon-1"
-                    >
-                      <path d="M7 10v4h3v7h4v-7h3l1 -4h-4v-2a1 1 0 0 1 1 -1h3v-4h-3a5 5 0 0 0 -5 5v2h-3" /></svg
-                  ></a>
-                </li>
-                <li class="list-inline-item">
-                  <a class="btn btn-icon btn-instagram" href="#"
-                    ><!-- Download SVG icon from http://tabler.io/icons/icon/brand-instagram -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="icon icon-1"
-                    >
-                      <path d="M4 8a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" />
-                      <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                      <path d="M16.5 7.5v.01" /></svg>
-                  </a>
-                </li>
-                <li class="list-inline-item">
-                  <a class="btn btn-icon btn-twitter" href="#"
-                    ><!-- Download SVG icon from http://tabler.io/icons/icon/brand-twitter -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="icon icon-1"
-                    >
-                      <path
-                        d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c0 -.249 1.51 -2.772 1.818 -4.013z"/>
-                      </svg>
-                    </a>
-                </li>
-                <li class="list-inline-item">
-                  <a class="btn btn-icon btn-linkedin" href="#"
-                    ><!-- Download SVG icon from http://tabler.io/icons/icon/brand-linkedin -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="icon icon-1"
-                    >
-                      <path d="M8 11v5" />
-                      <path d="M8 8v.01" />
-                      <path d="M12 16v-5" />
-                      <path d="M16 16v-3a2 2 0 1 0 -4 0" />
-                      <path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg
-                  ></a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
+        </footer>
     <footer class="footer">
-      <div class="container">
-        <div class="py-3 border-top-light text-center text-lg-start">
-          <div class="row g-lg-4">
-            <div class="col-lg-auto text-lg-end order-lg-last">
-              <div class="row justify-center">
-                <div class="col-auto">©<a href="https://codecalm.net" class="link-secondary" target="_blank" rel="noopener noreferrer">codecalm.net</a></div>
-                <div class="col-auto">
-                  <ul class="list-inline list-inline-dots">
-                    <li class="list-inline-item">
-                      <a class="link-secondary" href="/terms-of-service">Terms of service</a>
-                    </li>
-                    <li class="list-inline-item">
-                      <a class="link-secondary" href="/privacy-policy">Privacy policy</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg">
-              Made with
-              <!-- Download SVG icon from http://tabler.io/icons/icon/heart -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon text-red icon-inline icon-4"
-              >
-                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
-              </svg>
-              in Poland.
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
+        </footer>
+
     <div class="settings">
-      <a
-        href="#"
-        class="btn btn-floating btn-icon btn-primary"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasSettings"
-        aria-controls="offcanvasSettings"
-        aria-label="Theme Settings"
-      >
-        <!-- Download SVG icon from http://tabler.io/icons/icon/brush -->
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="icon icon-1"
-        >
-          <path d="M3 21v-4a4 4 0 1 1 4 4h-4" />
-          <path d="M21 3a16 16 0 0 0 -12.8 10.2" />
-          <path d="M21 3a16 16 0 0 1 -10.2 12.8" />
-          <path d="M10.6 9a9 9 0 0 1 4.4 4.4" />
-        </svg>
-      </a>
-      <form class="offcanvas offcanvas-start offcanvas-narrow" tabindex="-1" id="offcanvasSettings">
-        <div class="offcanvas-header">
-          <h2 class="offcanvas-title">Theme Settings</h2>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body d-flex flex-column">
-          <div>
-            <div class="mb-4">
-              <label class="form-label">Color mode</label>
-              <p class="form-hint">Choose the color mode for your app.</p>
-              <label class="form-check">
-                <div class="form-selectgroup-item">
-                  <input type="radio" name="theme" value="light" class="form-check-input" checked />
-                  <div class="form-check-label">Light</div>
-                </div>
-              </label>
-              <label class="form-check">
-                <div class="form-selectgroup-item">
-                  <input type="radio" name="theme" value="dark" class="form-check-input" />
-                  <div class="form-check-label">Dark</div>
-                </div>
-              </label>
-            </div>
-            <div class="mb-4">
-              <label class="form-label">Color scheme</label>
-              <p class="form-hint">The perfect color mode for your app.</p>
-              <div class="row g-2">
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="blue" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-blue"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="azure" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-azure"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="indigo" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-indigo"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="purple" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-purple"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="pink" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-pink"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="red" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-red"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="orange" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-orange"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="yellow" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-yellow"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="lime" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-lime"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="green" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-green"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="teal" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-teal"></span>
-                  </label>
-                </div>
-                <div class="col-auto">
-                  <label class="form-colorinput">
-                    <input name="theme-primary" type="radio" value="cyan" class="form-colorinput-input" />
-                    <span class="form-colorinput-color bg-cyan"></span>
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label">Font family</label>
-              <p class="form-hint">Choose the font family that fits your app.</p>
-              <div>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-font" value="sans-serif" class="form-check-input" checked />
-                    <div class="form-check-label">Sans-serif</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-font" value="serif" class="form-check-input" />
-                    <div class="form-check-label">Serif</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-font" value="monospace" class="form-check-input" />
-                    <div class="form-check-label">Monospace</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-font" value="comic" class="form-check-input" />
-                    <div class="form-check-label">Comic</div>
-                  </div>
-                </label>
-              </div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label">Theme base</label>
-              <p class="form-hint">Choose the gray shade for your app.</p>
-              <div>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-base" value="slate" class="form-check-input" />
-                    <div class="form-check-label">Slate</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-base" value="gray" class="form-check-input" checked />
-                    <div class="form-check-label">Gray</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-base" value="zinc" class="form-check-input" />
-                    <div class="form-check-label">Zinc</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-base" value="neutral" class="form-check-input" />
-                    <div class="form-check-label">Neutral</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-base" value="stone" class="form-check-input" />
-                    <div class="form-check-label">Stone</div>
-                  </div>
-                </label>
-              </div>
-            </div>
-            <div class="mb-4">
-              <label class="form-label">Corner Radius</label>
-              <p class="form-hint">Choose the border radius factor for your app.</p>
-              <div>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-radius" value="0" class="form-check-input" />
-                    <div class="form-check-label">0</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-radius" value="0.5" class="form-check-input" />
-                    <div class="form-check-label">0.5</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-radius" value="1" class="form-check-input" checked />
-                    <div class="form-check-label">1</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-radius" value="1.5" class="form-check-input" />
-                    <div class="form-check-label">1.5</div>
-                  </div>
-                </label>
-                <label class="form-check">
-                  <div class="form-selectgroup-item">
-                    <input type="radio" name="theme-radius" value="2" class="form-check-input" />
-                    <div class="form-check-label">2</div>
-                  </div>
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="mt-auto space-y">
-            <button type="button" class="btn w-100" id="reset-changes">
-              <!-- Download SVG icon from http://tabler.io/icons/icon/rotate -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-1"
-              >
-                <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
-              </svg>
-              Reset changes
-            </button>
-            <a href="#" class="btn btn-primary w-100" data-bs-dismiss="offcanvas"> Save </a>
-          </div>
-        </div>
-      </form>
-    </div>
-    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
+
     <script src="../dist/js/tabler.min.js?1760059268" defer></script>
-    <!-- END GLOBAL MANDATORY SCRIPTS -->
-    <!-- BEGIN DEMO SCRIPTS -->
     <script src="../preview/js/demo.min.js?1760059268" defer></script>
+    
     <script type="module" src="./about.js" defer></script>
-    <!-- END DEMO SCRIPTS -->
-    <!-- BEGIN PAGE SCRIPTS -->
+    
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        var themeConfig = {
-          theme: "light",
-          "theme-base": "gray",
-          "theme-font": "sans-serif",
-          "theme-primary": "blue",
-          "theme-radius": "1",
-        };
-        var url = new URL(window.location);
-        var form = document.getElementById("offcanvasSettings");
-        var resetButton = document.getElementById("reset-changes");
-        var checkItems = function () {
-          for (var key in themeConfig) {
-            var value = window.localStorage["tabler-" + key] || themeConfig[key];
-            if (!!value) {
-              var radios = form.querySelectorAll(`[name="${key}"]`);
-              if (!!radios) {
-                radios.forEach((radio) => {
-                  radio.checked = radio.value === value;
-                });
-              }
-            }
-          }
-        };
-        form.addEventListener("change", function (event) {
-          var target = event.target,
-            name = target.name,
-            value = target.value;
-          for (var key in themeConfig) {
-            if (name === key) {
-              document.documentElement.setAttribute("data-bs-" + key, value);
-              window.localStorage.setItem("tabler-" + key, value);
-              url.searchParams.set(key, value);
-            }
-          }
-          window.history.pushState({}, "", url);
-        });
-        resetButton.addEventListener("click", function () {
-          for (var key in themeConfig) {
-            var value = themeConfig[key];
-            document.documentElement.removeAttribute("data-bs-" + key);
-            window.localStorage.removeItem("tabler-" + key);
-            url.searchParams.delete(key);
-          }
-          checkItems();
-          window.history.pushState({}, "", url);
-        });
-        checkItems();
       });
     </script>
-    <!-- END PAGE SCRIPTS -->
   </body>
 </html>
