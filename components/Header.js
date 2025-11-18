@@ -2,17 +2,12 @@ import { updateCartCounter } from "../js/updateCartCounter.js";
 
 const API_BASE = 'http://localhost:8000';
 
-/**
- * --- HÀM 1: fetchUser (ĐÃ SỬA LỖI) ---
- * Sửa lại logic kiểm tra response và parse JSON
- */
 async function fetchUser(userId) {
   if (!userId) return null;
 
   try {
     const response = await fetch(`${API_BASE}/users/${userId}`);
 
-    // Sửa 1: Kiểm tra response.ok thay vì !response
     if (!response.ok) {
       console.error(`Lỗi ${response.status} khi tải user`);
       return null;
@@ -20,16 +15,14 @@ async function fetchUser(userId) {
 
     const result = await response.json();
 
-    // Sửa 2: Giả sử API trả về trực tiếp object user
-    // hoặc { success: true, data: { ... } }
     if (result.success && result.data) {
-      return result.data; // Nếu API có bọc 'data'
+      return result.data;
     }
     if (result.id) {
-      return result; // Nếu API trả về trực tiếp user
+      return result;
     }
 
-    return null; // Trả về null nếu data không hợp lệ
+    return null;
 
   } catch (err) {
     console.error("Lỗi khi tải thông tin user:", err);
@@ -37,14 +30,11 @@ async function fetchUser(userId) {
   }
 }
 
-/**
- * --- HÀM 2: Header (ĐÃ CẬP NHẬT HTML) ---
- * Đã thêm nút toggle và di chuyển .nav-auth
- */
 export async function Header({ current, userName = null, userId = null }) {
   const navItems = [
     { href: '/fe/pages/home/index.html', label: 'Home', key: 'home' },
-    { href: '/fe/pages/about/about.html', label: 'About', key: 'about' },
+    { href: '/fe/pages/about/index.html', label: 'About', key: 'about' },
+    { href: '/fe/pages/about/faq.html', label: 'FAQ', key: 'faq' },
     { href: '/fe/pages/products/products.html', label: 'Products', key: 'products' },
     { href: '/fe/pages/news/news.html', label: 'News', key: 'news' },
     { href: '/fe/pages/home/contact.html', label: 'Contact', key: 'contact' },
@@ -116,9 +106,6 @@ export async function Header({ current, userName = null, userId = null }) {
   `;
 }
 
-/**
- * --- HÀM 3: loadSiteSettings (Giữ nguyên) ---
- */
 async function loadSiteSettings() {
   try {
     const response = await fetch(`${API_BASE}/site-settings`);
@@ -132,10 +119,6 @@ async function loadSiteSettings() {
   }
 }
 
-/**
- * --- HÀM 4: mountHeader (ĐÃ CẬP NHẬT) ---
- * Thêm logic cho nút toggle
- */
 export async function mountHeader(containerSelector, current) {
   const container =
     typeof containerSelector === 'string'
@@ -143,13 +126,13 @@ export async function mountHeader(containerSelector, current) {
       : containerSelector;
   if (!container) return;
 
-  // 1. Render skeleton
+ 
   container.innerHTML = `
     <header class="site-header skeleton">
       </header>
   `;
 
-  // 2. Lấy thông tin user
+ 
   let userName = null;
   const userId = localStorage.getItem('userId');
 
@@ -160,18 +143,18 @@ export async function mountHeader(containerSelector, current) {
     }
   }
 
-  // 3. Render HTML header thật
+ 
   const headerHTML = await Header({ current, userName, userId });
   container.innerHTML = headerHTML;
-  // Lấy element header sau khi render
+ 
   const headerElement = container.querySelector('.site-header');
 
-  // 4. Gọi updateCartCounter
+ 
   if (userId) {
     await updateCartCounter(userId);
   }
 
-  // 5. Gắn sự kiện tìm kiếm
+ 
   const searchForm = container.querySelector('#search-form');
   if (searchForm) {
     searchForm.addEventListener('submit', (e) => {
@@ -183,7 +166,7 @@ export async function mountHeader(containerSelector, current) {
     });
   }
 
-  // 6. Gắn sự kiện đăng xuất
+ 
   const logoutBtn = container.querySelector('#logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
@@ -193,11 +176,11 @@ export async function mountHeader(containerSelector, current) {
     });
   }
 
-  // 7. --- THÊM MỚI: Gắn sự kiện cho nút Mobile Toggle ---
+ 
   const mobileToggle = container.querySelector('#mobile-nav-toggle');
   if (mobileToggle && headerElement) {
     mobileToggle.addEventListener('click', () => {
-      // Thêm/xóa class vào header để CSS bắt
+     
       headerElement.classList.toggle('mobile-nav-open');
     });
   }

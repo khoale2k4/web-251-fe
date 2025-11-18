@@ -49,7 +49,7 @@ async function fetchAndRenderCart(userId) {
           ${items.map(item => `
             <div class="cart-item" data-id="${item.id}" data-product_id="${item.product_id}">
               <a href="/fe/pages/products/detail.html?id=${item.product_id}" class="product-image-link">
-                <img src="${API_BASE}${item.image}" alt="${item.product_name}" class="cart-image" onerror="this.src='/fe/assets/placeholder.png'">
+                <img src="${API_BASE}/${item.image}" alt="${item.product_name}" class="cart-image" onerror="this.src='/fe/assets/placeholder.png'">
               </a>
               <div class="cart-info">
                 <h3><a href="/fe/pages/products/detail.html?id=${item.product_id}" class="product-name-link">${item.product_name}</a></h3>

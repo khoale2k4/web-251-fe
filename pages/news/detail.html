@@ -4,15 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Chi tiết tin tức</title>
-    <!-- Thông tin môi trường (sử dụng khi build hoặc chạy server) -->
     <meta name="app-env" content='{"API_BASE":"http://localhost:8000"}'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/header.css">
 
-    <!-- CSS chính -->
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="news.css">
 
     <style>
-        /* Đảm bảo phần header/footer được mount không phá layout */
         .mount-header,
         .mount-footer {
             display: contents;

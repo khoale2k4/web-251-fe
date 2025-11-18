@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý nội dung trang - Admin</title>
 
-    <!-- Tabler CSS -->
     <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
 
-    <!-- Sidebar cố định giống file settings -->
     <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
 
     <style>
@@ -23,7 +21,6 @@
     <div class="mount-admin-sidebar"></div>
 
     <div class="page-wrapper">
-        <!-- Header -->
         <div class="page-header d-print-none">
             <div class="container-xl">
                 <div class="row g-2 align-items-center">
@@ -32,7 +29,7 @@
                             Quản lý nội dung trang
                         </h2>
                         <div class="text-muted mt-1">
-                            Thay đổi nội dung hiển thị trên Trang chủ và Trang giới thiệu
+                            Thay đổi nội dung hiển thị trên Trang giới thiệu
                         </div>
                     </div>
                     <div class="col-auto ms-auto d-print-none">
@@ -45,17 +42,13 @@
             </div>
         </div>
 
-        <!-- Body -->
         <div class="page-body">
             <div class="container-xl">
                 <form id="pageContentForm" class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Nội dung các trang</h3>
-                    </div>
                     <div class="card-body">
 
-                        <!-- Tabs giống style settings -->
-                        <ul class="nav nav-tabs" data-bs-toggle="tabs">
+                       
+                        <!-- <ul class="nav nav-tabs" data-bs-toggle="tabs">
                             <li class="nav-item">
                                 <a href="#tab-home" class="nav-link active" data-bs-toggle="tab">
                                     <i class="ti ti-home me-1"></i> Trang chủ
@@ -66,11 +59,11 @@
                                     <i class="ti ti-info-circle me-1"></i> Trang giới thiệu
                                 </a>
                             </li>
-                        </ul>
+                        </ul> -->
 
                         <div class="tab-content mt-3">
-                            <!-- TAB: TRANG CHỦ -->
-                            <div class="tab-pane active show" id="tab-home">
+                           
+                            <div class="tab-pane show" id="tab-home">
                                 <h3 class="card-title mb-3">Hero section</h3>
                                 <div class="mb-3">
                                     <label class="form-label">Tiêu đề lớn (hero_title)</label>
@@ -108,8 +101,8 @@
                                 </div>
                             </div>
 
-                            <!-- TAB: GIỚI THIỆU -->
-                            <div class="tab-pane" id="tab-about">
+                           
+                            <div class="tab-pane active" id="tab-about">
                                 <h3 class="card-title mb-3">Nội dung Trang giới thiệu</h3>
                                 <div class="mb-3">
                                     <label class="form-label">Tiêu đề (about_title)</label>

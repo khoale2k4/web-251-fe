@@ -45,7 +45,7 @@ function populateForm(settings) {
 
     // Display logo
     if (settings.logo) {
-        document.getElementById('logoPreview').src = settings.logo;
+        document.getElementById('logoPreview').src = `${API_BASE}/${settings.logo}`;
         document.getElementById('logoPreview').style.display = 'block';
         document.getElementById('noLogo').style.display = 'none';
     } else {
@@ -55,7 +55,7 @@ function populateForm(settings) {
 
     // Display favicon
     if (settings.favicon) {
-        document.getElementById('faviconPreview').src = settings.favicon;
+        document.getElementById('faviconPreview').src = `${API_BASE}/${settings.favicon}`;
         document.getElementById('faviconPreview').style.display = 'block';
         document.getElementById('noFavicon').style.display = 'none';
     } else {
@@ -133,10 +133,10 @@ async function saveSettings(e) {
 async function uploadImage(file, type) {
     try {
         const formData = new FormData();
-        formData.append('image', file);
+        formData.append('file', file);
         formData.append('type', type);
 
-        const response = await fetch(`${API_BASE}/site-settings/upload`, {
+        const response = await fetch(`${API_BASE}/upload`, {
             method: 'POST',
             body: formData
         });
@@ -149,13 +149,13 @@ async function uploadImage(file, type) {
 
         // Update current settings
         if (type === 'logo') {
-            currentSettings.logo = result.data.url;
-            document.getElementById('logoPreview').src = result.data.url;
+            currentSettings.logo = result.url;
+            document.getElementById('logoPreview').src = result.url;
             document.getElementById('logoPreview').style.display = 'block';
             document.getElementById('noLogo').style.display = 'none';
         } else if (type === 'favicon') {
-            currentSettings.favicon = result.data.url;
-            document.getElementById('faviconPreview').src = result.data.url;
+            currentSettings.favicon = result.url;
+            document.getElementById('faviconPreview').src = result.url;
             document.getElementById('faviconPreview').style.display = 'block';
             document.getElementById('noFavicon').style.display = 'none';
         }

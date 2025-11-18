@@ -11,7 +11,6 @@ async function handleLogin(e, popup) {
   const form = e.target;
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
-  console.log(data);
 
   try {
     const response = await fetch(`${API_BASE}/users/login`, {
@@ -34,7 +33,11 @@ async function handleLogin(e, popup) {
     });
 
     setTimeout(() => {
-      window.location.href = '/fe/index.html';
+      if (result.user.role === 'admin') {
+        window.location.href = '/fe/admin/';
+      } else {
+        window.location.href = '/fe/index.html';
+      }
     }, 1000);
 
   } catch (err) {
