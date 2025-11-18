@@ -96,7 +96,7 @@ async function fetchAndRenderProducts(page = 1, query = '') {
         const hasDiscount = parseFloat(product.discount) > 0;
         const price = parseFloat(product.price);
         const finalPrice = parseFloat(product.final_price);
-        const imageUrl = `${API_BASE}/${product.image}`;
+        const imageUrl = `${API_BASE}${product.image}`;
         return `
             <div class="product-card">
               <a href="/fe/pages/products/detail.html?id=${product.id}" class="product-image-link">

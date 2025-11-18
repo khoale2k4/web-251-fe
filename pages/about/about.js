@@ -1,3 +1,4 @@
+
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 
@@ -11,24 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const response = await fetch(apiUrl);
 
-      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      
       const result = await response.json();
 
-      
       if (result.success && result.data) {
         const data = result.data;
 
         
         const titleElement = document.getElementById('about-title');
         const contentElement = document.getElementById('about-content');
-        const imageElement = document.getElementById('about-image');
 
-        
         if (titleElement) {
           titleElement.textContent = data.about_title;
         }
@@ -37,12 +33,51 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         
-        if (imageElement && data.about_image) {
+        
+        
+        const galleryRow = document.getElementById('about-gallery-row');
+        
+        if (galleryRow && data.about_image) {
+          let imageUrls = [];
+          try {
+            
+            const decodedString = data.about_image.replace(/&quot;/g, '"');
+            imageUrls = JSON.parse(decodedString);
+          } catch (e) {
+            console.error('Lỗi khi parse mảng ảnh (about_image):', e);
+          }
+
           
-          const imageUrl = baseUrl + data.about_image;
-          imageElement.src = imageUrl;
-          imageElement.alt = data.about_title; 
+          if (Array.isArray(imageUrls) && imageUrls.length > 0) {
+            
+            
+            galleryRow.innerHTML = ''; 
+            
+            
+            imageUrls.forEach(imageUrlPath => {
+              const fullImageUrl = baseUrl + imageUrlPath;
+              
+              
+              const colHtml = `
+                <div class="col mb-3">
+                  <div class="bg-cover rounded bg-body-tertiary" style="height: 15rem">
+                    <img src="${fullImageUrl}" 
+                         alt="${data.about_title}" 
+                         class="bg-cover rounded" 
+                         style="height: 15rem; width: 100%; object-fit: cover;">
+                  </div>
+                </div>
+              `;
+              
+              
+              galleryRow.innerHTML += colHtml;
+            });
+
+          } else {
+            console.warn('Mảng about_image rỗng hoặc không hợp lệ.');
+          }
         }
+        
 
       } else {
         console.error('Failed to get data:', result.message);
@@ -58,6 +93,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  
   loadAboutContent();
 });

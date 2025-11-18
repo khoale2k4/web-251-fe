@@ -1,13 +1,17 @@
-// Admin Page Contents Management
+
+
 import { BASE_URL } from '../../js/config.js';
 
-const API_BASE = BASE_URL; // ví dụ: http://localhost/web-251-be
+const API_BASE = BASE_URL;
+const UPLOAD_API = `${API_BASE}/upload`;
 let currentContents = null;
 
-// Load data từ BE
+
+let aboutImageUrls = [];
+
+
 async function loadPageContents() {
     try {
-        // GỌI API MỚI (không .php nữa)
         const response = await fetch(`${API_BASE}/page-contents`);
         const result = await response.json();
 
@@ -23,7 +27,7 @@ async function loadPageContents() {
 }
 
 function fillForm(data) {
-    // Trang chủ - hero
+
     document.getElementById('homeHeroTitle').value =
         data.home_hero_title || '';
     document.getElementById('homeHeroSubtitle').value =
@@ -34,20 +38,57 @@ function fillForm(data) {
         data.home_hero_button_link || '';
     document.getElementById('homeHeroImage').value =
         data.home_hero_image || '';
-
-    // Trang chủ - intro
     document.getElementById('homeIntroTitle').value =
         data.home_intro_title || '';
     document.getElementById('homeIntroText').value =
         data.home_intro_text || '';
 
-    // Trang giới thiệu
+
     document.getElementById('aboutTitle').value =
         data.about_title || '';
     document.getElementById('aboutContent').value =
         data.about_content || '';
-    document.getElementById('aboutImage').value =
-        data.about_image || '';
+
+
+
+    document.getElementById('aboutImage').value = data.about_image || '[]';
+
+
+    aboutImageUrls = [];
+    if (data.about_image) {
+        try {
+
+            const decodedString = data.about_image.replace(/&quot;/g, '"');
+
+
+            aboutImageUrls = JSON.parse(decodedString);
+
+
+            if (!Array.isArray(aboutImageUrls)) {
+
+
+                aboutImageUrls = [];
+            }
+
+        } catch (e) {
+
+
+            console.warn("Không thể parse JSON, có thể là dữ liệu cũ (một URL đơn):", data.about_image);
+
+
+
+            if (data.about_image && !data.about_image.startsWith('[')) {
+                aboutImageUrls = [data.about_image];
+            } else {
+
+                aboutImageUrls = [];
+            }
+        }
+    }
+    console.log(aboutImageUrls);
+
+    renderImagePreviews();
+
 
     if (data.updated_at) {
         document.getElementById('lastUpdate').textContent =
@@ -55,7 +96,96 @@ function fillForm(data) {
     }
 }
 
-// Save data xuống BE
+
+async function handleImageUpload(files) {
+    const previewContainer = document.getElementById('aboutImagePreview');
+    const originalHtml = previewContainer.innerHTML;
+    previewContainer.innerHTML += `
+        <div id="upload-loading" class="spinner-border spinner-border-sm" role="status"></div>
+    `;
+
+    for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch(UPLOAD_API, {
+                method: 'POST',
+                body: formData,
+
+            });
+
+            const result = await response.json();
+
+            if (result && result.url) {
+                aboutImageUrls.push(result.url);
+            } else {
+                console.warn('Upload thành công nhưng không nhận được URL:', result);
+            }
+        } catch (err) {
+            console.error('Lỗi upload ảnh:', err);
+            alert(`Tải lên file ${file.name} thất bại.`);
+        }
+    }
+
+
+    document.getElementById('upload-loading')?.remove();
+
+
+    renderImagePreviews();
+    updateHiddenImageInput();
+}
+
+
+function renderImagePreviews() {
+    const previewContainer = document.getElementById('aboutImagePreview');
+    previewContainer.innerHTML = '';
+
+    aboutImageUrls.forEach((url, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'avatar avatar-xl m-1';
+        wrapper.style.position = 'relative';
+
+        const img = document.createElement('img');
+        img.className = 'avatar-img rounded';
+
+
+        img.src = url.startsWith('http') ? url : `${API_BASE}${url}`;
+
+        const removeBtn = document.createElement('a');
+        removeBtn.href = '#';
+        removeBtn.className = 'avatar-badge bg-danger text-white';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.style.cursor = 'pointer';
+        removeBtn.style.textDecoration = 'none';
+
+        removeBtn.onclick = (e) => {
+            e.preventDefault();
+            removeImage(index);
+        };
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(removeBtn);
+        previewContainer.appendChild(wrapper);
+    });
+}
+
+
+function removeImage(index) {
+    if (confirm('Bạn có chắc muốn xoá ảnh này?')) {
+        aboutImageUrls.splice(index, 1);
+        renderImagePreviews();
+        updateHiddenImageInput();
+    }
+}
+
+
+function updateHiddenImageInput() {
+    const hiddenInput = document.getElementById('aboutImage');
+    hiddenInput.value = JSON.stringify(aboutImageUrls);
+}
+
+
 async function savePageContents(e) {
     e.preventDefault();
 
@@ -79,7 +209,6 @@ async function savePageContents(e) {
             about_image: document.getElementById('aboutImage').value.trim(),
         };
 
-        // GỌI API MỚI (PUT /page-contents)
         const response = await fetch(`${API_BASE}/page-contents`, {
             method: 'PUT',
             headers: {
@@ -110,10 +239,17 @@ async function savePageContents(e) {
     }
 }
 
-// Init
+
 document.addEventListener('DOMContentLoaded', () => {
     loadPageContents();
     document
         .getElementById('pageContentForm')
         .addEventListener('submit', savePageContents);
+
+
+    document.getElementById('aboutImageUpload').addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleImageUpload(e.target.files);
+        }
+    });
 });
