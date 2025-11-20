@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thêm / Sửa bài viết - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../admin-sidebar.css?v=102">
+  <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+  <style>
+    .page-body { padding: 1.5rem; }
+    .editor-actions { gap: .5rem; display:flex; align-items:center; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="mount-admin-sidebar"></div>
+    <div class="page-wrapper">
+      <div class="page-header">
+        <div class="container-xl">
+          <h2 class="page-title">Thêm / Sửa bài viết</h2>
+        </div>
+      </div>
+
+      <div class="page-body">
+        <div class="container-xl">
+          <div class="card">
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label">Tiêu đề</label>
+                <input id="title" class="form-control" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Nội dung</label>
+                <textarea id="content" rows="10" class="form-control"></textarea>
+              </div>
+
+              <div class="mb-3 editor-actions">
+                <div>
+                  <label class="form-label">Hình ảnh</label>
+                  <input type="file" id="imageFile" accept="image/*" class="form-control" />
+                </div>
+                <div style="display:flex;flex-direction:column;gap:.5rem;margin-left:8px;">
+                  <button id="btnInsertImage" class="btn btn-outline-primary">Chèn ảnh vào nội dung</button>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Tác giả (ID)</label>
+                <input id="author_id" type="number" class="form-control" value="1" />
+              </div>
+
+              <div class="d-flex gap-2">
+                <button id="btnSave" class="btn btn-primary">Lưu</button>
+                <a href="index.html" class="btn btn-secondary">Quay lại</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabler JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+  <script src="../sidebar-fix.js?v=2"></script>
+
+  <!-- nicEdit (WYSIWYG) -->
+  <script src="//js.nicedit.com/nicEdit-latest.js"></script>
+
+  <script type="module" src="admin_news_edit.js"></script>
+  <script type="module">
+    import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      mountAdminSidebar('.mount-admin-sidebar', 'admin-news');
+    });
+  </script>
+</body>
+</html>

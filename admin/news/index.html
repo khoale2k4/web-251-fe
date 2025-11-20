@@ -68,40 +68,41 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="card-footer d-flex align-items-center" id="newsPager">
+                            <p class="m-0 text-muted" id="postSummary">
+                                <span>Đang tải...</span>
+                            </p>
+                            <ul class="pagination m-0 ms-auto">
+                                <li class="page-item">
+                                    <a class="page-link btn-prev" href="#">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M15 6l-6 6l6 6"></path>
+                                        </svg>
+                                        Prev
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link btn-next" href="#">
+                                        Next
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M9 6l6 6l-6 6"></path>
+                                        </svg>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Modal thêm/sửa -->
-            <div class="modal modal-blur fade" id="postModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalTitle">Thêm bài viết</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label class="form-label">Tiêu đề</label>
-                                <input type="text" class="form-control" id="title" placeholder="Nhập tiêu đề">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Nội dung</label>
-                                <textarea class="form-control" id="content" rows="4"
-                                    placeholder="Nhập nội dung"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Tác giả (ID)</label>
-                                <input type="number" class="form-control" id="author_id" value="1">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-link link-secondary" data-bs-dismiss="modal">Hủy</button>
-                            <button class="btn btn-primary" id="btnSave">Lưu</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Add / Edit moved to dedicated page: edit.html -->
+            <!-- The modal was removed to ensure nicEdit initializes reliably on a visible page. -->
         </div>
     </div>
 
