@@ -1,4 +1,5 @@
 // Admin Comment Management
+import { showToast } from '../utils/toast.js';
 
 // Using PHP built-in server on port 8000
 const API_BASE = 'http://localhost:8000';
@@ -279,7 +280,7 @@ async function viewComment(id) {
         const refName = type === 'post' ? (comment.post_title || '') : (comment.product_name || '');
 
         document.getElementById('detailUser').textContent = comment.user_name || (comment.user_id ? `User #${comment.user_id}` : 'Ẩn danh');
-        document.getElementById('detailType').innerHTML = `<span class="badge bg-${type === 'post' ? 'blue' : 'green'}">${typeText}</span>`;
+        document.getElementById('detailType').innerHTML = `<span class="badge bg-${type === 'post' ? 'blue' : 'green'} text-white">${typeText}</span>`;
         document.getElementById('detailReference').textContent = refName ? `${refName} (#${refId})` : `#${refId}`;
         document.getElementById('detailContent').textContent = comment.content || '';
         document.getElementById('detailDate').textContent = comment.created_at ? new Date(comment.created_at).toLocaleString('vi-VN') : '-';
@@ -293,16 +294,12 @@ async function viewComment(id) {
 
     } catch (error) {
         console.error('Error viewing comment:', error);
-        alert('Không thể tải chi tiết bình luận. Vui lòng thử lại.');
+        showToast({ message: 'Không thể tải chi tiết bình luận. Vui lòng thử lại.', type: 'error' });
     }
 }
 
 // Delete comment
 async function deleteComment(id) {
-    if (!confirm('Bạn có chắc chắn muốn xóa bình luận này?')) {
-        return;
-    }
-
     try {
         const response = await fetch(`${API_BASE}/comments/${id}`, {
             method: 'DELETE'
@@ -327,11 +324,11 @@ async function deleteComment(id) {
 
         loadComments(currentPage);
         loadStats();
-        alert('Đã xóa bình luận thành công!');
+        showToast({ message: 'Đã xóa bình luận thành công!', type: 'success' });
 
     } catch (error) {
         console.error('Error deleting comment:', error);
-        alert('Không thể xóa bình luận. Vui lòng thử lại.');
+        showToast({ message: 'Không thể xóa bình luận. Vui lòng thử lại.', type: 'error' });
     }
 }
 
@@ -418,7 +415,7 @@ function escapeHtml(text) {
 // Export to Excel
 function exportToExcel() {
     if (allFilteredComments.length === 0) {
-        alert('Không có dữ liệu để xuất!');
+        showToast({ message: 'Không có dữ liệu để xuất!', type: 'warning' });
         return;
     }
     
@@ -449,12 +446,14 @@ function exportToExcel() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    
+    showToast({ message: 'Đã xuất file Excel thành công!', type: 'success' });
 }
 
 // Export to PDF
 function exportToPDF() {
     if (allFilteredComments.length === 0) {
-        alert('Không có dữ liệu để xuất!');
+        showToast({ message: 'Không có dữ liệu để xuất!', type: 'warning' });
         return;
     }
     
@@ -531,8 +530,14 @@ function exportToPDF() {
     printWindow.focus();
     setTimeout(() => {
         printWindow.print();
+        showToast({ message: 'Đã mở cửa sổ in PDF!', type: 'success' });
     }, 250);
 }
+
+// Make functions globally accessible for onclick handlers
+window.loadComments = loadComments;
+window.viewComment = viewComment;
+window.deleteComment = deleteComment;
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {

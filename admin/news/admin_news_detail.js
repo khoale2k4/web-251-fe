@@ -1,3 +1,5 @@
+import { showToast } from '../utils/toast.js';
+
 (function(){
   const API_BASE = window.__ENV__?.API_BASE || 'http://localhost:8000';
 
@@ -37,14 +39,15 @@
       });
 
     btnDelete.addEventListener('click', function(){
-      if(!confirm('Bạn có chắc muốn xoá bài viết này?')) return;
       fetch(`${API_BASE}/posts/${id}`, { method: 'DELETE' })
         .then(r => r.json())
         .then(resp => {
-          alert('Xoá thành công');
-          window.location.href = 'index.html';
+          showToast({ message: 'Xoá thành công', type: 'success' });
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
         })
-        .catch(err => alert('Lỗi khi xoá'));
+        .catch(err => showToast({ message: 'Lỗi khi xoá', type: 'error' }));
     });
   }
 })();

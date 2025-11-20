@@ -1,4 +1,5 @@
 // Admin News Management
+import { showToast } from '../utils/toast.js';
 
 // Using PHP built-in server on port 8000
 const API_BASE = 'http://localhost:8000';
@@ -217,10 +218,6 @@ function editPost(id) {
 
 // Delete post
 async function deletePost(id) {
-    if (!confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
-        return;
-    }
-
     try {
         const response = await fetch(`${API_BASE}/posts/${id}`, {
             method: 'DELETE'
@@ -234,11 +231,11 @@ async function deletePost(id) {
 
         loadPosts(currentPage);
         loadStats();
-        alert('Đã xóa bài viết thành công!');
+        showToast({ message: 'Đã xóa bài viết thành công!', type: 'success' });
 
     } catch (error) {
         console.error('Error deleting post:', error);
-        alert('Không thể xóa bài viết. Vui lòng thử lại.');
+        showToast({ message: 'Không thể xóa bài viết. Vui lòng thử lại.', type: 'error' });
     }
 }
 
@@ -255,6 +252,11 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// Make functions globally accessible for onclick handlers
+window.loadPosts = loadPosts;
+window.editPost = editPost;
+window.deletePost = deletePost;
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
