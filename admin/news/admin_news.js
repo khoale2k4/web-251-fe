@@ -104,7 +104,7 @@ function displayPosts(posts) {
     if (posts.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" class="text-center text-muted py-4">
+                <td colspan="6" class="text-center text-muted py-4">
                     <i class="ti ti-inbox me-2"></i>
                     Không có bài viết nào
                 </td>
@@ -125,6 +125,17 @@ function displayPosts(posts) {
         const excerptPreview = post.excerpt && post.excerpt.length > 60 
             ? post.excerpt.substring(0, 60) + '...' 
             : (post.excerpt || '');
+        
+        // Status badge
+        const status = post.status || 'draft';
+        const statusConfig = {
+            'published': { label: 'Xuất bản', class: 'bg-success' },
+            'draft': { label: 'Bản nháp', class: 'bg-secondary' },
+            'scheduled': { label: 'Lên lịch', class: 'bg-info' },
+            'archived': { label: 'Lưu trữ', class: 'bg-warning' }
+        };
+        const statusInfo = statusConfig[status] || statusConfig['draft'];
+        const statusBadge = `<span class="badge ${statusInfo.class} text-white">${statusInfo.label}</span>`;
 
         return `
             <tr>
@@ -134,16 +145,17 @@ function displayPosts(posts) {
                     ${excerptPreview ? `<div class="excerpt-preview">${escapeHtml(excerptPreview)}</div>` : ''}
                 </td>
                 <td>${escapeHtml(authorName)}</td>
+                <td>${statusBadge}</td>
                 <td>${date}</td>
                 <td>
                     <div class="btn-group">
-                        <button class="btn btn-sm btn-secondary" onclick="viewPost(${post.id})" title="Xem chi tiết">
+                        <button class="btn btn-sm btn-secondary" onclick="window.viewPost(${post.id})" title="Xem chi tiết">
                             <i class="ti ti-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-warning" onclick="editPost(${post.id})" title="Sửa">
+                        <button class="btn btn-sm btn-warning" onclick="window.editPost(${post.id})" title="Sửa">
                             <i class="ti ti-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger" onclick="deletePost(${post.id})" title="Xóa">
+                        <button class="btn btn-sm btn-danger" onclick="window.deletePost(${post.id})" title="Xóa">
                             <i class="ti ti-trash"></i>
                         </button>
                     </div>
