@@ -3,9 +3,20 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Tin tức</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin tức - Shoe Store</title>
+    <meta name="description" content="Tin tức, xu hướng giày dép và những bài viết về thời trang mới nhất">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="news.css">
+    <link rel="stylesheet" href="news-modern.css">
     <style>
         .mount-header, .mount-footer { display: contents; }
     </style>
@@ -14,31 +25,103 @@
 <body>
     <div class="mount-header"></div>
 
-    <main>
-        <h1>Tin tức</h1>
-        <div class="news-list">
-            <article class="news-item">
-                <h2>Ra mắt website mới</h2>
-                <p class="news-date">15/12/2024</p>
-                <p>Website demo củaLê Khoa đã được hoàn thành với đầy đủ tính năng...</p>
-                <a href="detail.html" class="read-more">Đọc thêm</a>
-            </article>
+    <!-- Hero Section -->
+    <section class="news-hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="fas fa-newspaper"></i>
+                <span>News & Insights</span>
+            </div>
+            <h1 class="hero-title">Tin Tức & Xu Hướng</h1>
+            <p class="hero-subtitle">Khám phá thế giới giày dép, xu hướng thời trang và những câu chuyện đầy cảm hứng</p>
             
-            <article class="news-item">
-                <h2>Công nghệ web hiện đại</h2>
-                <p class="news-date">10/12/2024</p>
-                <p>Những xu hướng công nghệ web mới nhất trong năm 2024...</p>
-                <a href="detail.html" class="read-more">Đọc thêm</a>
-            </article>
-            
-            <article class="news-item">
-                <h2>Kinh nghiệm học lập trình</h2>
-                <p class="news-date">05/12/2024</p>
-                <p>Chia sẻ kinh nghiệm học lập trình web từ sinh viênLê Khoa...</p>
-                <a href="detail.html" class="read-more">Đọc thêm</a>
-            </article>
+            <!-- Search Bar -->
+            <div class="hero-search">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm bài viết..." class="search-input">
+                    <button class="search-btn">Tìm kiếm</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="news-main">
+        <div class="container">
+            <!-- Featured Posts -->
+            <section class="featured-section" id="featuredSection">
+                <h2 class="section-title">
+                    <span class="title-icon">⭐</span>
+                    Bài viết nổi bật
+                </h2>
+                <div class="featured-grid" id="featuredGrid">
+                    <!-- Loading skeleton -->
+                    <div class="skeleton-featured"></div>
+                    <div class="skeleton-featured"></div>
+                </div>
+            </section>
+
+            <!-- Latest Posts -->
+            <section class="posts-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="title-icon">📰</span>
+                        Tin tức mới nhất
+                    </h2>
+                    <div class="view-toggle">
+                        <button class="toggle-btn active" data-view="grid" title="Xem dạng lưới">
+                            <i class="fas fa-grip"></i>
+                        </button>
+                        <button class="toggle-btn" data-view="list" title="Xem dạng danh sách">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="news-grid" id="newsGrid">
+                    <!-- Loading skeleton -->
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be generated by JS -->
+                </div>
+            </section>
+
+            <!-- Newsletter Subscription -->
+            <section class="newsletter-section">
+                <div class="newsletter-card">
+                    <div class="newsletter-icon">
+                        <i class="fas fa-envelope-open-text"></i>
+                    </div>
+                    <div class="newsletter-content">
+                        <h3>Đăng ký nhận tin</h3>
+                        <p>Nhận tin tức mới nhất về giày dép, ưu đãi đặc biệt và xu hướng thời trang</p>
+                    </div>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Email của bạn" class="newsletter-input">
+                        <button class="newsletter-btn">
+                            <span>Đăng ký</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <div class="mount-footer"></div>
 

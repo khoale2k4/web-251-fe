@@ -3,79 +3,176 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Chi tiết tin tức</title>
-    <!-- Thông tin môi trường (sử dụng khi build hoặc chạy server) -->
-    <meta name="app-env" content='{"API_BASE":"http://localhost:8000"}'>
-
-    <!-- CSS chính -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Chi tiết tin tức - Shoe Store</title>
+    <meta name="description" content="Đọc chi tiết bài viết về giày dép và thời trang">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="news.css">
-
+    <link rel="stylesheet" href="news-modern.css">
     <style>
-        /* Đảm bảo phần header/footer được mount không phá layout */
-        .mount-header,
-        .mount-footer {
-            display: contents;
-        }
+        .mount-header, .mount-footer { display: contents; }
     </style>
 </head>
 
 <body>
-    <!-- Header sẽ được render bởi JS -->
     <div class="mount-header"></div>
 
-    <main class="container">
-        <h1>Chi tiết tin tức</h1>
+    <!-- Loading State -->
+    <div id="loadingState" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-circle-notch fa-spin"></i>
+            <p>Đang tải bài viết...</p>
+        </div>
+    </div>
 
-        <article class="news-detail">
-            <h2>Ra mắt website mới</h2>
-            <p class="news-meta">Đăng bởi <strong>Lê Khoa</strong> - 15/12/2024</p>
-
-            <div class="news-content">
-                <p>
-                    Website demo của <strong>Lê Khoa</strong> đã được hoàn thành với đầy đủ tính năng và giao diện hiện
-                    đại.
-                    Dự án này được phát triển nhằm mục đích học tập và thực hành các kỹ năng web development.
-                </p>
-
-                <h3>Tính năng chính:</h3>
-                <ul>
-                    <li>Giao diện responsive</li>
-                    <li>Component-based architecture</li>
-                    <li>ES6 modules</li>
-                    <li>Modern CSS</li>
-                </ul>
-
-                <p>Website được xây dựng với cấu trúc rõ ràng, dễ bảo trì và mở rộng trong tương lai.</p>
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="../../index.html"><i class="fas fa-home"></i> Trang chủ</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="./news.html">Tin tức</a>
+                <i class="fas fa-chevron-right"></i>
+                <span id="breadcrumbTitle">Đang tải...</span>
             </div>
-        </article>
+        </div>
+    </nav>
 
-        <!-- Phần chi tiết bài viết được load động -->
-        <section class="post-detail">
-            <h2 id="postTitle"></h2>
-            <div id="postContent"></div>
-            <p id="postAuthor"></p>
-        </section>
+    <!-- Article Content -->
+    <main class="article-main">
+        <div class="container">
+            <article class="article-detail" id="articleContent">
+                <!-- Article Header -->
+                <header class="article-header">
+                    <h1 class="article-title" id="articleTitle"><!-- Loading --></h1>
+                    
+                    <div class="article-meta">
+                        <div class="author-section">
+                            <div class="author-avatar" id="authorAvatar">A</div>
+                            <div class="author-info">
+                                <div class="author-name" id="authorName"><!-- Loading --></div>
+                                <div class="article-date" id="articleDate"><!-- Loading --></div>
+                            </div>
+                        </div>
+                        
+                        <div class="article-actions">
+                            <button class="action-btn" id="shareBtn" title="Chia sẻ">
+                                <i class="fas fa-share-alt"></i>
+                                <span>Chia sẻ</span>
+                            </button>
+                            <button class="action-btn" id="bookmarkBtn" title="Lưu bài viết">
+                                <i class="far fa-bookmark"></i>
+                                <span>Lưu</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
 
-        <!-- Phần bình luận -->
-        <section class="comments">
-            <h3>Bình luận</h3>
-            <div id="commentList"></div>
+                <!-- Featured Image -->
+                <div class="article-image" id="articleImageContainer">
+                    <!-- Image will be loaded here -->
+                </div>
 
-            <form id="commentForm">
-                <textarea id="commentContent" placeholder="Nhập bình luận của bạn..." required></textarea>
-                <button type="submit">Gửi</button>
-            </form>
-        </section>
+                <!-- Article Body -->
+                <div class="article-body" id="articleBody">
+                    <!-- Content will be loaded here -->
+                </div>
+
+                <!-- Article Footer -->
+                <footer class="article-footer">
+                    <div class="article-tags" id="articleTags">
+                        <!-- Tags will be loaded here -->
+                    </div>
+                    
+                    <div class="social-share">
+                        <span>Chia sẻ:</span>
+                        <button class="social-btn facebook" title="Chia sẻ lên Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </button>
+                        <button class="social-btn twitter" title="Chia sẻ lên Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="social-btn linkedin" title="Chia sẻ lên LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button class="social-btn copy" title="Sao chép link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </footer>
+            </article>
+
+            <!-- Comments Section -->
+            <section class="comments-section" id="commentsSection">
+                <div class="comments-header">
+                    <h2>
+                        <i class="fas fa-comments"></i>
+                        Bình luận
+                        <span class="comment-count" id="commentCount">(0)</span>
+                    </h2>
+                </div>
+
+                <!-- Comment Form -->
+                <div class="comment-form-wrapper">
+                    <form class="comment-form" id="commentForm">
+                        <div class="form-avatar">
+                            <div class="avatar-placeholder">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        <div class="form-content">
+                            <textarea 
+                                id="commentContent" 
+                                placeholder="Viết bình luận của bạn..."
+                                rows="3"
+                                required
+                            ></textarea>
+                            <div class="form-actions">
+                                <button type="submit" class="btn-submit">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Gửi bình luận
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Comments List -->
+                <div class="comments-list" id="commentsList">
+                    <!-- Comments will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Related Posts -->
+            <section class="related-section" id="relatedSection">
+                <h2 class="section-title">
+                    <span class="title-icon">🔥</span>
+                    Bài viết liên quan
+                </h2>
+                <div class="related-grid" id="relatedGrid">
+                    <!-- Related posts will be loaded here -->
+                </div>
+            </section>
+        </div>
     </main>
 
-    <!-- Footer sẽ được render bởi JS -->
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <div class="mount-footer"></div>
 
-    <!-- Scripts -->
-    <script src="../../js/env.js"></script>
     <script type="module" src="../../js/main.js"></script>
-    <script type="module" src="news.js"></script>
+    <script type="module" src="details.js"></script>
 </body>
 
 </html>
