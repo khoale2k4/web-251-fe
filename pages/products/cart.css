@@ -1,0 +1,405 @@
+/* cart.css (PHIÊN BẢN RESPONSIVE HOÀN CHỈNH) */
+
+main {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+main h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 24px;
+}
+
+/* Bố cục chính: 2 cột */
+.cart-layout {
+    display: flex;
+    flex-wrap: wrap;
+    /* Cho phép xuống hàng nếu cần */
+    gap: 30px;
+    align-items: flex-start;
+    /* Để cột tóm tắt không bị kéo dài */
+}
+
+/* --- 2. Cột Danh sách sản phẩm (Bên trái) --- */
+.cart-items {
+    flex: 2 1 600px;
+    /* Co giãn, chiếm 2/3 */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.cart-item {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.cart-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #f3f4f6;
+}
+
+.product-image-link {
+    text-decoration: none;
+}
+
+.cart-info {
+    flex: 1;
+    /* Chiếm hết không gian còn lại */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cart-info h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.cart-info h3 .product-name-link {
+    color: #111827;
+    text-decoration: none;
+}
+
+.cart-info h3 .product-name-link:hover {
+    text-decoration: underline;
+}
+
+.cart-info p {
+    margin: 0;
+    font-size: 1rem;
+    color: #111827;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    width: fit-content;
+    /* Chỉ rộng vừa đủ */
+}
+
+.quantity-control button {
+    background: #f9fafb;
+    border: none;
+    padding: 6px 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.quantity-control button:hover {
+    background: #f3f4f6;
+}
+
+.quantity-control .btn-decrease {
+    border-right: 1px solid #d1d5db;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.quantity-control .btn-increase {
+    border-left: 1px solid #d1d5db;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.quantity-control .quantity {
+    padding: 6px 14px;
+    font-weight: 500;
+}
+
+.btn-remove {
+    background: #f3f4f6;
+    /* Nền xám nhạt */
+    border: 1px solid #d1d5db;
+    /* Viền nhẹ */
+    font-size: 1.2rem;
+    /* Kích thước icon 'x' */
+    color: #6b7280;
+    /* Màu icon */
+    cursor: pointer;
+    width: 32px;
+    /* Kích thước nút */
+    height: 32px;
+    border-radius: 50%;
+    /* Bo tròn */
+
+    /* Căn giữa icon 'x' */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1;
+    margin-left: auto;
+    /* Đẩy sang phải */
+    align-self: center;
+    /* Căn giữa theo chiều dọc với nội dung */
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-remove:hover {
+    background: #ef4444;
+    /* Nền đỏ khi hover */
+    color: #ffffff;
+    /* Icon trắng khi hover */
+    border-color: #ef4444;
+}
+
+/* --- 3. Cột Tóm tắt (Bên phải) --- */
+.cart-summary {
+    flex: 1 1 300px;
+    /* Co giãn, chiếm 1/3 */
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    /* Dính lại khi cuộn */
+    position: sticky;
+    top: 80px;
+    /* 60px (header) + 20px (khoảng cách) */
+}
+
+.cart-summary p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    margin: 0 0 16px 0;
+}
+
+.cart-summary p:last-of-type {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111827;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 16px;
+}
+
+/* Style cho nút (Dùng lại class từ JS) */
+.btn-primary,
+.btn-secondary {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* --- 4. Form Đặt hàng --- */
+.order-form {
+    flex-basis: 100%;
+    /* Chiếm toàn bộ chiều rộng (nằm dưới 2 cột) */
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    /* Tách biệt với 2 cột trên */
+}
+
+.order-form.hidden {
+    display: none;
+}
+
+.order-form h2 {
+    margin-top: 0;
+}
+
+.order-form label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    margin-top: 16px;
+}
+
+.order-form input,
+.order-form select,
+.order-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.order-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+}
+
+.form-actions button {
+    width: auto;
+}
+
+/* --- 5. Giỏ hàng rỗng --- */
+.cart-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+.cart-empty p {
+    font-size: 1.1rem;
+    color: #4b5563;
+}
+
+.cart-empty .btn-primary {
+    width: auto;
+    margin-top: 16px;
+}
+
+/*
+===========================
+    PHẦN RESPONSIVE
+===========================
+*/
+
+/* 1. Máy tính bảng (Tablet) */
+@media (max-width: 900px) {
+    main {
+        padding: 0 0 24px 0;
+        /* XÓA padding ngang của main */
+        margin-top: 20px;
+        /* Giảm margin trên */
+    }
+
+    main h1 {
+        padding: 0 24px;
+        /* THÊM padding cho h1 để nó không dính cạnh */
+    }
+
+    .cart-layout {
+        flex-direction: column;
+        /* Xếp 2 cột chồng lên nhau */
+        gap: 0;
+        /* Xóa gap, vì card sẽ full-width */
+    }
+
+    .cart-items,
+    .cart-summary,
+    .order-form {
+        /* Cho các card full-width, xóa bo góc */
+        border-radius: 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .cart-summary {
+        position: static;
+        /* Hủy dính (sticky) */
+        width: 100%;
+        box-sizing: border-box;
+        border-top: 1px solid #e5e7eb;
+        /* Thêm viền vì nó nằm dưới cart-items */
+    }
+
+    .order-form {
+        margin-top: 24px;
+        /* Giữ khoảng cách với cart-summary */
+    }
+}
+
+/* 2. Di động (Mobile) */
+@media (max-width: 600px) {
+    main {
+        margin-top: 0;
+        /* Xóa margin top trên mobile */
+    }
+
+    main h1 {
+        font-size: 1.5rem;
+        padding: 0 16px;
+        /* Giảm padding cho h1 trên mobile */
+    }
+
+    .cart-items,
+    .cart-summary,
+    .order-form {
+        padding: 20px;
+        /* Giảm padding bên trong card */
+    }
+
+    /* Xếp ảnh và thông tin chồng lên nhau */
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 40px;
+        /* Dành chỗ cho nút Xóa */
+    }
+
+    .cart-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .btn-remove {
+        /* Đưa nút Xóa lên góc phải trên */
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        font-size: 1.75rem;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+        /* Xếp nút chồng lên nhau */
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+}

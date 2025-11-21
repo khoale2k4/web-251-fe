@@ -1,44 +1,37 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Products</title>
-    
+
     <!-- Tabler CSS cho Sidebar -->
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
-    
-    <!-- Admin Sidebar CSS -->
-    <link rel="stylesheet" href="../admin-sidebar.css?v=102">
-    
-    <!-- CSS gốc -->
-    <link rel="stylesheet" href="../admin.css">
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+
+    <!-- <link rel="stylesheet" href="../admin.css"> -->
     <link rel="stylesheet" href="../../css/popUp.css">
     <link rel="stylesheet" href="./product_popup.css">
-    
-    <!-- FINAL FIXED SIDEBAR CSS - Phải load sau cùng để override -->
+
     <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
-    
+    <link rel="stylesheet" href="../../../pagination.css">
+
     <style>
-        /* Đảm bảo sidebar không bị đè bởi nội dung */
         .fixed-sidebar {
             z-index: 1000 !important;
         }
-        
-        /* Đảm bảo page-wrapper có margin-left để không đè lên sidebar */
+
         .page .page-wrapper {
             margin-left: 260px !important;
         }
-        
-        /* Đảm bảo main không có width 100% hoặc position absolute */
+
         .page-wrapper main {
             width: auto !important;
             max-width: none !important;
             position: relative !important;
         }
-        
-        /* Override style.css nếu có */
+
         .page-wrapper main {
             padding: 0 !important;
         }
@@ -63,12 +56,14 @@
                             <div class="card-header d-flex align-items-center">
                                 <h3 class="card-title mb-0">Danh sách sản phẩm</h3>
                                 <div class="ms-auto d-flex filter-group">
-                                    <input type="text" class="form-control product-search" placeholder="Tìm kiếm..." style="width: 220px;" />
-                                    <button class="btn btn-primary ms-2 btn-add">Thêm sản phẩm mới</button>
+                                    <input type="text" class="form-control product-search" placeholder="Tìm kiếm..."
+                                        style="width: 220px;" />
+                                    <button id="btnRefresh" class="btn btn-outline-secondary" style="margin-left: 10px;margin-right: 10px;">Làm mới</button>
+                                    <button id="btnAdd" class="btn btn-success btn-add-product">Thêm sản phẩm mới</button>
                                 </div>
                             </div>
 
-                            <div class="table-responsive">
+                            <div class=" table-responsive">
                                 <table class="table table-striped table-vcenter">
                                     <thead class="table-light">
                                         <tr>
@@ -85,10 +80,15 @@
                                     </thead>
                                     <tbody id="productsTableBody">
                                         <tr>
-                                            <td colspan="9" class="text-center py-4 text-muted">Đang tải dữ liệu...</td>
+                                            <td colspan="9" class="text-center py-4 text-muted">Đang tải dữ
+                                                liệu...</td>
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                            <div id="pagination-container" class="pagination-container" style="display: none;">
+                                <div id="pagination-summary" class="pagination-summary"></div>
+                                <ul id="pagination-controls" class="pagination"></ul>
                             </div>
                         </div>
                     </div>
@@ -99,19 +99,19 @@
 
     <!-- Tabler JS -->
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
-    
+
     <!-- SIDEBAR FIX SCRIPT -->
     <script src="../sidebar-fix.js?v=2"></script>
-    
+
     <!-- JS gốc -->
     <script type="module" src="../../js/main.js?v=6"></script>
     <script type="module" src="admin_products.js?v=6"></script>
     <script type="module">
-      import { mountAdminSidebar } from '../../components/AdminSidebar.js';
-      document.addEventListener('DOMContentLoaded', () => {
-        mountAdminSidebar('.mount-admin-sidebar', 'admin-products');
-      });
+        import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            mountAdminSidebar('.mount-admin-sidebar', 'admin-products');
+        });
     </script>
 </body>
-</html>
 
+</html>

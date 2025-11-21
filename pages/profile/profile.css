@@ -1,0 +1,140 @@
+/* profile.css */
+
+.profile-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.profile-container p.loading-text,
+.profile-container p.error-text {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #6b7280;
+    padding: 40px 0;
+}
+.profile-container p.error-text {
+    color: #ef4444;
+}
+
+/* --- Form Hồ sơ --- */
+#profileForm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+/* 1. Cột Avatar (Bên trái) */
+.profile-avatar-column {
+    flex: 1 1 200px; /* Co giãn, cơ sở 200px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar-preview {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #e5e7eb;
+    margin-bottom: 16px;
+    background-color: #f3f4f6;
+}
+
+.avatar-upload-label {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.avatar-upload-label:hover {
+    background: #e5e7eb;
+}
+
+/* Ẩn input[type=file] gốc */
+#avatar-upload {
+    display: none;
+}
+
+/* 2. Cột Thông tin (Bên phải) */
+.profile-info-column {
+    flex: 2 1 400px; /* Co giãn, gấp đôi cột trái */
+}
+
+.profile-info-column h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+    color: #111827;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group span {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+/* Style cho các trường chỉ đọc */
+.form-group span {
+    background-color: #f9fafb;
+    color: #6b7280;
+    display: block; /* Đảm bảo nó có kích thước */
+}
+
+.form-actions {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.btn-save {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+.btn-save:hover {
+    background: #1d4ed8;
+}
+
+/* * --- LOGIC ẨN/HIỆN QUAN TRỌNG --- 
+ */
+
+/* Khi form ở chế độ CHỈ ĐỌC (is-readonly) */
+#profileForm.is-readonly .avatar-upload-label {
+    display: none; /* Ẩn nút "Thay ảnh" */
+}
+
+#profileForm.is-readonly .btn-save {
+    display: none; /* Ẩn nút "Lưu thay đổi" */
+}

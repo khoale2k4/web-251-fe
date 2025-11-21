@@ -37,3 +37,7 @@ h2 {
     font-size: 18px;
     color: #333;
 }
+
+.td-actions {
+    white-space: nowrap;
+}

@@ -11,18 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return JSON.parse(localStorage.getItem('cart')) || [];
   }
 
-  function updateCartCounter() {
-    const cart = getCart();
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-    const cartCounterElement = document.getElementById('cart-counter');
-    if (cartCounterElement) {
-      cartCounterElement.innerText = totalItems;
-    }
-  }
-
-  updateCartCounter();
-
   const searchForm = document.getElementById('search-form');
   const searchInput = document.getElementById('search-input');
 
@@ -37,6 +25,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-
-  window.updateCartCounter = updateCartCounter;
 });

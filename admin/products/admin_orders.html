@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Orders</title>
-  
-  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
-  
-  <link rel="stylesheet" href="../admin.css">
-  <link rel="stylesheet" href="../../css/tableList.css">
+
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+
   <link rel="stylesheet" href="../../css/popUp.css">
   <link rel="stylesheet" href="admin_orders_tab.css">
+  <link rel="stylesheet" href="../../../pagination.css">
 
   <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
 </head>
@@ -42,7 +42,9 @@
                   </li>
                 </ul>
                 <div class="ms-auto d-flex filter-group">
-                  <input type="text" class="form-control order-search" id="ordersSearch" placeholder="Tìm kiếm..." style="width:220px;" />
+                  <!-- <input type="text" class="form-control order-search" id="ordersSearch" placeholder="Tìm kiếm..."
+                    style="width:220px;" /> -->
+                  <button id="btnRefresh" class="btn btn-outline-secondary">Làm mới</button>
                 </div>
               </div>
               <div class="table-responsive">
@@ -62,8 +64,13 @@
                   </tbody>
                 </table>
               </div>
+              <div class="card-footer">
+                <div id="pagination-container" class="pagination-container" style="display: none;">
+                  <div id="pagination-summary" class="pagination-summary"></div>
+                  <ul id="pagination-controls" class="pagination"></ul>
+                </div>
+              </div>
             </div>
-            <div id="ordersPagination" class="d-flex justify-content-center mt-3"></div>
           </div>
         </div>
       </main>
@@ -71,9 +78,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
-  
+
   <script src="../sidebar-fix.js?v=2"></script>
-  
+
   <script type="module" src="../../js/main.js?v=6"></script>
   <script type="module">
     import { mountAdminSidebar } from '../../components/AdminSidebar.js';
@@ -83,5 +90,5 @@
   </script>
   <script type="module" src="admin_orders.js?v=6"></script>
 </body>
-</html>
 
+</html>
