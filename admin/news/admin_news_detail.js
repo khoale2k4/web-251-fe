@@ -9,7 +9,6 @@ import { showToast } from '../utils/toast.js';
   const id = params.get('id');
 
   const titleEl = qs('#postTitle');
-  const metaEl = qs('#postMeta');
   const contentEl = qs('#postContent');
   const btnEdit = qs('#btnEdit');
   const btnDelete = qs('#btnDelete');
@@ -24,9 +23,7 @@ import { showToast } from '../utils/toast.js';
       .then(r => r.ok ? r.json() : Promise.reject('Lỗi tải bài viết'))
       .then(data => {
         const post = (data && data.data) ? data.data : data;
-        titleEl.textContent = post.title || '—';
-        metaEl.textContent = `ID: ${post.id} • Tác giả: ${post.author_id || '-'} • ${post.created_at || ''}`;
-        contentEl.innerHTML = post.content || '';
+        displayPost(post);
         btnEdit.href = `edit.html?id=${post.id}`;
       })
       .catch(err => {
@@ -56,6 +53,49 @@ import { showToast } from '../utils/toast.js';
     });
   }
 
+  function displayPost(post) {
+    // Title
+    qs('#postTitle').textContent = post.title || '—';
+
+    // Status badge
+    const status = post.status || 'draft';
+    const statusConfig = {
+      'published': { label: 'Xuất bản', class: 'bg-success' },
+      'draft': { label: 'Bản nháp', class: 'bg-secondary' },
+      'scheduled': { label: 'Lên lịch', class: 'bg-info' },
+      'archived': { label: 'Lưu trữ', class: 'bg-warning' }
+    };
+    const statusInfo = statusConfig[status] || statusConfig['draft'];
+    qs('#statusBadge').innerHTML = `<span class="badge ${statusInfo.class} text-white">${statusInfo.label}</span>`;
+
+    // Author
+    qs('#authorName').textContent = post.author_name || `User #${post.author_id || '-'}`;
+
+    // Dates
+    const createdDate = post.created_at ? new Date(post.created_at).toLocaleString('vi-VN') : '-';
+    const publishedDate = post.published_at ? new Date(post.published_at).toLocaleString('vi-VN') : 'Chưa xuất bản';
+    qs('#createdDate').textContent = `Tạo: ${createdDate}`;
+    qs('#publishedDate').textContent = `Xuất bản: ${publishedDate}`;
+
+    // Image
+    if(post.image) {
+      const imgContainer = qs('#postImageContainer');
+      const img = qs('#postImage');
+      img.src = post.image.startsWith('http') ? post.image : `../../${post.image}`;
+      imgContainer.style.display = 'block';
+    }
+
+    // Excerpt
+    if(post.excerpt) {
+      const excerptEl = qs('#postExcerpt');
+      excerptEl.innerHTML = `<strong>Tóm tắt:</strong> ${post.excerpt}`;
+      excerptEl.style.display = 'block';
+    }
+
+    // Content
+    qs('#postContent').innerHTML = post.content || '<p class="text-muted">Không có nội dung</p>';
+  }
+
   function displayComments(comments) {
     const container = qs('#commentsContainer');
     const countEl = qs('#commentCount');
@@ -68,14 +108,18 @@ import { showToast } from '../utils/toast.js';
     }
 
     container.innerHTML = comments.map(c => `
-      <div class="card mb-2">
+      <div class="card mb-2 comment-card">
         <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <strong>${c.user_name || 'User #' + c.user_id}</strong>
-            <span class="text-muted">${new Date(c.created_at).toLocaleString('vi-VN')}</span>
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <strong><i class="ti ti-user me-1"></i>${c.user_name || 'User #' + c.user_id}</strong>
+              ${c.rating ? `<div class="mt-1"><span class="text-warning">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</span></div>` : ''}
+            </div>
+            <span class="text-muted small">
+              <i class="ti ti-clock me-1"></i>${new Date(c.created_at).toLocaleString('vi-VN')}
+            </span>
           </div>
           <div class="mt-2">${c.content || ''}</div>
-          ${c.rating ? `<div class="mt-1"><span class="text-warning">${'★'.repeat(c.rating)}${'☆'.repeat(5-c.rating)}</span></div>` : ''}
         </div>
       </div>
     `).join('');

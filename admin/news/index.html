@@ -131,13 +131,14 @@
                                         <th>Tiêu đề</th>
                                         <th>Tác giả</th>
                                         <th>Trạng thái</th>
+                                        <th>Ngày xuất bản</th>
                                         <th>Ngày tạo</th>
                                         <th class="w-1">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody id="newsTableBody">
                                     <tr>
-                                        <td colspan="6" class="text-center py-4">
+                                        <td colspan="7" class="text-center py-4">
                                             <div class="spinner-border text-primary" role="status">
                                                 <span class="visually-hidden">Đang tải...</span>
                                             </div>
@@ -163,8 +164,11 @@
     <!-- SIDEBAR FIX SCRIPT -->
     <script src="../sidebar-fix.js?v=2"></script>
     
+    <!-- AUTO SCHEDULER - Tự động cập nhật scheduled posts -->
+    <script type="module" src="../utils/auto-scheduler.js"></script>
+    
     <!-- Custom JS -->
-    <script type="module" src="./admin_news.js"></script>
+    <script type="module" src="./admin_news.js?v=4"></script>
     <script type="module">
       import { mountAdminSidebar } from '../../components/AdminSidebar.js';
       document.addEventListener('DOMContentLoaded', () => {

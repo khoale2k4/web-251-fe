@@ -43,7 +43,12 @@ function initEditor(){
     editor = new Quill('#editor-container', {
       theme: 'snow',
       modules: {
-        toolbar: toolbarOptions
+        toolbar: {
+          container: toolbarOptions,
+          handlers: {
+            image: imageHandler
+          }
+        }
       },
       placeholder: 'Nhập nội dung bài viết...'
     });
@@ -52,6 +57,54 @@ function initEditor(){
   } catch(e) {
     console.warn('Quill init failed', e);
   }
+}
+
+// Custom image handler for Quill editor
+function imageHandler() {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', 'image/*');
+  input.click();
+
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      showToast({ message: 'Vui lòng chọn file ảnh!', type: 'error' });
+      return;
+    }
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      showToast({ message: 'Kích thước ảnh không được vượt quá 5MB!', type: 'error' });
+      return;
+    }
+
+    try {
+      showToast({ message: 'Đang upload ảnh...', type: 'info' });
+      
+      // Upload image
+      const imagePath = await uploadImage(file);
+      
+      // Get current cursor position
+      const range = editor.getSelection(true);
+      
+      // Insert image at cursor position
+      // Convert relative path to full URL for display
+      const imageUrl = imagePath.startsWith('http') ? imagePath : `../../${imagePath}`;
+      editor.insertEmbed(range.index, 'image', imageUrl);
+      
+      // Move cursor to next position
+      editor.setSelection(range.index + 1);
+      
+      showToast({ message: 'Thêm ảnh thành công!', type: 'success' });
+    } catch (error) {
+      console.error('Image upload error:', error);
+      showToast({ message: 'Lỗi upload ảnh: ' + error.message, type: 'error' });
+    }
+  };
 }
 
 function getEditorContent(){
@@ -77,25 +130,46 @@ async function uploadImage(file) {
     formData.append('folder', 'news'); // Upload to assets/uploads/news
     formData.append('target', 'assets');
     
-    const response = await fetch(`${API_BASE}/upload`, {
+    const uploadUrl = `${API_BASE}/upload`;
+    console.log('[Upload] URL:', uploadUrl);
+    console.log('[Upload] File:', file.name, file.type, file.size);
+    
+    const response = await fetch(uploadUrl, {
       method: 'POST',
       body: formData
     });
     
+    console.log('[Upload] Response status:', response.status);
+    console.log('[Upload] Response headers:', response.headers);
+    
+    // Get response text first to see what we're getting
+    const responseText = await response.text();
+    console.log('[Upload] Response text:', responseText.substring(0, 500));
+    
     if (!response.ok) {
-      throw new Error('Upload failed: ' + response.status);
+      throw new Error('Upload failed: ' + response.status + ' - ' + responseText.substring(0, 200));
     }
     
-    const result = await response.json();
+    // Try to parse as JSON
+    let result;
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error('[Upload] JSON parse error:', e);
+      console.error('[Upload] Response was:', responseText);
+      throw new Error('Server returned invalid JSON. Response: ' + responseText.substring(0, 200));
+    }
     
     if (!result.success) {
       throw new Error(result.error || 'Upload failed');
     }
     
+    console.log('[Upload] Success! Path:', result.relativePath);
+    
     // Return relative path (e.g., "assets/uploads/news/image-name.jpg")
     return result.relativePath;
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('[Upload] Error:', error);
     throw error;
   }
 }
@@ -194,14 +268,27 @@ async function savePost(id, autoPublish = false){
   const slug = qs('#slug').value.trim();
   const excerpt = qs('#excerpt').value.trim();
   const author_id = Number(qs('#author_id').value) || 1;
-  const status = autoPublish ? 'published' : qs('#status').value;
-  const published_at = qs('#published_at').value || null;
+  let status = autoPublish ? 'published' : qs('#status').value;
+  let published_at = qs('#published_at').value || null;
   const image = qs('#imageUrl').value.trim() || null;
   const content = getEditorContent();
   
   if(!title){ 
     showToast({ message: 'Tiêu đề không được để trống', type: 'error' }); 
     return; 
+  }
+
+  // Logic: Nếu chọn "published" mà không có ngày xuất bản → set ngày hiện tại
+  if(status === 'published' && !published_at) {
+    const now = new Date();
+    // Format: YYYY-MM-DDTHH:mm (cho datetime-local input)
+    published_at = now.toISOString().slice(0, 16);
+  }
+
+  // Logic: Nếu chọn "scheduled" mà không có ngày → yêu cầu nhập
+  if(status === 'scheduled' && !published_at) {
+    showToast({ message: 'Vui lòng chọn ngày giờ xuất bản cho bài viết lên lịch', type: 'error' });
+    return;
   }
   
   try{
@@ -215,6 +302,8 @@ async function savePost(id, autoPublish = false){
       published_at,
       image
     };
+    
+    console.log('Saving post with payload:', payload);
     
     const url = id ? `${API_BASE}/posts/${id}` : `${API_BASE}/posts`;
     const method = id ? 'PUT' : 'POST';

@@ -104,7 +104,7 @@ function displayPosts(posts) {
     if (posts.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="text-center text-muted py-4">
+                <td colspan="7" class="text-center text-muted py-4">
                     <i class="ti ti-inbox me-2"></i>
                     Không có bài viết nào
                 </td>
@@ -120,7 +120,8 @@ function displayPosts(posts) {
 
     tbody.innerHTML = paginatedPosts.map(post => {
         const authorName = post.author_name || (post.author_id ? `Author #${post.author_id}` : '-');
-        const date = post.created_at ? new Date(post.created_at).toLocaleString('vi-VN') : '-';
+        const createdDate = post.created_at ? new Date(post.created_at).toLocaleString('vi-VN') : '-';
+        const publishedDate = post.published_at ? new Date(post.published_at).toLocaleString('vi-VN') : '-';
         
         const excerptPreview = post.excerpt && post.excerpt.length > 60 
             ? post.excerpt.substring(0, 60) + '...' 
@@ -146,7 +147,8 @@ function displayPosts(posts) {
                 </td>
                 <td>${escapeHtml(authorName)}</td>
                 <td>${statusBadge}</td>
-                <td>${date}</td>
+                <td>${publishedDate}</td>
+                <td>${createdDate}</td>
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-sm btn-secondary" onclick="window.viewPost(${post.id})" title="Xem chi tiết">
@@ -267,6 +269,7 @@ function escapeHtml(text) {
 
 // Make functions globally accessible for onclick handlers
 window.loadPosts = loadPosts;
+window.viewPost = viewPost;
 window.editPost = editPost;
 window.deletePost = deletePost;
 
