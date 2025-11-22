@@ -1,5 +1,7 @@
 // Admin Contact Management
 
+import { showToast } from '../utils/toast.js';
+
 const API_BASE = 'http://localhost:8000';
 
 let currentPage = 1;
@@ -225,7 +227,7 @@ async function viewContact(id) {
 
     } catch (error) {
         console.error('Error viewing contact:', error);
-        alert('Không thể tải chi tiết liên hệ. Vui lòng thử lại.');
+        showToast({ message: 'Không thể tải chi tiết liên hệ. Vui lòng thử lại.', type: 'error' });
     }
 }
 
@@ -254,7 +256,7 @@ async function markAsRead(id, reload = true) {
     } catch (error) {
         console.error('Error updating status:', error);
         if (reload) {
-            alert('Không thể cập nhật trạng thái. Vui lòng thử lại.');
+            showToast({ message: 'Không thể cập nhật trạng thái. Vui lòng thử lại.', type: 'error' });
         }
     }
 }
@@ -286,20 +288,16 @@ async function markAsReplied() {
         loadContacts(currentPage);
         loadStats();
 
-        alert('Đã đánh dấu là đã phản hồi!');
+        showToast({ message: 'Đã đánh dấu là đã phản hồi!', type: 'success' });
 
     } catch (error) {
         console.error('Error updating status:', error);
-        alert('Không thể cập nhật trạng thái. Vui lòng thử lại.');
+        showToast({ message: 'Không thể cập nhật trạng thái. Vui lòng thử lại.', type: 'error' });
     }
 }
 
 // Delete contact
 async function deleteContact(id) {
-    if (!confirm('Bạn có chắc chắn muốn xóa liên hệ này?')) {
-        return;
-    }
-
     try {
         const response = await fetch(`${API_BASE}/contacts/${id}`, {
             method: 'DELETE'
@@ -313,11 +311,11 @@ async function deleteContact(id) {
 
         loadContacts(currentPage);
         loadStats();
-        alert('Đã xóa liên hệ thành công!');
+        showToast({ message: 'Đã xóa liên hệ thành công!', type: 'success' });
 
     } catch (error) {
         console.error('Error deleting contact:', error);
-        alert('Không thể xóa liên hệ. Vui lòng thử lại.');
+        showToast({ message: 'Không thể xóa liên hệ. Vui lòng thử lại.', type: 'error' });
     }
 }
 
@@ -334,6 +332,12 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// Make functions globally accessible for onclick handlers
+window.loadContacts = loadContacts;
+window.viewContact = viewContact;
+window.markAsRead = markAsRead;
+window.deleteContact = deleteContact;
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', function() {
