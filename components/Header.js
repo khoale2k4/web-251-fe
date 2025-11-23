@@ -1,4 +1,5 @@
 import { updateCartCounter } from "../js/updateCartCounter.js";
+import { getCurrentUser, logout } from "../js/auth.js";
 
 const API_BASE = 'http://localhost:8000';
 
@@ -134,18 +135,19 @@ export async function mountHeader(containerSelector, current) {
 
  
   let userName = null;
-  const userId = localStorage.getItem('userId');
-
-  if (userId) {
-    const user = await fetchUser(userId);
-    if (user) {
-      userName = user.name;
-    }
+  let userId = null;
+  
+  // Lấy user từ localStorage
+  const user = getCurrentUser();
+  if (user) {
+    userName = user.name;
+    userId = user.id;
   }
 
  
   const headerHTML = await Header({ current, userName, userId });
   container.innerHTML = headerHTML;
+
  
   const headerElement = container.querySelector('.site-header');
 
@@ -170,9 +172,7 @@ export async function mountHeader(containerSelector, current) {
   const logoutBtn = container.querySelector('#logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('userId');
-      alert('Bạn đã đăng xuất.');
-      window.location.href = '/fe/pages/home/login.html';
+      logout();
     });
   }
 

@@ -3,11 +3,35 @@ import { updateCartCounter } from "./updateCartCounter.js";
 
 const API_BASE = 'http://localhost:8000';
 
-export async function addToCart(productId, userId = 2) {
+export async function addToCart(productId, userId = null) {
 
     // 1. Khởi tạo popup MỘT LẦN ở ngoài
     // Chúng ta sẽ dùng nó cho cả thông báo thành công và thất bại
     const popup = new Popup();
+
+    // 2. Kiểm tra đăng nhập - nếu guest thì yêu cầu đăng nhập
+    if (!userId) {
+        popup.show({
+            title: "Yêu cầu đăng nhập",
+            content: `<p>Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.</p>`,
+            actions: [
+                {
+                    label: "Đăng nhập",
+                    type: "btn-primary",
+                    onClick: () => {
+                        window.location.href = '/fe/pages/home/login.html';
+                    },
+                    close: true
+                },
+                {
+                    label: "Hủy",
+                    type: "btn-secondary",
+                    close: true
+                }
+            ]
+        });
+        return;
+    }
 
     try {
         const response = await fetch(`${API_BASE}/carts/items`, {

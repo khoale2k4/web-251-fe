@@ -1,9 +1,22 @@
 export default function getUserId() {
-    const userId = localStorage.getItem('userId');
-
-    if (!userId) {
-        window.location.href = '/fe/pages/home/login.html';
+    // Kiểm tra localStorage trước (Remember Me)
+    let userStr = localStorage.getItem('user');
+    
+    // Nếu không có, kiểm tra sessionStorage
+    if (!userStr) {
+        userStr = sessionStorage.getItem('user');
     }
 
-    return userId;
+    // Nếu không có user, trả về null (cho phép guest mode)
+    if (!userStr) {
+        return null;
+    }
+
+    try {
+        const user = JSON.parse(userStr);
+        return user.id || null;
+    } catch (e) {
+        console.error('Error parsing user data:', e);
+        return null;
+    }
 }
