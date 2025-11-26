@@ -6,11 +6,7 @@ import { mountFooter } from '../../components/Footer.js';
 import { addToCart } from '../../js/addToCart.js';
 import { updateCartCounter } from '../../js/updateCartCounter.js';
 import getUserId from '../../js/getUserId.js';
-import { BASE_URL } from '../../js/config.js';
-
-const API_BASE = BASE_URL;
-
-
+import { API_BASE } from '../../js/config.js';
 
 const grid = document.querySelector('.products-grid');
 const title = document.getElementById('page-title');
@@ -18,8 +14,6 @@ const clearBtn = document.getElementById('clear-filter');
 const paginationContainer = document.getElementById('pagination-container');
 const paginationSummary = document.getElementById('pagination-summary');
 const paginationControls = document.getElementById('pagination-controls');
-
-
 
 const state = {
   products: [],

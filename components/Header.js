@@ -2,16 +2,17 @@ import { updateCartCounter } from "../js/updateCartCounter.js";
 import { API_BASE, PATHS } from "../js/config.js";
 import { Storage } from "../js/storage.js";
 import { API } from "../js/api.js";
+import { Security } from "../js/security.js";
 
 async function fetchUser(userId) {
   if (!userId) return null;
   try {
     const result = await API.get(`/users/${userId}`);
     if (result.success && result.data) {
-      return result.data;
+      return Security.sanitizeUser(result.data);
     }
     if (result.id) {
-      return result;
+      return Security.sanitizeUser(result);
     }
     return null;
   } catch (err) {
@@ -21,6 +22,8 @@ async function fetchUser(userId) {
 }
 
 export async function Header({ current, userName = null, userId = null }) {
+  // Sanitize inputs just in case
+  userName = Security.escapeHtml(userName);
   const navItems = [
     { href: PATHS.HOME, label: 'Home', key: 'home' },
     { href: PATHS.ABOUT, label: 'About', key: 'about' },

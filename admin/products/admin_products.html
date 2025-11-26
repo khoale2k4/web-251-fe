@@ -58,8 +58,10 @@
                                 <div class="ms-auto d-flex filter-group">
                                     <input type="text" class="form-control product-search" placeholder="Tìm kiếm..."
                                         style="width: 220px;" />
-                                    <button id="btnRefresh" class="btn btn-outline-secondary" style="margin-left: 10px;margin-right: 10px;">Làm mới</button>
-                                    <button id="btnAdd" class="btn btn-success btn-add-product">Thêm sản phẩm mới</button>
+                                    <button id="btnRefresh" class="btn btn-outline-secondary"
+                                        style="margin-left: 10px;margin-right: 10px;">Làm mới</button>
+                                    <button id="btnAdd" class="btn btn-success btn-add-product">Thêm sản phẩm
+                                        mới</button>
                                 </div>
                             </div>
 
@@ -106,6 +108,10 @@
     <!-- JS gốc -->
     <script type="module" src="../../js/main.js?v=6"></script>
     <script type="module" src="admin_products.js?v=6"></script>
+
+    <!-- ADMIN GUARD -->
+    <script type="module" src="../js/admin-guard.js"></script>
+
     <script type="module">
         import { mountAdminSidebar } from '../../components/AdminSidebar.js';
         document.addEventListener('DOMContentLoaded', () => {

@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Chi tiết bình luận - Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
 
-    <style>
-        /* Giữ nguyên style cũ */
-        .table .btn {
-            padding: 0.35rem 0.6rem;
-        }
+  <style>
+    /* Giữ nguyên style cũ */
+    .table .btn {
+      padding: 0.35rem 0.6rem;
+    }
 
-        .filter-group {
-            gap: .5rem;
-            align-items: center;
-        }
+    .filter-group {
+      gap: .5rem;
+      align-items: center;
+    }
 
-        .page-body {
-            padding: 1.5rem;
-        }
-    </style>
+    .page-body {
+      padding: 1.5rem;
+    }
+  </style>
 </head>
-<body>
-    <div class="page">
-        <!-- Tabler Sidebar mount (shared layout with index) -->
-        <div class="mount-admin-sidebar"></div>
 
-        <div class="page-wrapper">
+<body>
+  <div class="page">
+    <!-- Tabler Sidebar mount (shared layout with index) -->
+    <div class="mount-admin-sidebar"></div>
+
+    <div class="page-wrapper">
       <div class="page-header">
         <div class="container-xl">
           <h2 class="page-title">Chi tiết bình luận</h2>
@@ -63,6 +65,9 @@
   <script src="../sidebar-fix.js?v=2"></script>
 
   <script type="module" src="admin_comments_detail.js"></script>
+  <!-- ADMIN GUARD -->
+  <script type="module" src="../js/admin-guard.js"></script>
+
   <script type="module">
     import { mountAdminSidebar } from '../../components/AdminSidebar.js';
     document.addEventListener('DOMContentLoaded', () => {
@@ -70,4 +75,5 @@
     });
   </script>
 </body>
+
 </html>

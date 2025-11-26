@@ -1,14 +1,14 @@
 
 
-import { BASE_URL } from '../../js/config.js';
+import { API_BASE } from '../../js/config.js';
 
-const API_BASE = BASE_URL;
 const UPLOAD_API = `${API_BASE}/upload`;
 let currentContents = null;
 
+const filePath = 'storage';
+const avatarPath = '/' + filePath;
 
 let aboutImageUrls = [];
-
 
 async function loadPageContents() {
     try {
@@ -107,6 +107,8 @@ async function handleImageUpload(files) {
     for (const file of files) {
         const formData = new FormData();
         formData.append('file', file);
+        formData.append("folder", filePath);
+        formData.append("target", "");
 
         try {
             const response = await fetch(UPLOAD_API, {
@@ -117,8 +119,8 @@ async function handleImageUpload(files) {
 
             const result = await response.json();
 
-            if (result && result.url) {
-                aboutImageUrls.push(result.url);
+            if (result && result.relativePath) {
+                aboutImageUrls.push(avatarPath + '/' + result.relativePath);
             } else {
                 console.warn('Upload thành công nhưng không nhận được URL:', result);
             }

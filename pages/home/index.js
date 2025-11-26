@@ -1,6 +1,7 @@
-const API_BASE = 'http://localhost:8000';
+import { API_BASE } from '../../js/config.js';
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
+import { Security } from '../../js/security.js';
 
 // Load site settings
 async function loadSiteSettings() {
@@ -54,7 +55,7 @@ function updatePageContent(settings) {
 
     // Update about section
     if (settings.about_us) {
-        document.getElementById('aboutText').innerHTML = `<p>${escapeHtml(settings.about_us)}</p>`;
+        document.getElementById('aboutText').innerHTML = `<p>${Security.escapeHtml(settings.about_us)}</p>`;
     } else {
         document.getElementById('aboutText').innerHTML = '<p>Shoe Store là cửa hàng chuyên cung cấp các loại giày chất lượng cao từ các thương hiệu nổi tiếng. Chúng tôi cam kết mang đến cho khách hàng những sản phẩm chính hãng, đa dạng mẫu mã với giá cả hợp lý.</p>';
     }
@@ -101,15 +102,8 @@ function updatePageContent(settings) {
     }
 }
 
-// Escape HTML to prevent XSS
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     mountHeader('.mount-header', 'home');
     mountFooter('.mount-footer');
     loadSiteSettings();

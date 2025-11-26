@@ -3,7 +3,12 @@ import { API_BASE } from './config.js';
 export const API = {
     async get(endpoint) {
         try {
-            const response = await fetch(`${API_BASE}${endpoint}`);
+            const response = await fetch(`${API_BASE}${endpoint}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include' // Send cookies if available
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -22,6 +27,7 @@ export const API = {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
+                credentials: 'include' // Send cookies if available
             });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

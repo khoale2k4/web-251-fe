@@ -1,9 +1,10 @@
 // Admin Site Settings Management
-import { BASE_URL } from '../../js/config.js';
-
-const API_BASE = BASE_URL;
+import { API_BASE } from '../../js/config.js';
+console.log(API_BASE);
 
 let currentSettings = null;
+const filePath = 'storage';
+const avatarPath = '/' + filePath;
 
 // Load settings
 async function loadSettings() {
@@ -45,7 +46,7 @@ function populateForm(settings) {
 
     // Display logo
     if (settings.logo) {
-        document.getElementById('logoPreview').src = `${API_BASE}/${settings.logo}`;
+        document.getElementById('logoPreview').src = `${API_BASE}${settings.logo}`;
         document.getElementById('logoPreview').style.display = 'block';
         document.getElementById('noLogo').style.display = 'none';
     } else {
@@ -55,7 +56,7 @@ function populateForm(settings) {
 
     // Display favicon
     if (settings.favicon) {
-        document.getElementById('faviconPreview').src = `${API_BASE}/${settings.favicon}`;
+        document.getElementById('faviconPreview').src = `${API_BASE}${settings.favicon}`;
         document.getElementById('faviconPreview').style.display = 'block';
         document.getElementById('noFavicon').style.display = 'none';
     } else {
@@ -95,12 +96,12 @@ async function saveSettings(e) {
             copyright: document.getElementById('copyright').value
         };
 
-        // Add logo and favicon URLs if they exist
+        // Add logo and favicon relativePaths if they exist
         if (currentSettings.logo) {
             formData.logo = currentSettings.logo;
         }
         if (currentSettings.favicon) {
-            formData.favicon = currentSettings.favicon;
+            formData.favicon = `${avatarPath}/${currentSettings.favicon}`;
         }
 
         const response = await fetch(`${API_BASE}/site-settings`, {
@@ -135,6 +136,8 @@ async function uploadImage(file, type) {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
+        formData.append("folder", filePath);
+        formData.append("target", "");
 
         const response = await fetch(`${API_BASE}/upload`, {
             method: 'POST',
@@ -149,13 +152,13 @@ async function uploadImage(file, type) {
 
         // Update current settings
         if (type === 'logo') {
-            currentSettings.logo = result.url;
-            document.getElementById('logoPreview').src = result.url;
+            currentSettings.logo = result.relativePath;
+            document.getElementById('logoPreview').src = `${API_BASE}${avatarPath}/${result.relativePath}`;
             document.getElementById('logoPreview').style.display = 'block';
             document.getElementById('noLogo').style.display = 'none';
         } else if (type === 'favicon') {
-            currentSettings.favicon = result.url;
-            document.getElementById('faviconPreview').src = result.url;
+            currentSettings.favicon = result.relativePath;
+            document.getElementById('faviconPreview').src = `${API_BASE}${avatarPath}/${result.relativePath}`;
             document.getElementById('faviconPreview').style.display = 'block';
             document.getElementById('noFavicon').style.display = 'none';
         }

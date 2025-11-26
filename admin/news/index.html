@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản lý bài viết - Admin</title>
 
     <!-- Tabler CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
 
     <!-- FINAL FIXED SIDEBAR CSS -->
     <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
-    
+
     <style>
         .excerpt-preview {
             max-width: 300px;
@@ -101,7 +102,8 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Tìm kiếm</label>
-                                    <input type="text" class="form-control" id="searchPost" placeholder="Tìm theo tiêu đề, nội dung...">
+                                    <input type="text" class="form-control" id="searchPost"
+                                        placeholder="Tìm theo tiêu đề, nội dung...">
                                 </div>
                                 <div class="col-md-3">
                                     <label class="form-label">Tác giả</label>
@@ -148,7 +150,8 @@
                             </table>
                         </div>
                         <div class="card-footer d-flex align-items-center">
-                            <p class="m-0 text-muted">Hiển thị <span id="showingRange">0-0</span> trong tổng số <span id="totalPosts">0</span></p>
+                            <p class="m-0 text-muted">Hiển thị <span id="showingRange">0-0</span> trong tổng số <span
+                                    id="totalPosts">0</span></p>
                             <ul class="pagination m-0 ms-auto" id="pagination"></ul>
                         </div>
                     </div>
@@ -160,20 +163,25 @@
 
     <!-- Tabler JS -->
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
-    
+
     <!-- SIDEBAR FIX SCRIPT -->
     <script src="../sidebar-fix.js?v=2"></script>
-    
+
     <!-- AUTO SCHEDULER - Tự động cập nhật scheduled posts -->
     <script type="module" src="../utils/auto-scheduler.js"></script>
-    
+
     <!-- Custom JS -->
     <script type="module" src="./admin_news.js?v=4"></script>
+
+    <!-- ADMIN GUARD -->
+    <script type="module" src="../js/admin-guard.js"></script>
+
     <script type="module">
-      import { mountAdminSidebar } from '../../components/AdminSidebar.js';
-      document.addEventListener('DOMContentLoaded', () => {
-        mountAdminSidebar('.mount-admin-sidebar', 'admin-news');
-      });
+        import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            mountAdminSidebar('.mount-admin-sidebar', 'admin-news');
+        });
     </script>
 </body>
+
 </html>
