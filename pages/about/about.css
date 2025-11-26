@@ -1,9 +1,114 @@
-.brand-calligraphy {
-  font-family: "Great Vibes", "Segoe Script", "Dancing Script", cursive;
-  font-weight: 400;
-  font-size: clamp(22px, 3.2vw, 30px);
-  line-height: 1;
-  color: var(--tblr-primary);
-  letter-spacing: .5px;
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --secondary: #f59e0b;
+  --text-dark: #1f2937;
+  --text-medium: #4b5563;
+  --bg-light: #f9fafb;
 }
-@import url("https://rsms.me/inter/inter.css");
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-dark);
+    line-height: 1.6;
+    background-color: var(--bg-light);
+}
+
+
+.hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.hero-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    animation: fadeInDown 1s;
+    color: white !important; 
+}
+
+.hero-description {
+    font-size: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    opacity: 0.95;
+    animation: fadeInUp 1s;
+    color: white !important;
+}
+
+
+.section {
+    padding: 40px 0;
+}
+
+
+.about-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+    margin-bottom: 24px;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.about-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.about-card-body {
+    padding: 24px;
+}
+
+.about-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--primary-dark);
+}
+
+.about-card-text {
+    color: var(--text-medium);
+    font-size: 0.95rem;
+}
+
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.brand-calligraphy {
+  font-family: "Great Vibes", cursive;
+  color: var(--primary);
+}
