@@ -30,10 +30,7 @@ ready(async () => {
 });
 
 
-// --- PHẦN 1: LOGIC CHI TIẾT SẢN PHẨM ---
-
 async function fetchAndRenderProductDetail(id) {
-    // SỬA LỖI: Chỉ render vào container sản phẩm
     const container = document.querySelector('.product-detail-container');
     if (!container) return;
 
@@ -54,7 +51,6 @@ async function fetchAndRenderProductDetail(id) {
         const finalPrice = parseFloat(product.final_price);
         const imageUrl = `${API_BASE}${product.image}`;
 
-        // (HTML của bạn, không thay đổi)
         container.innerHTML = `
             <button class="btn-back" onclick="window.location.href='/fe/pages/products/products.html'">
                 &larr; Quay lại sản phẩm
@@ -104,12 +100,6 @@ function attachProductEvents() {
     });
 }
 
-
-// --- PHẦN 2: LOGIC BÌNH LUẬN (MỚI) ---
-
-/**
- * Tải và render danh sách bình luận
- */
 async function fetchAndRenderComments(productId) {
     const container = document.querySelector('.comment-section-container');
     if (!container) return;
@@ -119,7 +109,7 @@ async function fetchAndRenderComments(productId) {
     try {
         const response = await (await fetch(API_URL)).json();
 
-        const comments = response ? response : [];
+        const comments = response ? response.data : [];
 
         let commentListHtml = '';
         if (comments.length === 0) {
@@ -131,7 +121,7 @@ async function fetchAndRenderComments(productId) {
                         <li class="comment-item">
                             <div class="comment-avatar">
                                 <a href="/fe/pages/profile/profile.html?id=${comment.user_id}">
-                                    <img src="${API_BASE}${comment.user_avatar || '../../assets/images/placeholder-avatar.png'}" alt="${comment.user_name}">
+                                    <img src="${API_BASE}${comment.user_avatar || '../../assets/images/noAvatar.png'}" alt="${comment.user_name}">
                                 </a>
                             </div>
                             <div class="comment-body">
@@ -174,9 +164,6 @@ async function fetchAndRenderComments(productId) {
     }
 }
 
-/**
- * Render form đăng bình luận (nếu đã đăng nhập)
- */
 function renderCommentForm(productId) {
     const container = document.getElementById('comment-form-container');
     if (!container) return;
@@ -216,9 +203,6 @@ function renderCommentForm(productId) {
     }
 }
 
-/**
- * Gắn sự kiện cho form bình luận
- */
 function attachCommentFormEvents(productId, userId) {
     const form = document.getElementById('newCommentForm');
     if (!form) return;
@@ -257,7 +241,6 @@ function attachCommentFormEvents(productId, userId) {
             }
 
             popup.show({ title: "Thành công", content: "Bình luận của bạn đã được gửi!" });
-            // form.reset();
             await fetchAndRenderComments(productId);
         } catch (err) {
             popup.show({ title: "Lỗi", content: `<p>${err.message}</p>` });

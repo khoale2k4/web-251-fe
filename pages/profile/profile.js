@@ -10,7 +10,7 @@ const avatarPath = '/' + filePath;
 
 async function uploadImage(file) {
     const uploadData = new FormData();
-    uploadData.append('file', file); 
+    uploadData.append('file', file);
     uploadData.append("folder", filePath);
     uploadData.append("target", "");
 
@@ -54,7 +54,7 @@ async function fetchUserProfile(userId) {
 
     } catch (err) {
         console.error("Lỗi khi tải hồ sơ:", err);
-        return null; 
+        return null;
     }
 }
 
@@ -72,11 +72,11 @@ async function updateUserProfile(userId, data) {
         if (!response.ok || !result.success) {
             throw new Error(result.message || 'Cập nhật thất bại');
         }
-        return result.data; 
+        return result.data;
 
     } catch (err) {
         console.error("Lỗi khi cập nhật hồ sơ:", err);
-        throw err; 
+        throw err;
     }
 }
 
@@ -140,6 +140,19 @@ function renderProfile(user, isOwner) {
                     <span>${user.role}</span>
                 </div>
 
+                ${user.role === 'admin' ? `
+                <div class="mt-3">
+                    <a href="/fe/admin" class="btn btn-primary w-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                           <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
+                           <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
+                        </svg>
+                        Truy cập trang Admin
+                    </a>
+                </div>
+                ` : ''}
+
                 <div class="form-actions">
                     <button type="submit" class="btn-save">Lưu thay đổi</button>
                 </div>
@@ -158,7 +171,7 @@ function attachProfileEvents(user, isOwner, popup) {
     const avatarInput = document.getElementById('avatar-upload');
     const avatarPreview = document.getElementById('avatarPreview');
 
-    
+
     avatarInput.addEventListener('change', () => {
         const file = avatarInput.files[0];
         if (file) {
@@ -181,7 +194,7 @@ function attachProfileEvents(user, isOwner, popup) {
             const formData = new FormData(form);
             const file = avatarInput.files[0];
 
-            
+
             let newAvatarUrl = user.avatar;
             console.log(phone);
 
@@ -193,16 +206,16 @@ function attachProfileEvents(user, isOwner, popup) {
                 });
                 saveBtn.disabled = false;
                 saveBtn.textContent = 'Lưu thay đổi';
-                return; 
+                return;
             }
 
-            
+
             if (file && file.size > 0) {
-                
+
                 const uploadResult = await uploadImage(file);
 
                 if (uploadResult && uploadResult.relativePath) {
-                    newAvatarUrl = avatarPath + "/" + uploadResult.relativePath; 
+                    newAvatarUrl = avatarPath + "/" + uploadResult.relativePath;
                 } else {
                     throw new Error("Lỗi khi upload ảnh, không nhận được URL.");
                 }
@@ -212,7 +225,7 @@ function attachProfileEvents(user, isOwner, popup) {
                 name: formData.get('name'),
                 phone: formData.get('phone'),
                 password: formData.get('password'),
-                avatar: newAvatarUrl 
+                avatar: newAvatarUrl
             };
 
             await updateUserProfile(user.id, dataToUpdate);
@@ -223,9 +236,9 @@ function attachProfileEvents(user, isOwner, popup) {
                 actions: [{ label: 'OK', type: 'btn-primary', close: true }]
             });
 
-            
+
             if (dataToUpdate.name !== user.name) {
-                mountHeader('.mount-header', 'profile'); 
+                mountHeader('.mount-header', 'profile');
             }
 
         } catch (err) {
@@ -235,7 +248,7 @@ function attachProfileEvents(user, isOwner, popup) {
                 actions: [{ label: 'Đóng', type: 'btn-secondary', close: true }]
             });
         } finally {
-            
+
             saveBtn.disabled = false;
             saveBtn.textContent = 'Lưu thay đổi';
         }
@@ -258,7 +271,7 @@ ready(async () => {
 
         const loggedInUserId = localStorage.getItem('userId');
 
-        
+
         const user = await fetchUserProfile(profileId);
 
         if (!user) {
