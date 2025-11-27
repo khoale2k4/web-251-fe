@@ -5,6 +5,7 @@ export function AdminSidebar({ current = '' } = {}) {
     { href: '../settings/index.html', key: 'settings', label: 'Cấu hình Website', icon: 'ti ti-settings' },
     { href: '../products/admin_products.html', key: 'admin-products', label: 'Quản lý Sản phẩm', icon: 'ti ti-package' },
     { href: '../products/admin_orders.html', key: 'admin-orders', label: 'Đơn hàng & Giỏ hàng', icon: 'ti ti-shopping-cart' },
+    { href: '../users/index.html', key: 'admin-users', label: 'Quản lý Người dùng', icon: 'ti ti-users' },
     { href: '../news/index.html', key: 'admin-news', label: 'Quản lý Bài viết', icon: 'ti ti-news' },
     { href: '../faq/index.html', key: 'admin-faq', label: 'Quản lý FAQ', icon: 'ti ti-help' },
     { href: '../comments/index.html', key: 'comments', label: 'Quản lý Comments', icon: 'ti ti-message' },
