@@ -75,8 +75,10 @@ async function fetchAndRenderCart(userId) {
 
         <label>Phương thức thanh toán</label>
         <select id="payment_method">
-          <option value="COD">Thanh toán khi nhận hàng (COD)</option>
-          <option value="BANK">Chuyển khoản</option>
+          <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+          <option value="bank">Chuyển khoản</option>
+          <option value="paypal">Thanh toán qua Paypal</option>
+          <option value="credit_card">Thanh toán qua thẻ tín dụng</option>
         </select>
 
         <label>Ghi chú</label>
@@ -97,28 +99,25 @@ async function fetchAndRenderCart(userId) {
     }
 }
 
-/**
- * Tách riêng hàm gắn sự kiện cho dễ quản lý
- */
 function attachCartEvents(userId) {
     document.querySelectorAll('.btn-remove').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const itemId = e.target.dataset.id;
-            removeItem(userId, itemId); // Đã cập nhật hàm này
+            removeItem(userId, itemId);
         });
     });
 
     document.querySelectorAll('.btn-increase').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const productId = e.target.dataset.product_id;
-            updateQuantity(userId, productId, 1); // Đã cập nhật hàm này
+            updateQuantity(userId, productId, 1);
         });
     });
 
     document.querySelectorAll('.btn-decrease').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const productId = e.target.dataset.product_id;
-            updateQuantity(userId, productId, -1); // Đã cập nhật hàm này
+            updateQuantity(userId, productId, -1);
         });
     });
 
@@ -133,7 +132,7 @@ function attachCartEvents(userId) {
 
     document.getElementById('order-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        await createOrderFromCart(userId); // Đã cập nhật hàm này
+        await createOrderFromCart(userId);
     });
 }
 
@@ -196,9 +195,8 @@ async function removeItem(userId, itemId) {
                         if (response.ok && result.success) {
                             await fetchAndRenderCart(userId);
                             await updateCartCounter(userId);
-                            popup.hide(); // Tự đóng popup khi thành công
+                            popup.hide(); 
                         } else {
-                            // Hiển thị lỗi ngay trong popup
                             popup.show({
                                 title: "Lỗi",
                                 content: `<p>${result.message || 'Không thể xoá sản phẩm'}</p>`,
@@ -219,16 +217,13 @@ async function removeItem(userId, itemId) {
     });
 }
 
-/**
- * CẬP NHẬT 3: Sửa lỗi popup đặt hàng thành công
- */
 async function createOrderFromCart(userId) {
     const shipping_address = document.getElementById('shipping_address').value.trim();
     const payment_method = document.getElementById('payment_method').value;
     const note = document.getElementById('note').value.trim();
 
     if (!shipping_address) {
-        alert('Vui lòng nhập địa chỉ giao hàng!'); // Giữ alert này vì nó là lỗi validation
+        alert('Vui lòng nhập địa chỉ giao hàng!'); 
         return;
     }
 
@@ -249,7 +244,6 @@ async function createOrderFromCart(userId) {
         if (response.ok && result.success) {
             const popup = new Popup();
 
-            // Sửa logic: Gọi popup.show trực tiếp
             popup.show({
                 title: "Đặt hàng thành công!",
                 content: "<p>Cảm ơn bạn đã đặt hàng. Chúng tôi sẽ liên hệ với bạn sớm nhất.</p>",
@@ -259,7 +253,6 @@ async function createOrderFromCart(userId) {
                         type: "btn-primary",
                         close: true,
                         onClick: async () => {
-                            // Tải lại giỏ hàng (sẽ trống) sau khi bấm OK
                             await fetchAndRenderCart(userId);
                             await updateCartCounter(userId);
                         }
@@ -268,8 +261,6 @@ async function createOrderFromCart(userId) {
             });
 
             document.getElementById('order-form').classList.add('hidden');
-            // Đã chuyển 2 dòng fetchAndRenderCart và updateCartCounter vào onClick
-            // để người dùng kịp thấy thông báo thành công.
 
         } else {
             throw new Error(result.message || 'Không thể tạo đơn hàng');
@@ -277,7 +268,6 @@ async function createOrderFromCart(userId) {
 
     } catch (error) {
         console.error('Lỗi khi đặt hàng:', error);
-        // Báo lỗi bằng popup
         const popup = new Popup();
         popup.show({
             title: "Đặt hàng thất bại",

@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="../../css/popUp.css">
   <link rel="stylesheet" href="admin_orders_tab.css">
-  <link rel="stylesheet" href="../../../pagination.css">
+
 
   <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
 </head>
@@ -64,11 +64,10 @@
                   </tbody>
                 </table>
               </div>
-              <div class="card-footer">
-                <div id="pagination-container" class="pagination-container" style="display: none;">
-                  <div id="pagination-summary" class="pagination-summary"></div>
-                  <ul id="pagination-controls" class="pagination"></ul>
-                </div>
+              <div class="card-footer d-flex align-items-center">
+                <p class="m-0 text-muted">Hiển thị <span id="showingRange">0-0</span> trong tổng số <span
+                    id="totalItems">0</span></p>
+                <ul class="pagination m-0 ms-auto" id="paginationControls"></ul>
               </div>
             </div>
           </div>

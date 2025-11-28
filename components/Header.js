@@ -21,8 +21,20 @@ async function fetchUser(userId) {
   }
 }
 
-export async function Header({ current, userName = null, userId = null }) {
-  // Sanitize inputs just in case
+async function loadSiteSettings() {
+  try {
+    const result = await API.get('/site-settings');
+    if (result.success && result.data) {
+      return result.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Lỗi tải cài đặt trang:", error);
+    return null;
+  }
+}
+
+export async function Header({ current, userName = null, userId = null, settings = null }) {
   userName = Security.escapeHtml(userName);
   const navItems = [
     { href: PATHS.HOME, label: 'Home', key: 'home' },
@@ -60,13 +72,22 @@ export async function Header({ current, userName = null, userId = null }) {
     `;
   }
 
-  const site_name = await loadSiteSettings();
+  const siteName = settings?.site_name || "Shoe Store";
+  let logoHtml = siteName;
+
+  if (settings && settings.logo) {
+    const logoUrl = `${API_BASE}${settings.logo}`;
+    logoHtml = `<img src="${logoUrl}" alt="${siteName}" class="site-logo-img" style="max-height: 40px; vertical-align: middle;">`;
+  }
 
   return `
     <header class="site-header">
       <nav class="navbar">
         <div class="nav-left">
-          <a href="/fe/" class="logo">${site_name}</a>
+          <a href="/fe/" class="logo">
+            ${logoHtml}
+          </a>
+          <a href="/fe/" class="logo">${siteName}</a>
         </div>
 
         <nav class="site-nav">
@@ -99,18 +120,6 @@ export async function Header({ current, userName = null, userId = null }) {
   `;
 }
 
-async function loadSiteSettings() {
-  try {
-    const result = await API.get('/site-settings');
-    if (result.success && result.data) {
-      return result.data.site_name;
-    }
-    return "Shoe Store";
-  } catch (error) {
-    return "Shoe Store";
-  }
-}
-
 export async function mountHeader(containerSelector, current) {
   const container =
     typeof containerSelector === 'string'
@@ -120,8 +129,29 @@ export async function mountHeader(containerSelector, current) {
 
   container.innerHTML = `
     <header class="site-header skeleton">
-      </header>
+    </header>
   `;
+
+  const settings = await loadSiteSettings();
+
+  if (settings && settings.favicon) {
+    const faviconUrl = `${API_BASE}${settings.favicon}`;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+    link.href = faviconUrl;
+  }
+
+  // Inject Font Awesome
+  if (!document.querySelector("link[href*='font-awesome']")) {
+    const faLink = document.createElement('link');
+    faLink.rel = 'stylesheet';
+    faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+    document.head.appendChild(faLink);
+  }
 
   let userName = null;
   const userId = Storage.get('userId');
@@ -133,7 +163,7 @@ export async function mountHeader(containerSelector, current) {
     }
   }
 
-  const headerHTML = await Header({ current, userName, userId });
+  const headerHTML = await Header({ current, userName, userId, settings });
   container.innerHTML = headerHTML;
 
   const headerElement = container.querySelector('.site-header');

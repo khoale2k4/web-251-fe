@@ -96,11 +96,10 @@ function renderUsers() {
         <tr data-user-id="${user.id}">
           <td>
             <div class="d-flex align-items-center">
-              ${
-                avatar
-                  ? `<img src="${avatar}" class="table-avatar me-2" alt="${escapeHtml(user.name)}">`
-                  : `<span class="table-avatar me-2">${getInitial(user.name)}</span>`
-              }
+              ${avatar
+          ? `<img src="${avatar}" class="table-avatar me-2" alt="${escapeHtml(user.name)}">`
+          : `<span class="table-avatar me-2">${getInitial(user.name)}</span>`
+        }
               <div>
                 <div class="fw-bold">${escapeHtml(user.name || 'Chưa cập nhật')}</div>
                 <div class="text-muted">${escapeHtml(user.email)}</div>
@@ -115,11 +114,10 @@ function renderUsers() {
           </td>
           <td>
             <div class="d-flex align-items-center gap-2">
-              <span class="${statusInfo.className} badge-soft">${statusInfo.text}</span>
-              <select class="form-select form-select-sm user-status-select" data-user-id="${user.id}">
-                <option value="active" ${user.status === 'active' ? 'selected' : ''}>Hoạt động</option>
-                <option value="banned" ${user.status === 'banned' ? 'selected' : ''}>Khóa</option>
-              </select>
+            <select class="form-select form-select-sm user-status-select" data-user-id="${user.id}">
+            <option value="active" ${user.status === 'active' ? 'selected' : ''}>Hoạt động</option>
+            <option value="banned" ${user.status === 'banned' ? 'selected' : ''}>Khóa</option>
+            </select>
             </div>
           </td>
           <td>${formatDate(user.created_at)}</td>
@@ -132,27 +130,38 @@ function renderUsers() {
       `;
     })
     .join('');
+  // <span class="${statusInfo.className} badge-soft">${statusInfo.text}</span>
 }
 
 function renderPagination() {
-  if (!elements.paginationContainer) return;
+  if (!elements.paginationControls) return;
   const { page, totalPages, total, limit } = state.pagination;
 
   if (totalPages <= 1) {
-    elements.paginationContainer.style.display = 'none';
-    elements.paginationSummary.textContent = `Hiển thị ${total} người dùng`;
+    elements.paginationControls.innerHTML = '';
     return;
   }
 
-  elements.paginationContainer.style.display = 'flex';
   const firstItem = (page - 1) * limit + 1;
   const lastItem = Math.min(page * limit, total);
-  elements.paginationSummary.textContent = `Hiển thị ${firstItem}-${lastItem} / ${total} người dùng`;
+
+  if (document.getElementById('showingRange')) {
+    document.getElementById('showingRange').textContent = `${firstItem}-${lastItem}`;
+  }
+  if (document.getElementById('totalItems')) {
+    document.getElementById('totalItems').textContent = total;
+  }
 
   let html = '';
-  const prevDisabled = page === 1 ? ' disabled' : '';
-  const nextDisabled = page === totalPages ? ' disabled' : '';
-  html += `<li class="page-item${prevDisabled}"><a class="page-link" href="#" data-page="${page - 1}"><i class="ti ti-chevron-left"></i></a></li>`;
+
+  // Previous button
+  html += `
+    <li class="page-item ${page === 1 ? 'disabled' : ''}">
+      <a class="page-link" href="#" data-page="${page - 1}">
+        <i class="ti ti-chevron-left"></i> Trước
+      </a>
+    </li>
+  `;
 
   const maxPagesToShow = 5;
   let startPage = Math.max(1, page - Math.floor(maxPagesToShow / 2));
@@ -179,7 +188,15 @@ function renderPagination() {
     html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
   }
 
-  html += `<li class="page-item${nextDisabled}"><a class="page-link" href="#" data-page="${page + 1}"><i class="ti ti-chevron-right"></i></a></li>`;
+  // Next button
+  html += `
+    <li class="page-item ${page === totalPages ? 'disabled' : ''}">
+      <a class="page-link" href="#" data-page="${page + 1}">
+        Sau <i class="ti ti-chevron-right"></i>
+      </a>
+    </li>
+  `;
+
   elements.paginationControls.innerHTML = html;
 }
 
@@ -202,11 +219,10 @@ function renderUserDetail(user) {
 
   elements.detailPanel.innerHTML = `
     <div class="text-center mb-3">
-      ${
-        avatar
-          ? `<img src="${avatar}" class="avatar-xl mb-2" alt="${escapeHtml(user.name)}" />`
-          : `<div class="avatar-xl mb-2 d-inline-flex align-items-center justify-content-center text-bg-primary" style="border-radius:50%;">${getInitial(user.name)}</div>`
-      }
+      ${avatar
+      ? `<img src="${avatar}" class="avatar-xl mb-2" alt="${escapeHtml(user.name)}" />`
+      : `<div class="avatar-xl mb-2 d-inline-flex align-items-center justify-content-center text-bg-primary" style="border-radius:50%;">${getInitial(user.name)}</div>`
+    }
       <h3 class="mb-0">${escapeHtml(user.name || 'Chưa cập nhật')}</h3>
       <div class="text-muted">${escapeHtml(user.email)}</div>
     </div>
@@ -418,9 +434,7 @@ ready(() => {
   elements.statTotal = qs('#stat-total-users');
   elements.statActive = qs('#stat-active-users');
   elements.statBanned = qs('#stat-banned-users');
-  elements.paginationContainer = qs('#users-pagination');
-  elements.paginationSummary = qs('#pagination-summary');
-  elements.paginationControls = qs('#pagination-controls');
+  elements.paginationControls = qs('#paginationControls');
   elements.detailPanel = qs('#user-detail-panel');
   elements.detailFooter = qs('#user-detail-footer');
   elements.viewProfileBtn = qs('#btn-view-profile');

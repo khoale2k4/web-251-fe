@@ -31,16 +31,16 @@ function populateForm(settings) {
     document.getElementById('siteTitle').value = settings.site_title || '';
     document.getElementById('siteDescription').value = settings.site_description || '';
     document.getElementById('siteKeywords').value = settings.site_keywords || '';
-    
+
     document.getElementById('email').value = settings.email || '';
     document.getElementById('phone').value = settings.phone || '';
     document.getElementById('address').value = settings.address || '';
     document.getElementById('workingHours').value = settings.working_hours || '';
-    
+
     document.getElementById('facebook').value = settings.facebook || '';
     document.getElementById('instagram').value = settings.instagram || '';
     document.getElementById('youtube').value = settings.youtube || '';
-    
+
     document.getElementById('aboutUs').value = settings.about_us || '';
     document.getElementById('copyright').value = settings.copyright || '';
 
@@ -101,7 +101,7 @@ async function saveSettings(e) {
             formData.logo = currentSettings.logo;
         }
         if (currentSettings.favicon) {
-            formData.favicon = `${avatarPath}/${currentSettings.favicon}`;
+            formData.favicon = currentSettings.favicon;
         }
 
         const response = await fetch(`${API_BASE}/site-settings`, {
@@ -150,15 +150,22 @@ async function uploadImage(file, type) {
             throw new Error(result.error || 'Upload failed');
         }
 
+        // Construct full path with prefix
+        // Ensure we don't double add if server changes behavior
+        let relativePath = result.relativePath;
+        if (!relativePath.startsWith(avatarPath)) {
+            relativePath = `${avatarPath}/${relativePath}`;
+        }
+
         // Update current settings
         if (type === 'logo') {
-            currentSettings.logo = result.relativePath;
-            document.getElementById('logoPreview').src = `${API_BASE}${avatarPath}/${result.relativePath}`;
+            currentSettings.logo = relativePath;
+            document.getElementById('logoPreview').src = `${API_BASE}${relativePath}`;
             document.getElementById('logoPreview').style.display = 'block';
             document.getElementById('noLogo').style.display = 'none';
         } else if (type === 'favicon') {
-            currentSettings.favicon = result.relativePath;
-            document.getElementById('faviconPreview').src = `${API_BASE}${avatarPath}/${result.relativePath}`;
+            currentSettings.favicon = relativePath;
+            document.getElementById('faviconPreview').src = `${API_BASE}${relativePath}`;
             document.getElementById('faviconPreview').style.display = 'block';
             document.getElementById('noFavicon').style.display = 'none';
         }
@@ -230,7 +237,7 @@ function setupDragAndDrop(uploadAreaId, inputId, type) {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadSettings();
 
     // Form submit

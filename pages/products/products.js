@@ -10,17 +10,21 @@ import { API_BASE } from '../../js/config.js';
 
 const grid = document.querySelector('.products-grid');
 const title = document.getElementById('page-title');
-const clearBtn = document.getElementById('clear-filter');
 const paginationContainer = document.getElementById('pagination-container');
 const paginationSummary = document.getElementById('pagination-summary');
 const paginationControls = document.getElementById('pagination-controls');
+
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const categorySelect = document.getElementById('categorySelect');
 
 const state = {
   products: [],
   currentPage: 1,
   totalPages: 1,
   totalItems: 0,
-  keyword: ''
+  keyword: '',
+  categoryId: ''
 };
 
 
@@ -28,65 +32,72 @@ ready(async () => {
   mountHeader('.mount-header', 'products');
   mountFooter('.mount-footer');
 
-  
+  await fetchCategories();
+
   const params = new URLSearchParams(window.location.search);
   const keyword = params.get('product_query') || '';
-  const page = parseInt(params.get('page')) || 1; 
+  const categoryId = params.get('category') || '';
+  const page = parseInt(params.get('page')) || 1;
 
-  
   state.keyword = keyword;
+  state.categoryId = categoryId;
   state.currentPage = page;
 
-  
-  await fetchAndRenderProducts(page, keyword);
+  if (searchInput) searchInput.value = keyword;
+  if (categorySelect) categorySelect.value = categoryId;
 
-  
+  await fetchAndRenderProducts(page, keyword, categoryId);
+
   attachPageEventListeners();
 });
 
+async function fetchCategories() {
+  if (!categorySelect) return;
+  try {
+    const res = await fetch(`${API_BASE}/categories`);
+    const data = (await res.json()).data;
 
-async function fetchAndRenderProducts(page = 1, query = '') {
+    console.log(data);
+
+    if (data.categories && Array.isArray(data.categories)) {
+      const options = data.categories.map(cat =>
+        `<option value="${cat.id}">${cat.name}</option>`
+      ).join('');
+      categorySelect.innerHTML = `<option value="">Tất cả danh mục</option>${options}`;
+    }
+  } catch (err) {
+    console.error('Error loading categories:', err);
+  }
+}
+
+async function fetchAndRenderProducts(page = 1, query = '', categoryId = '') {
   if (!grid) return;
 
-  
-  if (query) {
-    title.textContent = `Tìm sản phẩm cho "${query}"`;
-    clearBtn.style.display = 'inline-block';
-    grid.innerHTML = `<p>Đang tải sản phẩm cho từ khóa: <strong>${query}</strong>...</p>`;
-  } else {
-    title.textContent = 'Sản phẩm';
-    clearBtn.style.display = 'none';
-    grid.innerHTML = `<p>Đang tải danh sách sản phẩm...</p>`;
-  }
-  paginationContainer.style.display = 'none'; 
+  grid.innerHTML = `<p>Đang tải danh sách sản phẩm...</p>`;
+  paginationContainer.style.display = 'none';
 
   try {
-    
-    
-    const url = `${API_BASE}/products?page=${page}${query ? `&search=${encodeURIComponent(query)}` : ''}`;
+    let url = `${API_BASE}/products?page=${page}`;
+    if (query) url += `&search=${encodeURIComponent(query)}`;
+    if (categoryId) url += `&category_id=${categoryId}`;
+
     const response = await fetch(url);
     const result = await response.json();
 
-    
-    
     if (!result.success || !result.data?.products) {
       grid.innerHTML = `<p>Không tìm thấy sản phẩm nào.</p>`;
       return;
     }
 
-    
     state.products = result.data.products;
-    
     state.totalPages = result.data.pagination?.total_pages || 1;
     state.totalItems = result.data.pagination?.total || 0;
     state.currentPage = result.data.pagination?.page || 1;
 
-    
     if (state.products.length === 0) {
       grid.innerHTML = `<p>Không tìm thấy sản phẩm nào phù hợp.</p>`;
     } else {
       grid.innerHTML = state.products.map(product => {
-        
         const hasDiscount = parseFloat(product.discount) > 0;
         const price = parseFloat(product.price);
         const finalPrice = parseFloat(product.final_price);
@@ -115,21 +126,16 @@ async function fetchAndRenderProducts(page = 1, query = '') {
               </div>
             </div>
           `;
-      })
-        .join('');
+      }).join('');
     }
 
-    
     renderPagination();
-    
     attachProductEvents();
 
   } catch (err) {
     grid.innerHTML = `<p class="error">Lỗi khi tải sản phẩm: ${err.message}</p>`;
   }
 }
-
-
 
 function renderPagination() {
   const { currentPage, totalPages, totalItems } = state;
@@ -143,10 +149,8 @@ function renderPagination() {
 
   let html = '';
 
-  
   html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage - 1}"><i class="ti ti-chevron-left"></i></a></li>`;
 
-  
   const maxPagesToShow = 5;
   let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
@@ -165,18 +169,14 @@ function renderPagination() {
     html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
   }
 
-  
   html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage + 1}"><i class="ti ti-chevron-right"></i></a></li>`;
 
   paginationControls.innerHTML = html;
 }
 
-
-
-
 function attachProductEvents() {
   const userId = getUserId();
-  
+
   document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       const id = e.target.dataset.id;
@@ -184,7 +184,6 @@ function attachProductEvents() {
     });
   });
 
-  
   document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.id;
@@ -194,34 +193,63 @@ function attachProductEvents() {
   });
 }
 
-
 function attachPageEventListeners() {
-  
-  document.getElementById('clear-filter')?.addEventListener('click', (e) => {
-    window.location.href = '/fe/pages/products/products.html'; 
+  // Search Button
+  searchBtn?.addEventListener('click', () => {
+    handleSearch();
   });
 
-  
+  // Enter key in search input
+  searchInput?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  });
+
+  // Category Change
+  categorySelect?.addEventListener('change', () => {
+    handleSearch();
+  });
+
+  // Pagination
   document.getElementById('pagination-controls')?.addEventListener('click', (e) => {
     e.preventDefault();
     const pageLink = e.target.closest('.page-link');
     if (pageLink) {
       const pageItem = pageLink.closest('.page-item');
-      
       if (pageItem.classList.contains('disabled') || pageItem.classList.contains('active')) {
         return;
       }
 
       const newPage = parseInt(pageLink.dataset.page);
       if (newPage) {
-        
-        const params = new URLSearchParams(window.location.search);
-        params.set('page', newPage); 
-        
-        window.location.search = params.toString();
+        updateUrl(newPage, state.keyword, state.categoryId);
+        fetchAndRenderProducts(newPage, state.keyword, state.categoryId);
       }
     }
   });
+}
+
+function handleSearch() {
+  const keyword = searchInput.value.trim();
+  const categoryId = categorySelect.value;
+
+  state.keyword = keyword;
+  state.categoryId = categoryId;
+  state.currentPage = 1;
+
+  updateUrl(1, keyword, categoryId);
+  fetchAndRenderProducts(1, keyword, categoryId);
+}
+
+function updateUrl(page, keyword, categoryId) {
+  const params = new URLSearchParams(window.location.search);
+  if (page > 1) params.set('page', page); else params.delete('page');
+  if (keyword) params.set('product_query', keyword); else params.delete('product_query');
+  if (categoryId) params.set('category', categoryId); else params.delete('category');
+
+  const newUrl = `${window.location.pathname}?${params.toString()}`;
+  window.history.pushState({}, '', newUrl);
 }
 
 

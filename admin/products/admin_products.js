@@ -48,25 +48,23 @@ ready(async () => {
     },
   };
 
-  
+
   const elements = {
     tableBody: document.querySelector('#productsTableBody'),
     searchEl: document.querySelector('.product-search'),
     refreshBtn: document.getElementById('btnRefresh'),
-    paginationContainer: document.getElementById('pagination-container'),
-    paginationSummary: document.getElementById('pagination-summary'),
-    paginationControls: document.getElementById('pagination-controls'),
+    paginationControls: document.getElementById('paginationControls'),
   };
 
   const state = {
-    products: [], 
+    products: [],
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
     keyword: '',
   };
 
-  
+
 
   function renderRows(list) {
     if (!Array.isArray(list) || list.length === 0) {
@@ -95,15 +93,25 @@ ready(async () => {
     const { currentPage, totalPages, totalItems } = state;
 
     if (totalPages <= 1) {
-      elements.paginationContainer.style.display = 'none';
+
       return;
     }
 
-    elements.paginationContainer.style.display = 'flex';
-    elements.paginationSummary.textContent = `Hiển thị trang ${currentPage} / ${totalPages} (Tổng cộng ${totalItems} sản phẩm)`;
+    const start = (currentPage - 1) * 10 + 1;
+    const end = Math.min(currentPage * 10, totalItems);
+    document.getElementById('showingRange').textContent = `${start}-${end}`;
+    document.getElementById('totalItems').textContent = totalItems;
 
     let html = '';
-    html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage - 1}"><i class="ti ti-chevron-left"></i></a></li>`;
+
+    // Previous button
+    html += `
+      <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${currentPage - 1}">
+          <i class="ti ti-chevron-left"></i> Trước
+        </a>
+      </li>
+    `;
 
     const maxPagesToShow = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
@@ -111,34 +119,45 @@ ready(async () => {
     if (endPage - startPage + 1 < maxPagesToShow) {
       startPage = Math.max(1, endPage - maxPagesToShow + 1);
     }
+
     if (startPage > 1) {
       html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
       if (startPage > 2) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
     }
+
     for (let i = startPage; i <= endPage; i++) {
       html += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
     }
+
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
       html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
     }
-    html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage + 1}"><i class="ti ti-chevron-right"></i></a></li>`;
+
+    // Next button
+    html += `
+      <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${currentPage + 1}">
+          Sau <i class="ti ti-chevron-right"></i>
+        </a>
+      </li>
+    `;
 
     elements.paginationControls.innerHTML = html;
   }
 
-  
+
 
   async function fetchAndRenderProducts(page = 1, keyword = '') {
     state.currentPage = page;
     state.keyword = keyword;
 
     elements.tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
-    elements.paginationContainer.style.display = 'none';
+
 
     try {
       const url = `${BASE_URL}/products?page=${page}&search=${encodeURIComponent(keyword)}`;
-      const res = await http.get(url); 
+      const res = await http.get(url);
 
       if (!res || !res.products || !res.pagination) {
         throw new Error('Định dạng dữ liệu trả về không hợp lệ');
@@ -167,7 +186,7 @@ ready(async () => {
     }
   }
 
-  
+
   const onEditAddPopupShow = (product = null) => {
     const isEdit = !!product;
     const title = isEdit ? `Chỉnh sửa sản phẩm #${product.name}` : 'Thêm sản phẩm mới';
@@ -203,18 +222,18 @@ ready(async () => {
 
     popup.show({ title, content });
 
-    
+
     const form = document.getElementById('product-form');
     const categorySelect = document.getElementById('categorySelect');
     const newCategory = document.getElementById('newCategory');
     const fileInput = document.getElementById('imageFile');
     const previewImg = document.getElementById('imagePreview');
 
-    
+
     form.querySelector('.btn-cancel').addEventListener('click', () => popup.hide());
     form.addEventListener('submit', (e) => handleProductFormSubmit(e, product));
 
-    
+
     populateCategories(categorySelect, newCategory, product?.category, !isEdit);
     setupImagePreview(fileInput, previewImg);
   };
@@ -229,16 +248,16 @@ ready(async () => {
       if (selectEl.value !== '') newCategoryEl.value = '';
     });
 
-    const res = await http.get(`${BASE_URL}/categories`); 
+    const res = await http.get(`${BASE_URL}/categories`);
     if (res && Array.isArray(res.categories)) {
-      selectEl.innerHTML = '<option value="">-- Nhập danh mục --</option>'; 
+      selectEl.innerHTML = '<option value="">-- Nhập danh mục --</option>';
       res.categories.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id;
         opt.textContent = c.name;
         if (currentCategoryName === c.name) {
           opt.selected = true;
-          newCategoryEl.style.display = 'none'; 
+          newCategoryEl.style.display = 'none';
         }
         selectEl.appendChild(opt);
       });
@@ -266,10 +285,10 @@ ready(async () => {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      
+
       if (data.newCategory) {
         const body = { name: data.newCategory, description: '' };
-        const res = await http.post('http://localhost:8000/categories', body); 
+        const res = await http.post(BASE_URL + '/categories', body);
         if (res && res.id) {
           data.category = res.id;
         } else {
@@ -277,15 +296,15 @@ ready(async () => {
         }
       }
 
-      
+
       let imageUrl = product?.imageLink || '';
-      const file = formData.get('imageFile'); 
+      const file = formData.get('imageFile');
       if (file && file.size > 0) {
-        const uploadData = new FormData(); 
+        const uploadData = new FormData();
         uploadData.append('file', file);
         uploadData.append("folder", filePath);
         uploadData.append("target", "");
-        
+
         const uploadRes = await http.request(`${BASE_URL}/upload`, { method: 'POST', body: uploadData });
         imageUrl = avatarPath + "/" + uploadRes.relativePath;
       }
@@ -301,11 +320,11 @@ ready(async () => {
         category_id: data.category,
       };
 
-      
+
       if (isEdit) {
-        await http.put(`${BASE_URL}/products/${product.id}`, body); 
+        await http.put(`${BASE_URL}/products/${product.id}`, body);
       } else {
-        await http.post(`${BASE_URL}/products`, body); 
+        await http.post(`${BASE_URL}/products`, body);
       }
 
       popup.hide();
@@ -319,8 +338,8 @@ ready(async () => {
   const onDeleteConfirmPopup = (product) => {
     if (!product) return;
 
-    
-    
+
+
     const contentHtml = `
       <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
       
@@ -330,31 +349,31 @@ ready(async () => {
       </div>
     `;
 
-    
+
     popup.show({
       title: `Xóa sản phẩm #${product.name}`,
       content: contentHtml
-      
+
     });
 
-    
-    
+
+
     const cancelBtn = document.getElementById('popup-btn-cancel');
     const confirmBtn = document.getElementById('popup-btn-confirm');
 
-    
+
     if (cancelBtn) {
       cancelBtn.addEventListener('click', () => {
         popup.hide();
       });
     }
 
-    
+
     if (confirmBtn) {
       confirmBtn.addEventListener('click', async () => {
         try {
-          
-          await http.delete(`${BASE_URL}/products/${product.id}`); 
+
+          await http.delete(`${BASE_URL}/products/${product.id}`);
           popup.hide();
           await fetchAndRenderProducts(state.currentPage, state.keyword);
         } catch (err) {
@@ -365,7 +384,7 @@ ready(async () => {
     }
   };
 
-  
+
   let debounceTimer;
   function debounce(func, delay) {
     return function (...args) {
@@ -376,7 +395,7 @@ ready(async () => {
     };
   }
 
-  
+
 
   if (elements.searchEl) {
     elements.searchEl.addEventListener('input', debounce((e) => {
@@ -392,9 +411,9 @@ ready(async () => {
     });
   }
 
-  
+
   document.addEventListener('click', (e) => {
-    
+
     const pageLink = e.target.closest('.page-link');
     if (pageLink) {
       e.preventDefault();
@@ -407,7 +426,7 @@ ready(async () => {
       return;
     }
 
-    
+
     if (e.target.matches('.btn-edit')) {
       const id = Number(e.target.dataset.id);
       const product = state.products.find((p) => p.id === id);
@@ -422,7 +441,7 @@ ready(async () => {
   });
 
 
-  
+
   await fetchAndRenderProducts(1, '');
 
 }); 

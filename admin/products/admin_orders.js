@@ -4,13 +4,11 @@ import { Popup } from '../../components/PopUp.js';
 
 ready(async () => {
   const popup = new Popup();
-  
+
   const tableHeadSel = '#ordersTableHead';
   const tableBodySel = '#ordersTableBody';
-  
-  const paginationContainer = document.getElementById('pagination-container');
-  const paginationSummary = document.getElementById('pagination-summary');
-  const paginationControls = document.getElementById('pagination-controls');
+
+  const paginationControls = document.getElementById('paginationControls');
 
   const state = {
     currentTab: 'cart',
@@ -28,14 +26,14 @@ ready(async () => {
     cancelled: 'Đã hủy'
   };
 
-  
+
   async function fetchJson(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return (await res.json()).data;
   }
 
-  
+
   async function loadCurrentTabData() {
     const { currentTab, page, keyword, status } = state;
     if (currentTab === 'cart') {
@@ -89,7 +87,7 @@ ready(async () => {
     const tbody = document.querySelector(tableBodySel);
     if (!Array.isArray(carts) || carts.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>`;
-      renderPagination(1, 1, 0); 
+      renderPagination(1, 1, 0);
       return;
     }
     tbody.innerHTML = carts.map(c => `
@@ -102,15 +100,26 @@ ready(async () => {
         </td>
       </tr>
     `).join('');
-    
+
     renderPagination(page, totalPages, state.totalItems);
+  }
+
+  function formatPaymentMethod(method) {
+    if (!method) return '-';
+    const map = {
+      'cod': 'Thanh toán khi nhận hàng (COD)',
+      'bank': 'Chuyển khoản',
+      'paypal': 'Thanh toán qua Paypal',
+      'credit_card': 'Thanh toán qua thẻ tín dụng'
+    };
+    return map[method.toLowerCase()] || method;
   }
 
   function renderOrderRows(orders, page = 1, totalPages = 1) {
     const tbody = document.querySelector(tableBodySel);
     if (!Array.isArray(orders) || orders.length === 0) {
       tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>`;
-      renderPagination(1, 1, 0); 
+      renderPagination(1, 1, 0);
       return;
     }
     tbody.innerHTML = orders.map(o => {
@@ -120,7 +129,7 @@ ready(async () => {
           <td>${o.user_name || o.user || '-'}</td>
           <td>${Number(o.total_price || o.total || 0).toLocaleString('vi-VN')} VNĐ</td>
           <td>${o.address || o.shipping_address || '-'}</td>
-          <td>${o.payment_method || '-'}</td>
+          <td>${formatPaymentMethod(o.payment_method)}</td>
           <td>${statusDropdownHtml}</td> 
           <td>${o.note || ''}</td>
           <td>${o.created_at || '-'}</td>
@@ -130,27 +139,33 @@ ready(async () => {
             </td>
             </tr>
             `;
-            
+
     }).join('');
-    renderPagination(page, totalPages, state.totalItems); 
+    renderPagination(page, totalPages, state.totalItems);
   }
 
   function renderPagination(page, totalPages, totalItems) {
     if (totalPages <= 1) {
-      paginationContainer.style.display = 'none';
+      paginationControls.innerHTML = '';
       return;
     }
-    paginationContainer.style.display = 'flex';
 
-    
-    paginationSummary.textContent = `Hiển thị trang ${page} / ${totalPages} (Tổng cộng ${totalItems} mục)`;
+    const start = (page - 1) * 10 + 1;
+    const end = Math.min(page * 10, totalItems);
+    document.getElementById('showingRange').textContent = `${start}-${end}`;
+    document.getElementById('totalItems').textContent = totalItems;
 
     let html = '';
 
-    
-    html += `<li class="page-item ${page === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${page - 1}"><i class="ti ti-chevron-left"></i></a></li>`;
+    // Previous button
+    html += `
+      <li class="page-item ${page === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${page - 1}">
+          <i class="ti ti-chevron-left"></i> Trước
+        </a>
+      </li>
+    `;
 
-    
     const maxPagesToShow = 5;
     let startPage = Math.max(1, page - Math.floor(maxPagesToShow / 2));
     let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
@@ -169,13 +184,19 @@ ready(async () => {
       html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
     }
 
-    
-    html += `<li class="page-item ${page === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${page + 1}"><i class="ti ti-chevron-right"></i></a></li>`;
+    // Next button
+    html += `
+      <li class="page-item ${page === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${page + 1}">
+          Sau <i class="ti ti-chevron-right"></i>
+        </a>
+      </li>
+    `;
 
     paginationControls.innerHTML = html;
   }
 
-  
+
 
   async function fetchAndRenderOrders(page, kw, status) {
     document.querySelector(tableBodySel).innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
@@ -188,8 +209,8 @@ ready(async () => {
       const data = await fetchJson(url);
       const orders = data.orders || [];
 
-      
-      state.page = data.page || 1;
+
+      state.page = data.pagination?.page || data.page || page;
       state.totalPages = data.pagination?.total_pages || data.total_pages || 1;
       state.totalItems = data.pagination?.total || data.total || 0;
       state.keyword = kw;
@@ -211,8 +232,8 @@ ready(async () => {
       const cartsRes = await fetchJson(url);
       const carts = cartsRes.data || cartsRes.carts || cartsRes.cart || [];
 
-      
-      state.page = cartsRes.page || 1;
+
+      state.page = cartsRes.pagination?.page || cartsRes.page || page;
       state.totalPages = cartsRes.pagination?.total_pages || cartsRes.total_pages || 1;
       state.totalItems = cartsRes.pagination?.total || cartsRes.total || 0;
       state.keyword = kw;
@@ -224,7 +245,7 @@ ready(async () => {
     }
   }
 
-  
+
 
   const tabCart = document.getElementById('tab-cart');
   const tabOrders = document.getElementById('tab-orders');
@@ -293,11 +314,11 @@ ready(async () => {
   });
 
   document.addEventListener('click', async (e) => {
-    
-    const pageLink = e.target.closest('.page-link'); 
+
+    const pageLink = e.target.closest('.page-link');
     if (pageLink) {
       e.preventDefault();
-      const pageItem = pageLink.closest('.page-item'); 
+      const pageItem = pageLink.closest('.page-item');
       if (pageItem.classList.contains('disabled') || pageItem.classList.contains('active')) {
         return;
       }
@@ -306,7 +327,7 @@ ready(async () => {
       return;
     }
 
-    
+
     if (e.target.classList.contains('btn-save')) {
       const saveButton = e.target;
       const id = saveButton.dataset.id;
@@ -322,7 +343,7 @@ ready(async () => {
           body: JSON.stringify({ status: newStatus })
         });
         alert('Cập nhật trạng thái thành công!');
-        
+
         await loadCurrentTabData();
       } catch (err) {
         console.error("Lỗi khi lưu đơn hàng:", err);
@@ -331,7 +352,7 @@ ready(async () => {
       return;
     }
 
-    
+
     if (e.target.classList.contains('btn-delete')) {
       const id = e.target.dataset.id;
       if (!confirm('Bạn có chắc muốn xoá đơn hàng này?')) return;
@@ -354,7 +375,7 @@ ready(async () => {
         <div><strong>ID đơn hàng:</strong> ${order.id}</div>
         <div><strong>Khách hàng:</strong> ${order.user_name || order.user || '-'}</div>
         <div><strong>Địa chỉ giao hàng:</strong> ${order.address || order.shipping_address || '-'}</div>
-        <div><strong>Phương thức thanh toán:</strong> ${order.payment_method || '-'}</div>
+        <div><strong>Phương thức thanh toán:</strong> ${formatPaymentMethod(order.payment_method)}</div>
         <div><strong>Trạng thái:</strong> ${order.status}</div>
         <div><strong>Ngày tạo:</strong> ${order.created_at}</div>
         <hr/>
@@ -434,6 +455,6 @@ ready(async () => {
   });
 
 
-  
+
   await loadCurrentTabData();
 });

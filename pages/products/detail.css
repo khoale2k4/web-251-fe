@@ -314,7 +314,6 @@ body {
     padding-bottom: 16px;
 }
 
-/* Form styles match inputs above */
 .comment-form textarea {
     border-radius: 12px;
     padding: 16px;
@@ -330,12 +329,10 @@ body {
 
 .btn-submit-comment {
     border-radius: 12px;
-    /* Smaller radius for form button */
     padding: 12px 24px;
     font-size: 1rem;
 }
 
-/* --- Form Rating Select --- */
 .form-group-rating {
     display: flex;
     align-items: center;
