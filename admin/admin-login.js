@@ -52,6 +52,9 @@ async function handleAdminLogin(e) {
     const storage = data.remember ? localStorage : sessionStorage;
     storage.setItem('user', JSON.stringify(result.user));
     
+    // Lưu userId để Header có thể đọc
+    localStorage.setItem('userId', JSON.stringify(result.user.id));
+    
     if (data.remember) {
       localStorage.setItem('rememberMe', 'true');
     }

@@ -187,7 +187,6 @@ export async function mountHeader(containerSelector, current) {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       Storage.remove('userId');
-      alert('Bạn đã đăng xuất.');
       window.location.href = PATHS.LOGIN;
     });
   }

@@ -32,6 +32,9 @@ async function handleLogin(e, popup) {
     const storage = data.remember ? localStorage : sessionStorage;
     storage.setItem('user', JSON.stringify(result.user));
     
+    // Lưu userId để Header có thể đọc
+    localStorage.setItem('userId', JSON.stringify(result.user.id));
+    
     // Nếu Remember Me, lưu flag
     if (data.remember) {
       localStorage.setItem('rememberMe', 'true');
@@ -137,6 +140,7 @@ async function handleRegister(e, popup) {
         
         if (loginResult.success) {
           localStorage.setItem('user', JSON.stringify(loginResult.user));
+          localStorage.setItem('userId', JSON.stringify(loginResult.user.id));
         }
         
         window.location.href = '/fe/index.html';
