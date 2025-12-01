@@ -8,11 +8,17 @@ import getUserId from '../../js/getUserId.js';
 const API_BASE = 'http://localhost:8000';
 const userId = getUserId();
 
-ready(async () => {
-    mountHeader('.mount-header', 'products');
-    mountFooter('.mount-footer');
-    await fetchAndRenderCart(userId);
-});
+// Kiểm tra đăng nhập - yêu cầu đăng nhập để xem giỏ hàng
+if (!userId) {
+    alert('Vui lòng đăng nhập để xem giỏ hàng');
+    window.location.href = '/fe/pages/home/login.html';
+} else {
+    ready(async () => {
+        mountHeader('.mount-header', 'products');
+        mountFooter('.mount-footer');
+        await fetchAndRenderCart(userId);
+    });
+}
 
 async function fetchAndRenderCart(userId) {
     const main = document.querySelector('main');

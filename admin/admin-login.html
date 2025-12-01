@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Shoe Store</title>
+    
+    <!-- Tabler CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .admin-login-card {
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .login-icon {
+            font-size: 48px;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card admin-login-card">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <div class="login-icon">
+                                <i class="ti ti-shield-lock"></i>
+                            </div>
+                            <span class="admin-badge">
+                                <i class="ti ti-crown"></i> ADMIN PANEL
+                            </span>
+                            <h2 class="mt-3">Đăng nhập Admin</h2>
+                            <p class="text-muted">Chỉ dành cho quản trị viên</p>
+                        </div>
+
+                        <form id="adminLoginForm">
+                            <div class="mb-3">
+                                <label class="form-label">Email Admin</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="ti ti-mail"></i>
+                                    </span>
+                                    <input type="email" class="form-control" name="email" required 
+                                           placeholder="admin@example.com" autocomplete="email">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Mật khẩu</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="ti ti-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control" name="password" required 
+                                           placeholder="••••••••" autocomplete="current-password">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-check">
+                                    <input type="checkbox" class="form-check-input" name="remember">
+                                    <span class="form-check-label">Ghi nhớ đăng nhập</span>
+                                </label>
+                            </div>
+
+                            <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+
+                            <button type="submit" class="btn btn-primary w-100 btn-lg">
+                                <i class="ti ti-login"></i> Đăng nhập
+                            </button>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <div class="text-center">
+                            <a href="../pages/home/login.html" class="text-muted">
+                                <i class="ti ti-arrow-left"></i> Quay về trang đăng nhập user
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-white-50">
+                        <i class="ti ti-shield-check"></i> Trang này được bảo vệ và chỉ dành cho quản trị viên
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+    
+    <script type="module" src="./admin-login.js"></script>
+</body>
+</html>
