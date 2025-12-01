@@ -1,21 +1,19 @@
-/* Container chính cho thẻ Card */
 .auth-container {
   max-width: 450px;
   margin: 40px auto;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  overflow: hidden; /* Để bo góc các tab */
+  overflow: hidden;
 }
 
-/* --- 1. Phần Tabs --- */
 .auth-tabs {
   display: flex;
   background-color: #f9fafb;
 }
 
 .auth-tab {
-  flex: 1; /* Chia đều 2 tab */
+  flex: 1;
   padding: 16px;
   border: none;
   background: none;
@@ -32,18 +30,15 @@
   background-color: #f3f4f6;
 }
 
-/* Trạng thái tab được chọn (active) */
 .auth-tab.active {
   color: #2563eb;
   border-bottom-color: #2563eb;
 }
 
-/* --- 2. Phần Form (Chung cho cả 2) --- */
 .auth-form {
   padding: 30px;
 }
 
-/* Ẩn form không active */
 .auth-form.hidden {
   display: none;
 }
@@ -72,7 +67,7 @@
   border: 1px solid #d1d5db;
   border-radius: 6px;
   font-size: 16px;
-  box-sizing: border-box; /* Quan trọng để padding không làm vỡ layout */
+  box-sizing: border-box;
 }
 
 .form-group input:focus {

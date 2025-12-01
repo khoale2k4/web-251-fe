@@ -1,12 +1,14 @@
 import { ready } from '../../js/main.js';
 import { Popup } from '../../components/PopUp.js';
-import { BASE_URL } from '../../js/config.js';
+import { API_BASE } from '../../js/config.js';
+
+const BASE_URL = API_BASE;
+const filePath = 'storage';
+const avatarPath = '/' + filePath;
 
 ready(async () => {
   const popup = new Popup();
 
-  // --- 1. DỊCH VỤ API (TÁI CẤU TRÚC) ---
-  // Gộp 4 hàm fetchData, postData, putData, deleteData thành 1 service
   const http = {
     async request(url, options = {}) {
       try {
@@ -46,25 +48,23 @@ ready(async () => {
     },
   };
 
-  // --- 2. DOM SELECTORS VÀ STATE ---
+
   const elements = {
     tableBody: document.querySelector('#productsTableBody'),
     searchEl: document.querySelector('.product-search'),
     refreshBtn: document.getElementById('btnRefresh'),
-    paginationContainer: document.getElementById('pagination-container'),
-    paginationSummary: document.getElementById('pagination-summary'),
-    paginationControls: document.getElementById('pagination-controls'),
+    paginationControls: document.getElementById('paginationControls'),
   };
 
   const state = {
-    products: [], // Chỉ lưu sản phẩm của trang HIỆN TẠI
+    products: [],
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
     keyword: '',
   };
 
-  // --- 3. CÁC HÀM RENDER (Hiển thị) ---
+
 
   function renderRows(list) {
     if (!Array.isArray(list) || list.length === 0) {
@@ -93,15 +93,25 @@ ready(async () => {
     const { currentPage, totalPages, totalItems } = state;
 
     if (totalPages <= 1) {
-      elements.paginationContainer.style.display = 'none';
+
       return;
     }
 
-    elements.paginationContainer.style.display = 'flex';
-    elements.paginationSummary.textContent = `Hiển thị trang ${currentPage} / ${totalPages} (Tổng cộng ${totalItems} sản phẩm)`;
+    const start = (currentPage - 1) * 10 + 1;
+    const end = Math.min(currentPage * 10, totalItems);
+    document.getElementById('showingRange').textContent = `${start}-${end}`;
+    document.getElementById('totalItems').textContent = totalItems;
 
     let html = '';
-    html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage - 1}"><i class="ti ti-chevron-left"></i></a></li>`;
+
+    // Previous button
+    html += `
+      <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${currentPage - 1}">
+          <i class="ti ti-chevron-left"></i> Trước
+        </a>
+      </li>
+    `;
 
     const maxPagesToShow = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
@@ -109,34 +119,45 @@ ready(async () => {
     if (endPage - startPage + 1 < maxPagesToShow) {
       startPage = Math.max(1, endPage - maxPagesToShow + 1);
     }
+
     if (startPage > 1) {
       html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
       if (startPage > 2) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
     }
+
     for (let i = startPage; i <= endPage; i++) {
       html += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
     }
+
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
       html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
     }
-    html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage + 1}"><i class="ti ti-chevron-right"></i></a></li>`;
+
+    // Next button
+    html += `
+      <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${currentPage + 1}">
+          Sau <i class="ti ti-chevron-right"></i>
+        </a>
+      </li>
+    `;
 
     elements.paginationControls.innerHTML = html;
   }
 
-  // --- 4. HÀM LOGIC CHÍNH VÀ XỬ LÝ POPUP ---
+
 
   async function fetchAndRenderProducts(page = 1, keyword = '') {
     state.currentPage = page;
     state.keyword = keyword;
 
     elements.tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
-    elements.paginationContainer.style.display = 'none';
+
 
     try {
       const url = `${BASE_URL}/products?page=${page}&search=${encodeURIComponent(keyword)}`;
-      const res = await http.get(url); // Sử dụng http service
+      const res = await http.get(url);
 
       if (!res || !res.products || !res.pagination) {
         throw new Error('Định dạng dữ liệu trả về không hợp lệ');
@@ -165,7 +186,7 @@ ready(async () => {
     }
   }
 
-  // Tách hàm xử lý popup cho dễ đọc
+
   const onEditAddPopupShow = (product = null) => {
     const isEdit = !!product;
     const title = isEdit ? `Chỉnh sửa sản phẩm #${product.name}` : 'Thêm sản phẩm mới';
@@ -201,18 +222,18 @@ ready(async () => {
 
     popup.show({ title, content });
 
-    // Lấy các element trong popup
+
     const form = document.getElementById('product-form');
     const categorySelect = document.getElementById('categorySelect');
     const newCategory = document.getElementById('newCategory');
     const fileInput = document.getElementById('imageFile');
     const previewImg = document.getElementById('imagePreview');
 
-    // Gắn sự kiện cho các element trong popup
+
     form.querySelector('.btn-cancel').addEventListener('click', () => popup.hide());
     form.addEventListener('submit', (e) => handleProductFormSubmit(e, product));
 
-    // Gọi các hàm logic phụ
+
     populateCategories(categorySelect, newCategory, product?.category, !isEdit);
     setupImagePreview(fileInput, previewImg);
   };
@@ -227,16 +248,16 @@ ready(async () => {
       if (selectEl.value !== '') newCategoryEl.value = '';
     });
 
-    const res = await http.get(`${BASE_URL}/categories`); // Dùng http service
+    const res = await http.get(`${BASE_URL}/categories`);
     if (res && Array.isArray(res.categories)) {
-      selectEl.innerHTML = '<option value="">-- Nhập danh mục --</option>'; // Xóa "Đang tải..."
+      selectEl.innerHTML = '<option value="">-- Nhập danh mục --</option>';
       res.categories.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id;
         opt.textContent = c.name;
         if (currentCategoryName === c.name) {
           opt.selected = true;
-          newCategoryEl.style.display = 'none'; // Ẩn nếu đang edit và đã có danh mục
+          newCategoryEl.style.display = 'none';
         }
         selectEl.appendChild(opt);
       });
@@ -264,10 +285,10 @@ ready(async () => {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      // 1. Xử lý danh mục mới (nếu có)
+
       if (data.newCategory) {
         const body = { name: data.newCategory, description: '' };
-        const res = await http.post('http://localhost:8000/categories', body); // Dùng http service
+        const res = await http.post(BASE_URL + '/categories', body);
         if (res && res.id) {
           data.category = res.id;
         } else {
@@ -275,21 +296,19 @@ ready(async () => {
         }
       }
 
-      // 2. Xử lý upload ảnh (nếu có)
+
       let imageUrl = product?.imageLink || '';
-      const file = formData.get('imageFile'); // Lấy file từ FormData
+      const file = formData.get('imageFile');
       if (file && file.size > 0) {
-        const uploadData = new FormData(); // FormData riêng cho upload
+        const uploadData = new FormData();
         uploadData.append('file', file);
-        // Lưu ý: Upload file không phải JSON nên dùng fetch_request
+        uploadData.append("folder", filePath);
+        uploadData.append("target", "");
+
         const uploadRes = await http.request(`${BASE_URL}/upload`, { method: 'POST', body: uploadData });
-        console.log(uploadRes);
-        imageUrl = uploadRes.url;
+        imageUrl = avatarPath + "/" + uploadRes.relativePath;
       }
 
-      // 3. Chuẩn bị body để Gửi/Cập nhật sản phẩm
-      // console.log('imageUrl', imageUrl, imageUrl.replace(BASE_URL + '/', ''));
-      // console.log(BASE_URL);
       const body = {
         name: data.name,
         price: parseFloat(data.price || 0),
@@ -297,15 +316,15 @@ ready(async () => {
         stock: parseInt(data.stock || 0),
         size: data.size,
         color: data.color,
-        image: imageUrl.replace(BASE_URL + '/', ''),
+        image: imageUrl,
         category_id: data.category,
       };
 
-      // 4. Gửi
+
       if (isEdit) {
-        await http.put(`${BASE_URL}/products/${product.id}`, body); // Dùng http service
+        await http.put(`${BASE_URL}/products/${product.id}`, body);
       } else {
-        await http.post(`${BASE_URL}/products`, body); // Dùng http service
+        await http.post(`${BASE_URL}/products`, body);
       }
 
       popup.hide();
@@ -319,8 +338,8 @@ ready(async () => {
   const onDeleteConfirmPopup = (product) => {
     if (!product) return;
 
-    // 1. Tạo chuỗi HTML có chứa các nút
-    //    Tôi dùng ID (popup-btn-cancel, popup-btn-confirm) để query an toàn hơn
+
+
     const contentHtml = `
       <p>Bạn có chắc chắn muốn xóa sản phẩm này không?</p>
       
@@ -330,31 +349,31 @@ ready(async () => {
       </div>
     `;
 
-    // 2. Hiển thị popup, chỉ truyền 'content'
+
     popup.show({
       title: `Xóa sản phẩm #${product.name}`,
       content: contentHtml
-      // Không dùng mảng 'actions'
+
     });
 
-    // 3. Tìm các nút chúng ta vừa tạo (ngay trong document)
-    //    Dùng document.getElementById thay vì tìm qua 'form'
+
+
     const cancelBtn = document.getElementById('popup-btn-cancel');
     const confirmBtn = document.getElementById('popup-btn-confirm');
 
-    // 4. Gán sự kiện 'click' cho nút Hủy
+
     if (cancelBtn) {
       cancelBtn.addEventListener('click', () => {
         popup.hide();
       });
     }
 
-    // 5. Gán sự kiện 'click' cho nút Xác nhận
+
     if (confirmBtn) {
       confirmBtn.addEventListener('click', async () => {
         try {
-          // Thực hiện hành động xóa
-          await http.delete(`${BASE_URL}/products/${product.id}`); // Dùng http service
+
+          await http.delete(`${BASE_URL}/products/${product.id}`);
           popup.hide();
           await fetchAndRenderProducts(state.currentPage, state.keyword);
         } catch (err) {
@@ -365,7 +384,7 @@ ready(async () => {
     }
   };
 
-  // --- 5. HÀM TIỆN ÍCH ---
+
   let debounceTimer;
   function debounce(func, delay) {
     return function (...args) {
@@ -376,7 +395,7 @@ ready(async () => {
     };
   }
 
-  // --- 6. GẮN CÁC SỰ KIỆN ---
+
 
   if (elements.searchEl) {
     elements.searchEl.addEventListener('input', debounce((e) => {
@@ -392,9 +411,9 @@ ready(async () => {
     });
   }
 
-  // Event Delegation cho toàn bộ trang
+
   document.addEventListener('click', (e) => {
-    // Click vào nút phân trang
+
     const pageLink = e.target.closest('.page-link');
     if (pageLink) {
       e.preventDefault();
@@ -407,7 +426,7 @@ ready(async () => {
       return;
     }
 
-    // Click vào Sửa / Thêm / Xóa
+
     if (e.target.matches('.btn-edit')) {
       const id = Number(e.target.dataset.id);
       const product = state.products.find((p) => p.id === id);
@@ -422,7 +441,7 @@ ready(async () => {
   });
 
 
-  // --- 7. KHỞI CHẠY ---
+
   await fetchAndRenderProducts(1, '');
 
-}); // Hết hàm ready()
+}); 

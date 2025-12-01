@@ -84,7 +84,7 @@
                         <div class="card-body">
                             <!-- Title -->
                             <h2 id="postTitle" class="mb-3">Đang tải...</h2>
-                            
+
                             <!-- Meta Info -->
                             <div class="mb-3" id="postMeta">
                                 <div class="post-meta-item">
@@ -151,21 +151,25 @@
         </div>
     </div>
 
-        <!-- Tabler JS -->
-        <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
-        <!-- SIDEBAR FIX SCRIPT -->
-        <script src="../sidebar-fix.js?v=2"></script>
+    <!-- Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+    <!-- SIDEBAR FIX SCRIPT -->
+    <script src="../sidebar-fix.js?v=2"></script>
 
-        <!-- AUTO SCHEDULER - Tự động cập nhật scheduled posts -->
-        <script type="module" src="../utils/auto-scheduler.js"></script>
+    <!-- AUTO SCHEDULER - Tự động cập nhật scheduled posts -->
+    <script type="module" src="../utils/auto-scheduler.js"></script>
 
-        <script type="module" src="admin_news_detail.js?v=3"></script>
-        <script type="module">
-            import { mountAdminSidebar } from '../../components/AdminSidebar.js';
-            document.addEventListener('DOMContentLoaded', () => {
-                mountAdminSidebar('.mount-admin-sidebar', 'admin-news');
-            });
-        </script>
+    <script type="module" src="admin_news_detail.js?v=3"></script>
+
+    <!-- ADMIN GUARD -->
+    <script type="module" src="../js/admin-guard.js"></script>
+
+    <script type="module">
+        import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            mountAdminSidebar('.mount-admin-sidebar', 'admin-news');
+        });
+    </script>
 </body>
 
 </html>

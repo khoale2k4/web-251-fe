@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -16,6 +17,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
         .rating-stars {
             color: #ffc107;
         }
@@ -97,8 +99,10 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-4">
                                     <label class="form-label">Từ khóa</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Tìm theo người dùng, nội dung...">
-                                    <small class="text-muted">Tìm kiếm trong tên người dùng và nội dung bình luận</small>
+                                    <input type="text" class="form-control" id="searchInput"
+                                        placeholder="Tìm theo người dùng, nội dung...">
+                                    <small class="text-muted">Tìm kiếm trong tên người dùng và nội dung bình
+                                        luận</small>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Loại bình luận</label>
@@ -110,7 +114,8 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Lọc theo ID</label>
-                                    <input type="number" class="form-control" id="filterId" placeholder="Post ID / Product ID">
+                                    <input type="number" class="form-control" id="filterId"
+                                        placeholder="Post ID / Product ID">
                                     <small class="text-muted">Lọc theo ID bài viết hoặc sản phẩm</small>
                                 </div>
                             </div>
@@ -190,7 +195,8 @@
                             </table>
                         </div>
                         <div class="card-footer d-flex align-items-center">
-                            <p class="m-0 text-muted">Hiển thị <span id="showingRange">0-0</span> trong tổng số <span id="totalComments">0</span></p>
+                            <p class="m-0 text-muted">Hiển thị <span id="showingRange">0-0</span> trong tổng số <span
+                                    id="totalComments">0</span></p>
                             <ul class="pagination m-0 ms-auto" id="pagination"></ul>
                         </div>
                     </div>
@@ -250,17 +256,22 @@
 
     <!-- Tabler JS -->
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
-    
+
     <!-- SIDEBAR FIX SCRIPT -->
     <script src="../sidebar-fix.js?v=2"></script>
-    
+
     <!-- Custom JS -->
     <script type="module" src="./admin_comments.js"></script>
+
+    <!-- ADMIN GUARD -->
+    <script type="module" src="../js/admin-guard.js"></script>
+
     <script type="module">
-      import { mountAdminSidebar } from '../../components/AdminSidebar.js';
-      document.addEventListener('DOMContentLoaded', () => {
-        mountAdminSidebar('.mount-admin-sidebar', 'comments');
-      });
+        import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            mountAdminSidebar('.mount-admin-sidebar', 'comments');
+        });
     </script>
 </body>
+
 </html>

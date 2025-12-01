@@ -1,9 +1,10 @@
 // Admin Site Settings Management
-import { BASE_URL } from '../../js/config.js';
-
-const API_BASE = BASE_URL;
+import { API_BASE } from '../../js/config.js';
+console.log(API_BASE);
 
 let currentSettings = null;
+const filePath = 'storage';
+const avatarPath = '/' + filePath;
 
 // Load settings
 async function loadSettings() {
@@ -30,22 +31,22 @@ function populateForm(settings) {
     document.getElementById('siteTitle').value = settings.site_title || '';
     document.getElementById('siteDescription').value = settings.site_description || '';
     document.getElementById('siteKeywords').value = settings.site_keywords || '';
-    
+
     document.getElementById('email').value = settings.email || '';
     document.getElementById('phone').value = settings.phone || '';
     document.getElementById('address').value = settings.address || '';
     document.getElementById('workingHours').value = settings.working_hours || '';
-    
+
     document.getElementById('facebook').value = settings.facebook || '';
     document.getElementById('instagram').value = settings.instagram || '';
     document.getElementById('youtube').value = settings.youtube || '';
-    
+
     document.getElementById('aboutUs').value = settings.about_us || '';
     document.getElementById('copyright').value = settings.copyright || '';
 
     // Display logo
     if (settings.logo) {
-        document.getElementById('logoPreview').src = `${API_BASE}/${settings.logo}`;
+        document.getElementById('logoPreview').src = `${API_BASE}${settings.logo}`;
         document.getElementById('logoPreview').style.display = 'block';
         document.getElementById('noLogo').style.display = 'none';
     } else {
@@ -55,7 +56,7 @@ function populateForm(settings) {
 
     // Display favicon
     if (settings.favicon) {
-        document.getElementById('faviconPreview').src = `${API_BASE}/${settings.favicon}`;
+        document.getElementById('faviconPreview').src = `${API_BASE}${settings.favicon}`;
         document.getElementById('faviconPreview').style.display = 'block';
         document.getElementById('noFavicon').style.display = 'none';
     } else {
@@ -95,7 +96,7 @@ async function saveSettings(e) {
             copyright: document.getElementById('copyright').value
         };
 
-        // Add logo and favicon URLs if they exist
+        // Add logo and favicon relativePaths if they exist
         if (currentSettings.logo) {
             formData.logo = currentSettings.logo;
         }
@@ -135,6 +136,8 @@ async function uploadImage(file, type) {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
+        formData.append("folder", filePath);
+        formData.append("target", "");
 
         const response = await fetch(`${API_BASE}/upload`, {
             method: 'POST',
@@ -147,15 +150,22 @@ async function uploadImage(file, type) {
             throw new Error(result.error || 'Upload failed');
         }
 
+        // Construct full path with prefix
+        // Ensure we don't double add if server changes behavior
+        let relativePath = result.relativePath;
+        if (!relativePath.startsWith(avatarPath)) {
+            relativePath = `${avatarPath}/${relativePath}`;
+        }
+
         // Update current settings
         if (type === 'logo') {
-            currentSettings.logo = result.url;
-            document.getElementById('logoPreview').src = result.url;
+            currentSettings.logo = relativePath;
+            document.getElementById('logoPreview').src = `${API_BASE}${relativePath}`;
             document.getElementById('logoPreview').style.display = 'block';
             document.getElementById('noLogo').style.display = 'none';
         } else if (type === 'favicon') {
-            currentSettings.favicon = result.url;
-            document.getElementById('faviconPreview').src = result.url;
+            currentSettings.favicon = relativePath;
+            document.getElementById('faviconPreview').src = `${API_BASE}${relativePath}`;
             document.getElementById('faviconPreview').style.display = 'block';
             document.getElementById('noFavicon').style.display = 'none';
         }
@@ -227,7 +237,7 @@ function setupDragAndDrop(uploadAreaId, inputId, type) {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadSettings();
 
     // Form submit

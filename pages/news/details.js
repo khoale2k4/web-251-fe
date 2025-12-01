@@ -1,7 +1,7 @@
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
-
-const API_BASE = window.__ENV__?.API_BASE || "http://localhost:8000";
+import { Security } from '../../js/security.js';
+import { API_BASE } from '../../js/config.js';
 
 // Get post slug from URL
 const urlParams = new URLSearchParams(window.location.search);
@@ -14,12 +14,12 @@ let allPosts = [];
 document.addEventListener("DOMContentLoaded", () => {
     mountHeader('.mount-header', 'news');
     mountFooter('.mount-footer');
-    
+
     if (!postSlug) {
         window.location.href = './news.html';
         return;
     }
-    
+
     initializeApp();
 });
 
@@ -38,18 +38,18 @@ function setupEventListeners() {
     // Comment form
     const form = document.getElementById('commentForm');
     form?.addEventListener('submit', handleCommentSubmit);
-    
+
     // Share buttons
     document.querySelector('.social-btn.facebook')?.addEventListener('click', () => shareOnSocial('facebook'));
     document.querySelector('.social-btn.twitter')?.addEventListener('click', () => shareOnSocial('twitter'));
     document.querySelector('.social-btn.linkedin')?.addEventListener('click', () => shareOnSocial('linkedin'));
     document.querySelector('.social-btn.copy')?.addEventListener('click', copyLink);
-    
+
     // Action buttons
     document.getElementById('shareBtn')?.addEventListener('click', () => {
         document.querySelector('.social-share')?.scrollIntoView({ behavior: 'smooth' });
     });
-    
+
     document.getElementById('bookmarkBtn')?.addEventListener('click', toggleBookmark);
 }
 
@@ -58,12 +58,12 @@ function setupEventListeners() {
 // =========================
 async function loadPost() {
     const loadingState = document.getElementById('loadingState');
-    
+
     try {
         // Try to fetch by slug first
         const res = await fetch(`${API_BASE}/posts?slug=${encodeURIComponent(postSlug)}&status=published`);
         const data = await res.json();
-        
+
         if (data.success && data.data && data.data.length > 0) {
             currentPost = data.data[0];
             postId = currentPost.id; // Set postId for comments
@@ -82,16 +82,16 @@ function renderPost(post) {
     // Update page title
     document.getElementById('pageTitle').textContent = `${post.title} - Shoe Store`;
     document.getElementById('breadcrumbTitle').textContent = truncateText(post.title, 50);
-    
+
     // Article header
     document.getElementById('articleTitle').textContent = post.title;
-    
+
     const authorName = post.author_name || 'Admin';
     const authorInitial = authorName[0].toUpperCase();
     document.getElementById('authorAvatar').textContent = authorInitial;
     document.getElementById('authorName').textContent = authorName;
     document.getElementById('articleDate').textContent = formatDate(post.published_at || post.created_at);
-    
+
     // Featured image
     const imageContainer = document.getElementById('articleImageContainer');
     if (post.image) {
@@ -101,16 +101,18 @@ function renderPost(post) {
     } else {
         imageContainer.style.display = 'none';
     }
-    
+
     // Article body
+    // Assuming post.content is safe HTML from trusted admin, but if user generated, it should be sanitized on server.
+    // For now, we trust the content from API for the post body as it's likely from admin.
     document.getElementById('articleBody').innerHTML = post.content || post.excerpt || '<p>Nội dung đang được cập nhật...</p>';
-    
+
     // Tags (if available)
     const tagsContainer = document.getElementById('articleTags');
     if (post.tags && post.tags.length > 0) {
         tagsContainer.innerHTML = post.tags.map(tag => `
             <span class="tag">
-                <i class="fas fa-tag"></i> ${tag}
+                <i class="fas fa-tag"></i> ${Security.escapeHtml(tag)}
             </span>
         `).join('');
     }
@@ -123,7 +125,7 @@ async function loadComments() {
     try {
         const res = await fetch(`${API_BASE}/comments?post_id=${postId}`);
         const data = await res.json();
-        
+
         if (data.success) {
             renderComments(data.data || []);
         }
@@ -135,9 +137,9 @@ async function loadComments() {
 function renderComments(comments) {
     const commentsList = document.getElementById('commentsList');
     const commentCount = document.getElementById('commentCount');
-    
+
     commentCount.textContent = `(${comments.length})`;
-    
+
     if (comments.length === 0) {
         commentsList.innerHTML = `
             <div class="empty-comments">
@@ -147,20 +149,20 @@ function renderComments(comments) {
         `;
         return;
     }
-    
+
     commentsList.innerHTML = comments.map(comment => {
         const userName = comment.user_name || 'Khách';
         const userInitial = userName[0].toUpperCase();
-        
+
         return `
             <div class="comment-item">
                 <div class="comment-avatar">${userInitial}</div>
                 <div class="comment-content">
                     <div class="comment-header">
-                        <span class="comment-author">${userName}</span>
+                        <span class="comment-author">${Security.escapeHtml(userName)}</span>
                         <span class="comment-time">${formatCommentDate(comment.created_at)}</span>
                     </div>
-                    <p class="comment-text">${escapeHtml(comment.content)}</p>
+                    <p class="comment-text">${Security.escapeHtml(comment.content)}</p>
                 </div>
             </div>
         `;
@@ -172,19 +174,19 @@ function renderComments(comments) {
 // =========================
 async function handleCommentSubmit(e) {
     e.preventDefault();
-    
+
     const commentInput = document.getElementById('commentContent');
     const content = commentInput.value.trim();
-    
+
     if (!content) {
         showNotification('⚠️ Vui lòng nhập nội dung bình luận', 'warning');
         return;
     }
-    
+
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang gửi...';
-    
+
     try {
         const res = await fetch(`${API_BASE}/comments`, {
             method: 'POST',
@@ -195,9 +197,9 @@ async function handleCommentSubmit(e) {
                 content: content
             })
         });
-        
+
         const data = await res.json();
-        
+
         if (data.success) {
             commentInput.value = '';
             showNotification('✅ Bình luận của bạn đã được gửi!', 'success');
@@ -221,7 +223,7 @@ async function loadRelatedPosts() {
     try {
         const res = await fetch(`${API_BASE}/posts?status=published&limit=3`);
         const data = await res.json();
-        
+
         if (data.success && data.data) {
             allPosts = data.data;
             // Filter out current post
@@ -235,19 +237,19 @@ async function loadRelatedPosts() {
 
 function renderRelatedPosts(posts) {
     const relatedGrid = document.getElementById('relatedGrid');
-    
+
     if (posts.length === 0) {
         document.getElementById('relatedSection').style.display = 'none';
         return;
     }
-    
+
     relatedGrid.innerHTML = posts.map(post => `
         <a href="./detail.html?slug=${encodeURIComponent(post.slug || createSlug(post.title))}" class="related-card">
             <div class="related-image">
                 <img src="${post.image || '../../assets/images/placeholder.png'}" alt="${post.title}">
             </div>
             <div class="related-content">
-                <h3 class="related-title">${post.title}</h3>
+                <h3 class="related-title">${Security.escapeHtml(post.title)}</h3>
                 <p class="related-date">
                     <i class="far fa-calendar"></i>
                     ${formatDate(post.published_at || post.created_at)}
@@ -263,10 +265,10 @@ function renderRelatedPosts(posts) {
 function shareOnSocial(platform) {
     const url = window.location.href;
     const title = currentPost?.title || 'Bài viết hay';
-    
+
     let shareUrl = '';
-    
-    switch(platform) {
+
+    switch (platform) {
         case 'facebook':
             shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
             break;
@@ -277,7 +279,7 @@ function shareOnSocial(platform) {
             shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
             break;
     }
-    
+
     if (shareUrl) {
         window.open(shareUrl, '_blank', 'width=600,height=400');
     }
@@ -285,7 +287,7 @@ function shareOnSocial(platform) {
 
 function copyLink() {
     const url = window.location.href;
-    
+
     navigator.clipboard.writeText(url).then(() => {
         showNotification('✅ Đã sao chép link!', 'success');
     }).catch(err => {
@@ -297,7 +299,7 @@ function copyLink() {
 function toggleBookmark() {
     const btn = document.getElementById('bookmarkBtn');
     const icon = btn.querySelector('i');
-    
+
     if (icon.classList.contains('far')) {
         icon.classList.remove('far');
         icon.classList.add('fas');
@@ -315,7 +317,7 @@ function toggleBookmark() {
 function setupBackToTop() {
     const backToTop = document.querySelector('#backToTop');
     if (!backToTop) return;
-    
+
     window.addEventListener('scroll', () => {
         if (window.scrollY > 300) {
             backToTop.classList.add('visible');
@@ -323,7 +325,7 @@ function setupBackToTop() {
             backToTop.classList.remove('visible');
         }
     });
-    
+
     backToTop.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
@@ -335,10 +337,10 @@ function setupBackToTop() {
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    return date.toLocaleDateString('vi-VN', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+    return date.toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     });
 }
 
@@ -347,28 +349,22 @@ function formatCommentDate(dateString) {
     const date = new Date(dateString);
     const now = new Date();
     const diff = now - date;
-    
+
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
     const days = Math.floor(diff / 86400000);
-    
+
     if (minutes < 1) return 'Vừa xong';
     if (minutes < 60) return `${minutes} phút trước`;
     if (hours < 24) return `${hours} giờ trước`;
     if (days < 7) return `${days} ngày trước`;
-    
+
     return date.toLocaleDateString('vi-VN');
 }
 
 function truncateText(text, maxLength) {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 function hideLoading() {
@@ -404,7 +400,7 @@ function showNotification(message, type = 'info') {
 // =========================
 function createSlug(title) {
     if (!title) return 'bai-viet';
-    
+
     // Vietnamese to Latin conversion map
     const vietnameseMap = {
         'à': 'a', 'á': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
@@ -434,20 +430,20 @@ function createSlug(title) {
         'Ỳ': 'Y', 'Ý': 'Y', 'Ỷ': 'Y', 'Ỹ': 'Y', 'Ỵ': 'Y',
         'Đ': 'D'
     };
-    
+
     let slug = title.toLowerCase();
-    
+
     // Replace Vietnamese characters
     for (const [viet, latin] of Object.entries(vietnameseMap)) {
         slug = slug.replace(new RegExp(viet, 'g'), latin);
     }
-    
+
     // Replace special characters and spaces with hyphens
     slug = slug
         .replace(/[^a-z0-9\s-]/g, '') // Remove special chars
         .replace(/\s+/g, '-')          // Replace spaces with -
         .replace(/-+/g, '-')           // Replace multiple - with single -
         .replace(/^-+|-+$/g, '');      // Trim - from start/end
-    
+
     return slug || 'bai-viet';
 }

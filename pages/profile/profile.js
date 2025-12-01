@@ -1,24 +1,20 @@
-// profile.js (Đã cập nhật)
-
 import { ready } from '../../js/main.js';
 import { mountHeader } from '../../components/Header.js';
 import { mountFooter } from '../../components/Footer.js';
 import { Popup } from '../../components/PopUp.js';
-import { BASE_URL } from '../../js/config.js';
+import { API_BASE } from '../../js/config.js';
 
-// --- 1. HÀM GỌI API ---
+const BASE_URL = API_BASE;
+const filePath = 'storage';
+const avatarPath = '/' + filePath;
 
-/**
- * HÀM MỚI: Chỉ để upload file
- * @param {File} file - File ảnh người dùng đã chọn
- */
 async function uploadImage(file) {
     const uploadData = new FormData();
-    uploadData.append('file', file); // 'file' là key mà server /upload mong đợi
+    uploadData.append('file', file);
+    uploadData.append("folder", filePath);
+    uploadData.append("target", "");
 
     try {
-        // Lưu ý: KHÔNG set 'Content-Type' thủ công khi dùng FormData,
-        // trình duyệt sẽ tự động làm đúng.
         const response = await fetch(`${BASE_URL}/upload`, {
             method: 'POST',
             body: uploadData
@@ -26,13 +22,11 @@ async function uploadImage(file) {
 
         const result = await response.json();
 
-        if (!response.ok || !result.success) {
+        if (!result.success) {
             throw new Error(result.message || 'Upload ảnh thất bại');
         }
 
-        // Trả về kết quả (VD: { success: true, url: '/storage/...' })
         return result;
-
     } catch (err) {
         console.error("Lỗi khi upload ảnh:", err);
         throw err;
@@ -40,13 +34,9 @@ async function uploadImage(file) {
 }
 
 
-/**
- * HÀM ĐÃ SỬA: Thêm xác thực (Authorization)
- */
 async function fetchUserProfile(userId) {
     try {
-        const response = await fetch(`${BASE_URL}/users/${userId}`, {
-        });
+        const response = await fetch(`${BASE_URL}/users/${userId}`);
 
         if (!response.ok) {
             if (response.status === 401 || response.status === 403) {
@@ -64,7 +54,7 @@ async function fetchUserProfile(userId) {
 
     } catch (err) {
         console.error("Lỗi khi tải hồ sơ:", err);
-        return null; // Trả về null nếu thất bại
+        return null;
     }
 }
 
@@ -75,23 +65,20 @@ async function updateUserProfile(userId, data) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         });
 
         const result = await response.json();
         if (!response.ok || !result.success) {
             throw new Error(result.message || 'Cập nhật thất bại');
         }
-        return result.data; // Trả về dữ liệu đã cập nhật
+        return result.data;
 
     } catch (err) {
         console.error("Lỗi khi cập nhật hồ sơ:", err);
-        throw err; // Ném lỗi để hàm gọi xử lý
+        throw err;
     }
 }
-
-
-// --- 2. HÀM RENDER --- (Giữ nguyên)
 
 function renderProfile(user, isOwner) {
     const container = document.querySelector('.profile-container');
@@ -153,6 +140,19 @@ function renderProfile(user, isOwner) {
                     <span>${user.role}</span>
                 </div>
 
+                ${user.role === 'admin' ? `
+                <div class="mt-3">
+                    <a href="/fe/admin" class="btn btn-primary w-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                           <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
+                           <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path>
+                        </svg>
+                        Truy cập trang Admin
+                    </a>
+                </div>
+                ` : ''}
+
                 <div class="form-actions">
                     <button type="submit" class="btn-save">Lưu thay đổi</button>
                 </div>
@@ -164,9 +164,6 @@ function renderProfile(user, isOwner) {
     container.innerHTML = profileHTML;
 }
 
-
-// --- 3. HÀM GẮN SỰ KIỆN (ĐÃ CẬP NHẬT) ---
-
 function attachProfileEvents(user, isOwner, popup) {
     if (!isOwner) return;
 
@@ -174,7 +171,7 @@ function attachProfileEvents(user, isOwner, popup) {
     const avatarInput = document.getElementById('avatar-upload');
     const avatarPreview = document.getElementById('avatarPreview');
 
-    // 3a. Sự kiện xem trước (Preview) ảnh (Giữ nguyên)
+
     avatarInput.addEventListener('change', () => {
         const file = avatarInput.files[0];
         if (file) {
@@ -194,11 +191,10 @@ function attachProfileEvents(user, isOwner, popup) {
         saveBtn.textContent = 'Đang lưu...';
 
         try {
-            // Lấy file và text từ form
             const formData = new FormData(form);
             const file = avatarInput.files[0];
 
-            // Bắt đầu với URL ảnh hiện tại
+
             let newAvatarUrl = user.avatar;
             console.log(phone);
 
@@ -210,28 +206,26 @@ function attachProfileEvents(user, isOwner, popup) {
                 });
                 saveBtn.disabled = false;
                 saveBtn.textContent = 'Lưu thay đổi';
-                return; // Dừng hàm
+                return;
             }
 
-            // --- BƯỚC 1: UPLOAD ẢNH (NẾU CÓ) ---
+
             if (file && file.size > 0) {
-                // Chỉ upload nếu người dùng chọn file mới
+
                 const uploadResult = await uploadImage(file);
 
-                if (uploadResult && uploadResult.url) {
-                    newAvatarUrl = uploadResult.url; // Lấy URL mới từ server
+                if (uploadResult && uploadResult.relativePath) {
+                    newAvatarUrl = avatarPath + "/" + uploadResult.relativePath;
                 } else {
                     throw new Error("Lỗi khi upload ảnh, không nhận được URL.");
                 }
             }
 
-            // --- BƯỚC 2: CẬP NHẬT HỒ SƠ ---
-            // Chuẩn bị dữ liệu text VÀ URL ảnh mới
             const dataToUpdate = {
                 name: formData.get('name'),
                 phone: formData.get('phone'),
                 password: formData.get('password'),
-                avatar: newAvatarUrl // Gửi URL (cũ hoặc mới) lên server
+                avatar: newAvatarUrl
             };
 
             await updateUserProfile(user.id, dataToUpdate);
@@ -242,9 +236,9 @@ function attachProfileEvents(user, isOwner, popup) {
                 actions: [{ label: 'OK', type: 'btn-primary', close: true }]
             });
 
-            // Cập nhật lại header nếu tên thay đổi
+
             if (dataToUpdate.name !== user.name) {
-                mountHeader('.mount-header', 'profile'); // Render lại header
+                mountHeader('.mount-header', 'profile');
             }
 
         } catch (err) {
@@ -254,7 +248,7 @@ function attachProfileEvents(user, isOwner, popup) {
                 actions: [{ label: 'Đóng', type: 'btn-secondary', close: true }]
             });
         } finally {
-            // Bật lại nút bấm dù thành công hay thất bại
+
             saveBtn.disabled = false;
             saveBtn.textContent = 'Lưu thay đổi';
         }
@@ -262,7 +256,7 @@ function attachProfileEvents(user, isOwner, popup) {
 }
 
 
-// --- 4. HÀM KHỞI CHẠY CHÍNH ---
+
 ready(async () => {
     mountHeader('.mount-header', 'profile');
     mountFooter('.mount-footer');
@@ -277,7 +271,7 @@ ready(async () => {
 
         const loggedInUserId = localStorage.getItem('userId');
 
-        // Tải hồ sơ (đã sửa hàm fetch)
+
         const user = await fetchUserProfile(profileId);
 
         if (!user) {

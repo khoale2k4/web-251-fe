@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danh sách sản phẩm</title>
   <link rel="stylesheet" href="../../css/header.css">
+  <link rel="stylesheet" href="../../css/footer.css">
   <link rel="stylesheet" href="products.css">
 
   <link rel="stylesheet" href="../../css/popUp.css">
@@ -23,8 +24,26 @@
 
   <main>
     <div class="product-header">
-      <h1 id="page-title">Sản phẩm</h1>
-      <button id="clear-filter" class="btn-secondary" style="display:none;">Xóa bộ lọc</button>
+      <h1 id="page-title">Bộ Sưu Tập Sản Phẩm</h1>
+      <p style="opacity: 0.9; max-width: 600px; margin: 0 0 24px;">Khám phá những mẫu giày mới nhất, thời thượng nhất
+        dành cho bạn.</p>
+
+      <div class="search-filter-container">
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm..." class="search-input">
+        </div>
+
+        <div class="filter-wrapper">
+          <select id="categorySelect" class="category-select">
+            <option value="">Tất cả danh mục</option>
+          </select>
+        </div>
+
+        <button id="searchBtn" class="btn-primary search-btn">
+          Tìm kiếm
+        </button>
+      </div>
     </div>
 
     <div class="products-grid"></div>

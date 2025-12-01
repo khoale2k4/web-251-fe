@@ -1,48 +1,52 @@
 import { updateCartCounter } from "../js/updateCartCounter.js";
-import { getCurrentUser, logout } from "../js/auth.js";
-
-const API_BASE = 'http://localhost:8000';
+import { API_BASE, PATHS } from "../js/config.js";
+import { Storage } from "../js/storage.js";
+import { API } from "../js/api.js";
+import { Security } from "../js/security.js";
 
 async function fetchUser(userId) {
   if (!userId) return null;
-
   try {
-    const response = await fetch(`${API_BASE}/users/${userId}`);
-
-    if (!response.ok) {
-      console.error(`Lỗi ${response.status} khi tải user`);
-      return null;
-    }
-
-    const result = await response.json();
-
+    const result = await API.get(`/users/${userId}`);
     if (result.success && result.data) {
-      return result.data;
+      return Security.sanitizeUser(result.data);
     }
     if (result.id) {
-      return result;
+      return Security.sanitizeUser(result);
     }
-
     return null;
-
   } catch (err) {
     console.error("Lỗi khi tải thông tin user:", err);
     return null;
   }
 }
 
-export async function Header({ current, userName = null, userId = null }) {
+async function loadSiteSettings() {
+  try {
+    const result = await API.get('/site-settings');
+    if (result.success && result.data) {
+      return result.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Lỗi tải cài đặt trang:", error);
+    return null;
+  }
+}
+
+export async function Header({ current, userName = null, userId = null, settings = null }) {
+  userName = Security.escapeHtml(userName);
   const navItems = [
-    { href: '/fe/pages/home/index.html', label: 'Home', key: 'home' },
-    { href: '/fe/pages/about/index.html', label: 'About', key: 'about' },
-    { href: '/fe/pages/about/faq.html', label: 'FAQ', key: 'faq' },
-    { href: '/fe/pages/products/products.html', label: 'Products', key: 'products' },
-    { href: '/fe/pages/news/news.html', label: 'News', key: 'news' },
-    { href: '/fe/pages/home/contact.html', label: 'Contact', key: 'contact' },
+    { href: PATHS.HOME, label: 'Home', key: 'home' },
+    { href: PATHS.ABOUT, label: 'About', key: 'about' },
+    { href: PATHS.FAQ, label: 'FAQ', key: 'faq' },
+    { href: PATHS.PRODUCTS, label: 'Products', key: 'products' },
+    { href: PATHS.NEWS, label: 'News', key: 'news' },
+    { href: PATHS.CONTACT, label: 'Contact', key: 'contact' },
   ];
 
   const cartHref = {
-    href: '/fe/pages/products/cart.html', label: 'Cart', key: 'cart'
+    href: PATHS.CART, label: 'Cart', key: 'cart'
   }
 
   const navLinks = navItems
@@ -56,7 +60,7 @@ export async function Header({ current, userName = null, userId = null }) {
   if (userName != null) {
     userAuthBlock = `
       <div class="user-profile-menu">
-        <a href="/fe/pages/profile/profile.html?id=${userId}" class="profile-link">
+        <a href="${PATHS.PROFILE}?id=${userId}" class="profile-link">
           Chào, ${userName}
         </a>
         <button id="logout-btn" class="btn-logout">(Đăng xuất)</button>
@@ -64,17 +68,26 @@ export async function Header({ current, userName = null, userId = null }) {
     `;
   } else {
     userAuthBlock = `
-      <a href="/fe/pages/home/login.html" class="nav-auth-link">Đăng nhập</a>
+      <a href="${PATHS.LOGIN}" class="nav-auth-link">Đăng nhập</a>
     `;
   }
 
-  const site_name = await loadSiteSettings();
+  const siteName = settings?.site_name || "Shoe Store";
+  let logoHtml = siteName;
+
+  if (settings && settings.logo) {
+    const logoUrl = `${API_BASE}${settings.logo}`;
+    logoHtml = `<img src="${logoUrl}" alt="${siteName}" class="site-logo-img" style="max-height: 40px; vertical-align: middle;">`;
+  }
 
   return `
     <header class="site-header">
       <nav class="navbar">
         <div class="nav-left">
-          <a href="/fe/" class="logo">${site_name}</a>
+          <a href="/fe/" class="logo">
+            ${logoHtml}
+          </a>
+          <a href="/fe/" class="logo">${siteName}</a>
         </div>
 
         <nav class="site-nav">
@@ -107,19 +120,6 @@ export async function Header({ current, userName = null, userId = null }) {
   `;
 }
 
-async function loadSiteSettings() {
-  try {
-    const response = await fetch(`${API_BASE}/site-settings`);
-    const result = await response.json();
-    if (result.success && result.data) {
-      return result.data.site_name;
-    }
-    return "Shoe Store";
-  } catch (error) {
-    return "Shoe Store";
-  }
-}
-
 export async function mountHeader(containerSelector, current) {
   const container =
     typeof containerSelector === 'string'
@@ -127,60 +127,74 @@ export async function mountHeader(containerSelector, current) {
       : containerSelector;
   if (!container) return;
 
- 
   container.innerHTML = `
     <header class="site-header skeleton">
-      </header>
+    </header>
   `;
 
- 
-  let userName = null;
-  let userId = null;
-  
-  // Lấy user từ localStorage
-  const user = getCurrentUser();
-  if (user) {
-    userName = user.name;
-    userId = user.id;
+  const settings = await loadSiteSettings();
+
+  if (settings && settings.favicon) {
+    const faviconUrl = `${API_BASE}${settings.favicon}`;
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+    link.href = faviconUrl;
   }
 
- 
-  const headerHTML = await Header({ current, userName, userId });
+  // Inject Font Awesome
+  if (!document.querySelector("link[href*='font-awesome']")) {
+    const faLink = document.createElement('link');
+    faLink.rel = 'stylesheet';
+    faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+    document.head.appendChild(faLink);
+  }
+
+  let userName = null;
+  const userId = Storage.get('userId');
+
+  if (userId) {
+    const user = await fetchUser(userId);
+    if (user) {
+      userName = user.name;
+    }
+  }
+
+  const headerHTML = await Header({ current, userName, userId, settings });
   container.innerHTML = headerHTML;
 
- 
   const headerElement = container.querySelector('.site-header');
 
- 
   if (userId) {
     await updateCartCounter(userId);
   }
 
- 
   const searchForm = container.querySelector('#search-form');
   if (searchForm) {
     searchForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const query = container.querySelector('#search-input').value.trim();
       if (query) {
-        window.location.href = `/fe/pages/products/products.html?product_query=${encodeURIComponent(query)}`;
+        window.location.href = `${PATHS.PRODUCTS}?product_query=${encodeURIComponent(query)}`;
       }
     });
   }
 
- 
   const logoutBtn = container.querySelector('#logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      logout();
+      Storage.remove('userId');
+      alert('Bạn đã đăng xuất.');
+      window.location.href = PATHS.LOGIN;
     });
   }
 
- 
   const mobileToggle = container.querySelector('#mobile-nav-toggle');
   if (mobileToggle && headerElement) {
     mobileToggle.addEventListener('click', () => {
-     
       headerElement.classList.toggle('mobile-nav-open');
     });
   }

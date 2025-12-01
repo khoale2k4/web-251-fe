@@ -1,11 +1,8 @@
-/*
- * FILE CSS HEADER (ĐÃ SỬA LỖI VÀ HOÀN CHỈNH)
- */
 * {
     box-sizing: border-box;
 }
 
-/* --- 1. Style Chung Cho Header --- */
+
 .site-header {
     position: sticky;
     top: 0;
@@ -14,6 +11,13 @@
     backdrop-filter: saturate(180%) blur(6px);
     border-bottom: 1px solid #e5e7eb;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.mount-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
 }
 
 .navbar {
@@ -27,7 +31,12 @@
     padding: 0 24px;
 }
 
-/* --- 2. Cột Trái: Logo --- */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .nav-left .logo {
     font-size: 1.5rem;
     font-weight: 700;
@@ -36,12 +45,10 @@
     white-space: nowrap;
 }
 
-/* --- 3. Cột Giữa: Điều hướng (Desktop) --- */
 .site-nav {
     display: flex;
     align-items: center;
     gap: 20px;
-    /* Logic JS sẽ di chuyển .nav-auth vào đây */
 }
 
 .site-nav a {
@@ -64,14 +71,14 @@
     border-bottom-color: #2563eb;
 }
 
-/* --- 4. Cột Phải: Tools (Search, Cart, Auth) --- */
+
 .nav-right {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-/* Style Search Bar */
+
 .search-bar {
     display: flex;
     border: 1px solid #ccc;
@@ -109,7 +116,7 @@
     background-color: #e0e0e0;
 }
 
-/* Style Cart Icon */
+
 .cart-icon {
     position: relative;
     text-decoration: none;
@@ -133,13 +140,13 @@
     justify-content: center;
 }
 
-/* --- 5. Khối Xác thực (Đăng nhập/Tài khoản) --- */
+
 .nav-auth {
     margin-left: 12px;
     padding-left: 16px;
     border-left: 1px solid #e5e7eb;
     white-space: nowrap;
-    /* Ngăn xuống hàng */
+
 }
 
 .nav-auth-link {
@@ -188,7 +195,7 @@
     text-decoration: underline;
 }
 
-/* --- 6. Skeleton (Khung chờ) --- */
+
 .skeleton * {
     animation: skeleton-loading 1.2s infinite linear alternate;
     background: #eee;
@@ -227,13 +234,6 @@
     }
 }
 
-/*
-========================================
- 7. STYLE RESPONSIVE (PHẦN BỊ THIẾU)
-========================================
-*/
-
-/* Nút Hamburger (Mặc định ẩn trên Desktop) */
 .mobile-nav-toggle {
     display: none;
     background: none;
@@ -255,48 +255,41 @@
     margin-top: 4px;
 }
 
-/* Khi màn hình nhỏ (ví dụ: 900px) */
+
 @media (max-width: 900px) {
 
     .navbar {
         padding: 0 16px;
     }
 
-    /* Ẩn thanh tìm kiếm trên di động */
+
     .search-bar {
         display: none;
     }
 
-    /* Hiện nút hamburger */
+
     .mobile-nav-toggle {
         display: block;
     }
 
-    /* Ẩn menu điều hướng chính */
+
     .site-nav {
         display: none;
     }
 
-    /*
-    ========================================
-     Style Menu Di động (khi bấm mở)
-    ========================================
-    */
-
-    /* Khi header có class .mobile-nav-open */
     .site-header.mobile-nav-open .site-nav {
-        /* Hiện lại menu */
+
         display: flex;
         flex-direction: column;
-        /* Xếp theo chiều dọc */
+
         align-items: flex-start;
-        /* Căn lề trái */
+
         gap: 0;
 
-        /* Biến menu thành một lớp phủ */
+
         position: absolute;
         top: 100%;
-        /* Nằm ngay dưới header (60px) */
+
         left: 0;
         right: 0;
         background: #ffffff;
@@ -305,13 +298,13 @@
         z-index: 1000;
     }
 
-    /* Style cho các link trong menu di động */
+
     .site-header.mobile-nav-open .site-nav a {
         padding: 12px 16px;
         width: 100%;
         border-radius: 6px;
         border-bottom: none;
-        /* Bỏ gạch chân */
+
     }
 
     .site-header.mobile-nav-open .site-nav a:hover {
@@ -320,12 +313,12 @@
 
     .site-header.mobile-nav-open .site-nav a.active {
         background-color: #eef2ff;
-        /* Màu nền nhạt cho active */
+
         color: #2563eb;
         border-bottom: none;
     }
 
-    /* Style cho khối auth trong menu di động */
+
     .site-header.mobile-nav-open .nav-auth {
         margin-left: 0;
         padding-left: 0;
@@ -335,6 +328,6 @@
         border-top: 1px solid #e5e7eb;
         width: 100%;
         padding-left: 16px;
-        /* Căn lề cho "Chào, user" */
+
     }
 }

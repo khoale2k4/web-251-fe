@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cấu hình Website - Admin</title>
-    
+
     <!-- Tabler CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet"/>
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
-    
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+
     <!-- FINAL FIXED SIDEBAR CSS -->
     <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
-    
+
     <style>
         .preview-image {
             max-width: 200px;
             max-height: 100px;
             margin-top: 10px;
             border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .upload-area {
             border: 2px dashed #ddd;
             border-radius: 6px;
@@ -28,16 +30,19 @@
             cursor: pointer;
             transition: all 0.3s;
         }
+
         .upload-area:hover {
             border-color: #206bc4;
             background-color: #f8f9fa;
         }
+
         .upload-area.dragover {
             border-color: #206bc4;
             background-color: #e7f1ff;
         }
     </style>
 </head>
+
 <body>
     <div class="page">
         <div class="mount-admin-sidebar"></div>
@@ -73,7 +78,8 @@
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label class="form-label required">Tên website</label>
-                                            <input type="text" class="form-control" id="siteName" name="site_name" required>
+                                            <input type="text" class="form-control" id="siteName" name="site_name"
+                                                required>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Tiêu đề website</label>
@@ -81,12 +87,14 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Mô tả (SEO)</label>
-                                            <textarea class="form-control" id="siteDescription" name="site_description" rows="3"></textarea>
+                                            <textarea class="form-control" id="siteDescription" name="site_description"
+                                                rows="3"></textarea>
                                             <small class="form-hint">Mô tả ngắn gọn về website cho SEO</small>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Từ khóa (SEO)</label>
-                                            <input type="text" class="form-control" id="siteKeywords" name="site_keywords" placeholder="giày, sneakers, boots...">
+                                            <input type="text" class="form-control" id="siteKeywords"
+                                                name="site_keywords" placeholder="giày, sneakers, boots...">
                                             <small class="form-hint">Các từ khóa cách nhau bởi dấu phẩy</small>
                                         </div>
                                     </div>
@@ -110,11 +118,13 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Địa chỉ</label>
-                                            <textarea class="form-control" id="address" name="address" rows="2"></textarea>
+                                            <textarea class="form-control" id="address" name="address"
+                                                rows="2"></textarea>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Giờ làm việc</label>
-                                            <input type="text" class="form-control" id="workingHours" name="working_hours" placeholder="Thứ 2 - Thứ 7: 8:00 - 21:00">
+                                            <input type="text" class="form-control" id="workingHours"
+                                                name="working_hours" placeholder="Thứ 2 - Thứ 7: 8:00 - 21:00">
                                         </div>
                                     </div>
                                 </div>
@@ -130,21 +140,24 @@
                                                 <i class="ti ti-brand-facebook text-primary me-1"></i>
                                                 Facebook
                                             </label>
-                                            <input type="url" class="form-control" id="facebook" name="facebook" placeholder="https://facebook.com/...">
+                                            <input type="url" class="form-control" id="facebook" name="facebook"
+                                                placeholder="https://facebook.com/...">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">
                                                 <i class="ti ti-brand-instagram text-danger me-1"></i>
                                                 Instagram
                                             </label>
-                                            <input type="url" class="form-control" id="instagram" name="instagram" placeholder="https://instagram.com/...">
+                                            <input type="url" class="form-control" id="instagram" name="instagram"
+                                                placeholder="https://instagram.com/...">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">
                                                 <i class="ti ti-brand-youtube text-danger me-1"></i>
                                                 YouTube
                                             </label>
-                                            <input type="url" class="form-control" id="youtube" name="youtube" placeholder="https://youtube.com/...">
+                                            <input type="url" class="form-control" id="youtube" name="youtube"
+                                                placeholder="https://youtube.com/...">
                                         </div>
                                     </div>
                                 </div>
@@ -157,11 +170,13 @@
                                     <div class="card-body">
                                         <div class="mb-3">
                                             <label class="form-label">Nội dung giới thiệu</label>
-                                            <textarea class="form-control" id="aboutUs" name="about_us" rows="5"></textarea>
+                                            <textarea class="form-control" id="aboutUs" name="about_us"
+                                                rows="5"></textarea>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Copyright</label>
-                                            <input type="text" class="form-control" id="copyright" name="copyright" placeholder="© 2025 Your Company">
+                                            <input type="text" class="form-control" id="copyright" name="copyright"
+                                                placeholder="© 2025 Your Company">
                                         </div>
                                     </div>
                                 </div>
@@ -178,7 +193,8 @@
                                         <div class="mb-3">
                                             <label class="form-label">Logo hiện tại</label>
                                             <div id="currentLogo" class="text-center mb-3">
-                                                <img src="" alt="Logo" class="preview-image" id="logoPreview" style="display: none;">
+                                                <img src="" alt="Logo" class="preview-image" id="logoPreview"
+                                                    style="display: none;">
                                                 <div id="noLogo" class="text-muted">Chưa có logo</div>
                                             </div>
                                         </div>
@@ -203,12 +219,14 @@
                                         <div class="mb-3">
                                             <label class="form-label">Favicon hiện tại</label>
                                             <div id="currentFavicon" class="text-center mb-3">
-                                                <img src="" alt="Favicon" class="preview-image" id="faviconPreview" style="display: none; max-height: 64px;">
+                                                <img src="" alt="Favicon" class="preview-image" id="faviconPreview"
+                                                    style="display: none; max-height: 64px;">
                                                 <div id="noFavicon" class="text-muted">Chưa có favicon</div>
                                             </div>
                                         </div>
                                         <div class="upload-area" id="faviconUploadArea">
-                                            <input type="file" id="faviconInput" accept="image/*" style="display: none;">
+                                            <input type="file" id="faviconInput" accept="image/*"
+                                                style="display: none;">
                                             <i class="ti ti-upload" style="font-size: 2rem;"></i>
                                             <div class="mt-2">
                                                 <strong>Click để chọn file</strong><br>
@@ -227,7 +245,8 @@
                                             Lưu thay đổi
                                         </button>
                                         <div class="text-center mt-2">
-                                            <small class="text-muted">Cập nhật lần cuối: <span id="lastUpdate">-</span></small>
+                                            <small class="text-muted">Cập nhật lần cuối: <span
+                                                    id="lastUpdate">-</span></small>
                                         </div>
                                     </div>
                                 </div>
@@ -241,9 +260,13 @@
 
     <!-- Tabler JS -->
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
-    
+
     <!-- Custom JS -->
     <script type="module" src="../../js/config.js?v=6"></script>
+
+    <!-- ADMIN GUARD -->
+    <script type="module" src="../js/admin-guard.js"></script>
+
     <script type="module">
         import { mountAdminSidebar } from '../../components/AdminSidebar.js';
         document.addEventListener('DOMContentLoaded', () => {
@@ -252,5 +275,5 @@
     </script>
     <script type="module" src="./settings.js"></script>
 </body>
-</html>
 
+</html>

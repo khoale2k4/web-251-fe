@@ -1,23 +1,15 @@
 import { ready } from '../../js/main.js';
-import { BASE_URL } from '../../js/config.js';
+import { API_BASE } from '../../js/config.js';
 import { Popup } from '../../components/PopUp.js';
 
 ready(async () => {
-  const API_BASE = BASE_URL;
   const popup = new Popup();
 
-  // --- 1. DOM SELECTORS (ĐÃ CẬP NHẬT) ---
   const tableHeadSel = '#ordersTableHead';
   const tableBodySel = '#ordersTableBody';
 
-  // Xóa selector cũ '#ordersPagination'
-  // Thêm selectors cho style mới
-  const paginationContainer = document.getElementById('pagination-container');
-  const paginationSummary = document.getElementById('pagination-summary');
-  const paginationControls = document.getElementById('pagination-controls');
+  const paginationControls = document.getElementById('paginationControls');
 
-
-  // --- 2. STATE VÀ CÁC HẰNG SỐ ---
   const state = {
     currentTab: 'cart',
     page: 1,
@@ -34,14 +26,14 @@ ready(async () => {
     cancelled: 'Đã hủy'
   };
 
-  // --- 3. HÀM GỌI API ---
+
   async function fetchJson(url) {
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return (await res.json()).data;
   }
 
-  // --- 4. HÀM LOGIC CHÍNH ---
+
   async function loadCurrentTabData() {
     const { currentTab, page, keyword, status } = state;
     if (currentTab === 'cart') {
@@ -50,8 +42,6 @@ ready(async () => {
       await fetchAndRenderOrders(page, keyword, status);
     }
   }
-
-  // --- 5. CÁC HÀM RENDER (Tạo Giao Diện) ---
 
   function createStatusDropdown(currentStatus) {
     const optionsHtml = Object.entries(STATUS_OPTIONS)
@@ -97,7 +87,7 @@ ready(async () => {
     const tbody = document.querySelector(tableBodySel);
     if (!Array.isArray(carts) || carts.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>`;
-      renderPagination(1, 1, 0); // Cập nhật để có 3 tham số
+      renderPagination(1, 1, 0);
       return;
     }
     tbody.innerHTML = carts.map(c => `
@@ -110,15 +100,26 @@ ready(async () => {
         </td>
       </tr>
     `).join('');
-    // Chú ý: API /carts của bạn phải trả về totalItems
+
     renderPagination(page, totalPages, state.totalItems);
+  }
+
+  function formatPaymentMethod(method) {
+    if (!method) return '-';
+    const map = {
+      'cod': 'Thanh toán khi nhận hàng (COD)',
+      'bank': 'Chuyển khoản',
+      'paypal': 'Thanh toán qua Paypal',
+      'credit_card': 'Thanh toán qua thẻ tín dụng'
+    };
+    return map[method.toLowerCase()] || method;
   }
 
   function renderOrderRows(orders, page = 1, totalPages = 1) {
     const tbody = document.querySelector(tableBodySel);
     if (!Array.isArray(orders) || orders.length === 0) {
       tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Không có dữ liệu</td></tr>`;
-      renderPagination(1, 1, 0); // Cập nhật để có 3 tham số
+      renderPagination(1, 1, 0);
       return;
     }
     tbody.innerHTML = orders.map(o => {
@@ -128,7 +129,7 @@ ready(async () => {
           <td>${o.user_name || o.user || '-'}</td>
           <td>${Number(o.total_price || o.total || 0).toLocaleString('vi-VN')} VNĐ</td>
           <td>${o.address || o.shipping_address || '-'}</td>
-          <td>${o.payment_method || '-'}</td>
+          <td>${formatPaymentMethod(o.payment_method)}</td>
           <td>${statusDropdownHtml}</td> 
           <td>${o.note || ''}</td>
           <td>${o.created_at || '-'}</td>
@@ -138,31 +139,33 @@ ready(async () => {
             </td>
             </tr>
             `;
-            // <button class="btn btn-outline-danger btn-sm btn-delete" data-id="${o.id}">Xoá</button>
+
     }).join('');
-    renderPagination(page, totalPages, state.totalItems); // Truyền totalItems
+    renderPagination(page, totalPages, state.totalItems);
   }
 
-  /**
-   * --- HÀM RENDERPAGINATION (ĐÃ THAY THẾ HOÀN TOÀN) ---
-   * Giờ đây sử dụng style UL/LI của Tabler
-   */
   function renderPagination(page, totalPages, totalItems) {
     if (totalPages <= 1) {
-      paginationContainer.style.display = 'none';
+      paginationControls.innerHTML = '';
       return;
     }
-    paginationContainer.style.display = 'flex';
 
-    // Cập nhật tóm tắt
-    paginationSummary.textContent = `Hiển thị trang ${page} / ${totalPages} (Tổng cộng ${totalItems} mục)`;
+    const start = (page - 1) * 10 + 1;
+    const end = Math.min(page * 10, totalItems);
+    document.getElementById('showingRange').textContent = `${start}-${end}`;
+    document.getElementById('totalItems').textContent = totalItems;
 
     let html = '';
 
-    // Nút "Previous"
-    html += `<li class="page-item ${page === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${page - 1}"><i class="ti ti-chevron-left"></i></a></li>`;
+    // Previous button
+    html += `
+      <li class="page-item ${page === 1 ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${page - 1}">
+          <i class="ti ti-chevron-left"></i> Trước
+        </a>
+      </li>
+    `;
 
-    // Logic hiển thị các nút số
     const maxPagesToShow = 5;
     let startPage = Math.max(1, page - Math.floor(maxPagesToShow / 2));
     let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
@@ -181,13 +184,19 @@ ready(async () => {
       html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
     }
 
-    // Nút "Next"
-    html += `<li class="page-item ${page === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${page + 1}"><i class="ti ti-chevron-right"></i></a></li>`;
+    // Next button
+    html += `
+      <li class="page-item ${page === totalPages ? 'disabled' : ''}">
+        <a class="page-link" href="#" data-page="${page + 1}">
+          Sau <i class="ti ti-chevron-right"></i>
+        </a>
+      </li>
+    `;
 
     paginationControls.innerHTML = html;
   }
 
-  // --- 6. TẢI DỮ LIỆU ---
+
 
   async function fetchAndRenderOrders(page, kw, status) {
     document.querySelector(tableBodySel).innerHTML = `<tr><td colspan="8" class="text-center py-4 text-muted">Đang tải dữ liệu...</td></tr>`;
@@ -200,8 +209,8 @@ ready(async () => {
       const data = await fetchJson(url);
       const orders = data.orders || [];
 
-      // Cập nhật state (Quan trọng: API phải trả về total và total_pages)
-      state.page = data.page || 1;
+
+      state.page = data.pagination?.page || data.page || page;
       state.totalPages = data.pagination?.total_pages || data.total_pages || 1;
       state.totalItems = data.pagination?.total || data.total || 0;
       state.keyword = kw;
@@ -223,8 +232,8 @@ ready(async () => {
       const cartsRes = await fetchJson(url);
       const carts = cartsRes.data || cartsRes.carts || cartsRes.cart || [];
 
-      // Cập nhật state (Quan trọng: API phải trả về total và total_pages)
-      state.page = cartsRes.page || 1;
+
+      state.page = cartsRes.pagination?.page || cartsRes.page || page;
       state.totalPages = cartsRes.pagination?.total_pages || cartsRes.total_pages || 1;
       state.totalItems = cartsRes.pagination?.total || cartsRes.total || 0;
       state.keyword = kw;
@@ -236,7 +245,7 @@ ready(async () => {
     }
   }
 
-  // --- 7. GẮN CÁC SỰ KIỆN ---
+
 
   const tabCart = document.getElementById('tab-cart');
   const tabOrders = document.getElementById('tab-orders');
@@ -305,11 +314,11 @@ ready(async () => {
   });
 
   document.addEventListener('click', async (e) => {
-    // --- CẬP NHẬT SỰ KIỆN CLICK PHÂN TRANG ---
-    const pageLink = e.target.closest('.page-link'); // Tìm thẻ <a>
+
+    const pageLink = e.target.closest('.page-link');
     if (pageLink) {
       e.preventDefault();
-      const pageItem = pageLink.closest('.page-item'); // Tìm <li>
+      const pageItem = pageLink.closest('.page-item');
       if (pageItem.classList.contains('disabled') || pageItem.classList.contains('active')) {
         return;
       }
@@ -318,7 +327,7 @@ ready(async () => {
       return;
     }
 
-    // Nút Lưu
+
     if (e.target.classList.contains('btn-save')) {
       const saveButton = e.target;
       const id = saveButton.dataset.id;
@@ -334,7 +343,7 @@ ready(async () => {
           body: JSON.stringify({ status: newStatus })
         });
         alert('Cập nhật trạng thái thành công!');
-        // Tải lại để cập nhật (nếu đang lọc)
+
         await loadCurrentTabData();
       } catch (err) {
         console.error("Lỗi khi lưu đơn hàng:", err);
@@ -343,7 +352,7 @@ ready(async () => {
       return;
     }
 
-    // Nút Xóa
+
     if (e.target.classList.contains('btn-delete')) {
       const id = e.target.dataset.id;
       if (!confirm('Bạn có chắc muốn xoá đơn hàng này?')) return;
@@ -366,7 +375,7 @@ ready(async () => {
         <div><strong>ID đơn hàng:</strong> ${order.id}</div>
         <div><strong>Khách hàng:</strong> ${order.user_name || order.user || '-'}</div>
         <div><strong>Địa chỉ giao hàng:</strong> ${order.address || order.shipping_address || '-'}</div>
-        <div><strong>Phương thức thanh toán:</strong> ${order.payment_method || '-'}</div>
+        <div><strong>Phương thức thanh toán:</strong> ${formatPaymentMethod(order.payment_method)}</div>
         <div><strong>Trạng thái:</strong> ${order.status}</div>
         <div><strong>Ngày tạo:</strong> ${order.created_at}</div>
         <hr/>
@@ -379,7 +388,7 @@ ready(async () => {
             <tbody>
               ${(items || []).map(i => `
                 <tr>
-                  <td><img src="${BASE_URL + '/' + i.product_image}" alt="sp" style="width:48px;height:48px;object-fit:cover;border-radius:5px;"></td>
+                  <td><img src="${API_BASE + '/' + i.product_image}" alt="sp" style="width:48px;height:48px;object-fit:cover;border-radius:5px;"></td>
                   <td>${i.name || i.product_name || '-'}</td>
                   <td>${i.color || '-'}</td>
                   <td>${i.size || '-'}</td>
@@ -401,9 +410,11 @@ ready(async () => {
       const id = e.target.getAttribute('data-id');
       try {
         const cartRes = await fetchJson(`${API_BASE}/carts/${id}`);
-        const cart = cartRes.cart || cartRes;
+        console.log(cartRes);
+        const cart = cartRes.cart;
         const items = cartRes.items || [];
-        const total = cartRes.total || 0;
+        const total = cartRes.item_count || 0;
+        const totalPrice = cartRes.total || 0;
         let content = `
         <div><strong>ID giỏ hàng:</strong> ${cart.id}</div>
         <div><strong>ID người dùng:</strong> ${cart.user_id || '-'}</div>
@@ -414,34 +425,36 @@ ready(async () => {
         <div class="table-responsive">
           <table class="table table-striped">
               <thead>
-              <tr><th></th><th>Sản phẩm</th><th>Màu</th><th>Size</th><th>Số lượng</th><th>Giá</th><th>Tạm tính</th></tr>
+              <tr><th></th><th>Sản phẩm</th><th>Màu</th><th>Size</th><th>Số lượng</th><th>Tạm tính</th></tr>
             </thead>
             <tbody>
               ${(items || []).map(i => `
                 <tr>
-                  <td><img src="${BASE_URL + '/' + i.image}" alt="sp" style="width:48px;height:48px;object-fit:cover;border-radius:5px;"></td>
+                  <td><img src="${API_BASE + '/' + i.image}" alt="sp" style="width:48px;height:48px;object-fit:cover;border-radius:5px;"></td>
                   <td>${i.name || i.product_name || '-'}</td>
                   <td>${i.color || '-'}</td>
                   <td>${i.size || '-'}</td>
                   <td>${i.quantity || 1}</td>
-                  <td>${Number(i.price || 0).toLocaleString('vi-VN')} VNĐ</td>
                   <td>${Number(i.subtotal || i.price * (i.quantity || 1) || 0).toLocaleString('vi-VN')} VNĐ</td>
-                </tr>
-              `).join('')}
+                  </tr>
+                  `).join('')}
             </tbody>
-            </table>
-        </div>
-        <div><strong>Tổng sản phẩm:</strong> ${items.length}</div>
-        <div><strong>Tổng tiền:</strong> ${Number(total).toLocaleString('vi-VN')} VNĐ</div>
+          </table>
+          </div>
+          <div><strong>Tổng sản phẩm:</strong> ${total}</div>
+          <div><strong>Tổng tiền:</strong> ${Number(totalPrice).toLocaleString('vi-VN')} VNĐ</div>
         `;
         popup.show({ title: `Chi tiết giỏ hàng #${cart.id}`, content });
+        // <th>Giá</th>
+        // <td>${Number(i.price || 0).toLocaleString('vi-VN')} VNĐ</td>
       } catch (err) {
+        console.error(err);
         popup.show({ title: 'Lỗi', content: 'Không thể tải chi tiết giỏ hàng.' });
       }
     }
   });
 
 
-  // --- 7. TẢI DỮ LIỆU LẦN ĐẦU ---
+
   await loadCurrentTabData();
 });

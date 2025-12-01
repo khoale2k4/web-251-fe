@@ -1,3 +1,4 @@
+/* Global Styles */
 * {
     box-sizing: border-box;
 }
@@ -7,6 +8,9 @@ body {
     font-family: -apple-system, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
     color: #111827;
     background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 a {
@@ -19,241 +23,13 @@ a:hover {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
+    /* Standardize container width */
     margin: 0 auto;
     padding: 0 16px;
 }
 
-.site-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: #ffffffcc;
-    backdrop-filter: saturate(180%) blur(6px);
-    border-bottom: 1px solid #e5e7eb;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.site-header .container,
-.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 56px;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 30px;
-}
-
-.site-header .site-title,
-.nav-left .logo {
-    font-size: 20px;
-    font-weight: 700;
-    color: #333;
-    margin: 0;
-    text-decoration: none;
-}
-
-.site-nav a,
-.nav-links li a {
-    padding: 8px 10px;
-    border-radius: 6px;
-    color: #111827;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease, background 0.3s ease;
-}
-
-.site-nav a.active,
-.nav-links li a.active {
-    background: #e5e7eb;
-}
-
-.nav-links {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 25px;
-}
-
-.nav-links li a:hover {
-    color: #007bff;
-}
-
-.nav-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.search-bar {
-    display: flex;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    overflow: hidden;
-    background-color: #fff;
-}
-
-.search-bar input[type="search"] {
-    border: none;
-    padding: 8px 12px;
-    outline: none;
-    font-size: 14px;
-    width: 160px;
-}
-
-.search-bar .search-button {
-    background-color: #f0f0f0;
-    border: none;
-    padding: 0 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s ease;
-}
-
-.search-bar .search-button:hover {
-    background-color: #e0e0e0;
-}
-
-.cart-icon {
-    position: relative;
-    text-decoration: none;
-    color: #333;
-    font-size: 24px;
-}
-
-.cart-counter {
-    position: absolute;
-    top: -8px;
-    right: -10px;
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    font-weight: 700;
-    min-width: 14px;
-    text-align: center;
-    line-height: 14px;
-}
-
-.skeleton * {
-    animation: skeleton-loading 1.2s infinite linear alternate;
-    background: #eee;
-    border-radius: 4px;
-}
-
-.skeleton-logo {
-    width: 100px;
-    height: 24px;
-    margin: 8px 0;
-}
-
-.skeleton-nav {
-    width: 300px;
-    height: 16px;
-    margin: 8px 0;
-}
-
-.skeleton-search {
-    width: 150px;
-    height: 20px;
-    margin-right: 10px;
-}
-
-.skeleton-cart {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-}
-
-@keyframes skeleton-loading {
-    0% {
-        background-color: #e0e0e0;
-    }
-
-    100% {
-        background-color: #cfcfcf;
-    }
-}
-
 main {
     padding: 24px 0;
-}
-
-.site-footer {
-    border-top: 1px solid #e5e7eb;
-    margin-top: 40px;
-    padding: 20px 0;
-    color: #6b7280;
-    text-align: center;
-}
-
-.site-footer p {
-    margin: 0;
-    font-size: 14px;
-}
-
-/* Thêm vào file style.css hoặc file CSS của header */
-
-.nav-right {
-    /* Đảm bảo các item được căn giữa theo chiều dọc */
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    /* Khoảng cách giữa các item */
-}
-
-.nav-auth {
-    /* Định dạng cho link "Đăng nhập" */
-    font-weight: 500;
-    color: #333;
-    text-decoration: none;
-    white-space: nowrap;
-    /* Đảm bảo không bị xuống hàng */
-}
-
-.nav-auth-link:hover {
-    color: #2563eb;
-    /* Màu primary */
-}
-
-/* Định dạng cho menu khi đã đăng nhập */
-.user-profile-menu {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-}
-
-.user-profile-menu .profile-link {
-    font-weight: 600;
-    color: #111827;
-    text-decoration: none;
-}
-
-.user-profile-menu .profile-link:hover {
-    color: #2563eb;
-}
-
-/* Nút đăng xuất */
-.btn-logout {
-    background: none;
-    border: none;
-    padding: 0;
-    margin: 0;
-    font-size: 0.85rem;
-    color: #6b7280;
-    /* Màu xám */
-    cursor: pointer;
-}
-
-.btn-logout:hover {
-    color: #ef4444;
-    /* Màu đỏ khi hover */
-    text-decoration: underline;
+    flex: 1;
 }

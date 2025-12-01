@@ -6,16 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Products</title>
 
-    <!-- Tabler CSS cho Sidebar -->
     <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
 
-    <!-- <link rel="stylesheet" href="../admin.css"> -->
     <link rel="stylesheet" href="../../css/popUp.css">
     <link rel="stylesheet" href="./product_popup.css">
 
     <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
-    <link rel="stylesheet" href="../../../pagination.css">
+
 
     <style>
         .fixed-sidebar {
@@ -58,8 +56,10 @@
                                 <div class="ms-auto d-flex filter-group">
                                     <input type="text" class="form-control product-search" placeholder="Tìm kiếm..."
                                         style="width: 220px;" />
-                                    <button id="btnRefresh" class="btn btn-outline-secondary" style="margin-left: 10px;margin-right: 10px;">Làm mới</button>
-                                    <button id="btnAdd" class="btn btn-success btn-add-product">Thêm sản phẩm mới</button>
+                                    <button id="btnRefresh" class="btn btn-outline-secondary"
+                                        style="margin-left: 10px;margin-right: 10px;">Làm mới</button>
+                                    <button id="btnAdd" class="btn btn-success btn-add-product">Thêm sản phẩm
+                                        mới</button>
                                 </div>
                             </div>
 
@@ -86,9 +86,11 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div id="pagination-container" class="pagination-container" style="display: none;">
-                                <div id="pagination-summary" class="pagination-summary"></div>
-                                <ul id="pagination-controls" class="pagination"></ul>
+                            <div class="card-footer d-flex align-items-center">
+                                <p class="m-0 text-muted">Hiển thị <span id="showingRange">0-0</span> trong tổng số
+                                    <span id="totalItems">0</span>
+                                </p>
+                                <ul class="pagination m-0 ms-auto" id="paginationControls"></ul>
                             </div>
                         </div>
                     </div>
@@ -106,6 +108,10 @@
     <!-- JS gốc -->
     <script type="module" src="../../js/main.js?v=6"></script>
     <script type="module" src="admin_products.js?v=6"></script>
+
+    <!-- ADMIN GUARD -->
+    <script type="module" src="../js/admin-guard.js"></script>
+
     <script type="module">
         import { mountAdminSidebar } from '../../components/AdminSidebar.js';
         document.addEventListener('DOMContentLoaded', () => {
