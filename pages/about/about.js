@@ -6,7 +6,10 @@ const API_PAGE_CONTENT = 'http://localhost:8000/page-contents';
 const BASE_URL = 'http://localhost:8000';
 
 // API mới: danh sách 3 section About (giữ nguyên PHP như bạn đã làm)
-const API_ABOUT_SECTIONS = 'http://localhost/be/api/about_sections_list.php';
+// const API_ABOUT_SECTIONS = 'http://localhost/be/api/about_sections_list.php';
+// API mới: danh sách 3 section About (qua index.php + routes MVC)
+const API_ABOUT_SECTIONS = 'http://localhost/be/index.php?route=about-sections';
+
 
 document.addEventListener("DOMContentLoaded", () => {
   // Giữ nguyên header/footer
@@ -117,16 +120,29 @@ async function loadAboutSections() {
       throw new Error(json.message || 'Dữ liệu trả về không hợp lệ');
     }
 
-    const sections = json.data.slice(0, 3);
+    // 🔥 LẤY TOÀN BỘ CÁC SECTION THAY VÌ CHỈ 3 CÁI ĐẦU
+    const sections = json.data;
 
     // Xoá skeleton
     container.innerHTML = '';
 
+    // Không có dữ liệu => thông báo cho user
+    if (sections.length === 0) {
+      container.innerHTML = `
+        <p class="text-center text-muted">
+          Chưa có nội dung giới thiệu. Quản trị viên hãy thêm section trong trang Admin.
+        </p>
+      `;
+      return;
+    }
+
+    // Render lần lượt tất cả section
     sections.forEach((item, index) => {
       const sectionEl = createAboutSection(item, index);
       container.appendChild(sectionEl);
     });
 
+    // Giữ hiệu ứng scroll + stagger
     setupScrollReveal();
   } catch (error) {
     console.error('[About] Lỗi tải about_sections:', error);
@@ -137,6 +153,8 @@ async function loadAboutSections() {
     `;
   }
 }
+
+
 
 function createAboutSection(item, index) {
   const section = document.createElement('section');
