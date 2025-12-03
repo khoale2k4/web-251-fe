@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản lý trang About - Admin</title>
+
+  <!-- Tabler CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+
+  <!-- Sidebar cố định giống các trang admin khác -->
+  <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+
+  <style>
+    .excerpt-preview {
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+
+    .thumb-img {
+      width: 64px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <!-- Sidebar -->
+    <div class="mount-admin"></div>
+
+    <!-- Nội dung chính -->
+    <div class="page-wrapper">
+      <div class="container-xl">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+          <div class="row align-items-center">
+            <div class="col">
+              <h2 class="page-title">
+                Quản lý nội dung trang About
+              </h2>
+              <div class="text-muted mt-1">
+                Chỉnh sửa các khối nội dung & hình ảnh hiển thị ở trang About phía người dùng.
+              </div>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                <button id="btn-add-section" class="btn btn-primary">
+                  <i class="ti ti-plus"></i>
+                  Thêm section
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng danh sách section -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Danh sách section About</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-vcenter card-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tiêu đề</th>
+                  <th>Mô tả ngắn</th>
+                  <th>Hình ảnh</th>
+                  <th>Thứ tự</th>
+                  <th>Trạng thái</th>
+                  <th class="w-1"></th>
+                </tr>
+              </thead>
+              <tbody id="about-table-body">
+                <tr>
+                  <td colspan="7" class="text-center text-muted py-4">
+                    Đang tải dữ liệu...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal thêm / sửa section -->
+  <div class="modal fade" id="modal-about-form" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form id="about-form">
+          <div class="modal-header">
+            <h5 class="modal-title" id="about-form-title">Thêm section</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+            <input type="hidden" id="about-id">
+
+            <div class="mb-3">
+              <label class="form-label">Tiêu đề</label>
+              <input type="text" class="form-control" id="about-title-input"
+                placeholder="Nhập tiêu đề section" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Nội dung / mô tả</label>
+              <textarea class="form-control" id="about-description-input"
+                rows="4" placeholder="Mô tả chi tiết nội dung section"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">URL hình ảnh</label>
+              <input type="text" class="form-control" id="about-image-input"
+                placeholder="Đường dẫn ảnh (image_url)">
+              <div class="form-hint">
+                Có thể là link tuyệt đối hoặc tương đối. Ví dụ:
+                <code>/uploads/about/brand-story.jpg</code>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <label class="form-label">Thứ tự hiển thị</label>
+                <input type="number" class="form-control" id="about-sort-input"
+                  value="1" min="0" step="1">
+              </div>
+              <div class="col-sm-6 mb-3">
+                <label class="form-label d-block">Trạng thái</label>
+                <label class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox"
+                    id="about-active-input" checked>
+                  <span class="form-check-label">Hiển thị trên trang About</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-link link-secondary"
+              data-bs-dismiss="modal">
+              Hủy
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Lưu thay đổi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal xác nhận xoá -->
+  <div class="modal fade" id="modal-about-delete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center py-4">
+          <h3>Bạn chắc chắn?</h3>
+          <div class="text-secondary">
+            Thao tác này sẽ xoá hẳn section khỏi trang About.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn me-auto" data-bs-dismiss="modal">
+            Hủy
+          </button>
+          <button type="button" class="btn btn-danger" id="btn-confirm-delete">
+            Xoá
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Tabler + sidebar + page -->
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js" defer></script>
+  <!-- <script src="../mount-admin.js" defer></script> -->
+  <script src="./app.js?v=2" type="module" defer></script>
+</body>
+
+</html>

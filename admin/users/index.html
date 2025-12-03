@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý người dùng - Admin</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+
+  <style>
+    .fixed-sidebar {
+      z-index: 1000 !important;
+    }
+
+    .page .page-wrapper {
+      margin-left: 260px !important;
+    }
+
+    .filter-grid {
+      gap: 12px;
+    }
+
+    .user-detail-card {
+      position: sticky;
+      top: 90px;
+    }
+
+    .user-detail-card .avatar-xl {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #edf2ff;
+    }
+
+    .empty-detail-state {
+      text-align: center;
+      padding: 32px 12px;
+      color: #868e96;
+    }
+
+    .badge-soft {
+      font-size: 12px;
+      padding: 0.35rem 0.65rem;
+      border-radius: 999px;
+    }
+
+    .table-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #edf2ff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #4263eb;
+    }
+
+    @media (max-width: 992px) {
+      .page .page-wrapper {
+        margin-left: 0 !important;
+      }
+
+      .user-detail-card {
+        position: relative;
+        top: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="mount-admin-sidebar"></div>
+
+    <div class="page-wrapper">
+      <div class="page-header d-print-none">
+        <div class="container-xl">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <h2 class="page-title">Quản lý người dùng</h2>
+              <div class="text-muted mt-1">Tìm kiếm, xem thông tin và cập nhật trạng thái tài khoản</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-body">
+        <div class="container-xl">
+
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="row row-cards">
+                <div class="col-sm-4">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <span class="avatar text-bg-primary"><i class="ti ti-users"></i></span>
+                    </div>
+                    <div>
+                      <div class="text-muted">Tổng số người dùng</div>
+                      <div class="h2 mb-0" id="stat-total-users">--</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <span class="avatar text-bg-success"><i class="ti ti-user-check"></i></span>
+                    </div>
+                    <div>
+                      <div class="text-muted">Đang hoạt động</div>
+                      <div class="h2 mb-0" id="stat-active-users">--</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <span class="avatar text-bg-danger"><i class="ti ti-user-exclamation"></i></span>
+                    </div>
+                    <div>
+                      <div class="text-muted">Đang bị khóa</div>
+                      <div class="h2 mb-0" id="stat-banned-users">--</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row row-cards">
+            <div class="col-lg-8">
+              <div class="card">
+                <div class="card-header">
+                  <div class="d-flex flex-wrap filter-grid w-100">
+                    <div class="flex-grow-1">
+                      <label class="form-label text-muted mb-1">Tìm kiếm</label>
+                      <input type="text" class="form-control" id="input-search"
+                        placeholder="Tên, email hoặc số điện thoại">
+                    </div>
+                    <div style="min-width: 200px;">
+                      <label class="form-label text-muted mb-1">Trạng thái</label>
+                      <select class="form-select" id="select-status">
+                        <option value="all">Tất cả</option>
+                        <option value="active">Đang hoạt động</option>
+                        <option value="banned">Đang khóa</option>
+                      </select>
+                    </div>
+                    <div class="d-flex align-items-end">
+                      <button class="btn btn-outline-secondary me-2" id="btn-refresh">
+                        <i class="ti ti-rotate-clockwise me-1"></i>Làm mới
+                      </button>
+                      <button class="btn btn-primary" id="btn-search">
+                        <i class="ti ti-search me-1"></i>Tìm
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-vcenter">
+                    <thead>
+                      <tr>
+                        <th>Người dùng</th>
+                        <th>Vai trò</th>
+                        <th>Liên hệ</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th class="text-end">Hành động</th>
+                      </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                      <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Đang tải dữ liệu...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card-footer d-flex align-items-center">
+                  <p class="m-0 text-muted">Hiển thị <span id="showingRange">0-0</span> trong tổng số <span
+                      id="totalItems">0</span></p>
+                  <ul class="pagination m-0 ms-auto" id="paginationControls"></ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="card user-detail-card">
+                <div class="card-header">
+                  <h3 class="card-title mb-0">Thông tin người dùng</h3>
+                </div>
+                <div class="card-body" id="user-detail-panel">
+                  <div class="empty-detail-state">
+                    <i class="ti ti-user fs-1 mb-2"></i>
+                    <p>Chọn một người dùng để xem chi tiết tại đây.</p>
+                  </div>
+                </div>
+                <div class="card-footer" id="user-detail-footer" style="display:none;">
+                  <a href="#" class="btn btn-outline-primary w-100" target="_blank" id="btn-view-profile">
+                    Xem trang cá nhân
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+  <script src="../sidebar-fix.js?v=2"></script>
+  <script type="module" src="../../js/main.js?v=6"></script>
+  <script type="module" src="../js/admin-guard.js"></script>
+  <script type="module" src="./users.js?v=1"></script>
+  <script type="module">
+    import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      mountAdminSidebar('.mount-admin-sidebar', 'admin-users');
+    });
+  </script>
+</body>
+
+</html>

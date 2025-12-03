@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý FAQ - Admin</title>
+
+    <!-- Tabler CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+
+    <!-- FIXED SIDEBAR -->
+    <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+
+    <style>
+        .answer-preview {
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+        <!-- Sidebar -->
+        <div class="mount-admin-sidebar"></div>
+
+        <!-- Main Content -->
+        <div class="page-wrapper">
+            <!-- Page header -->
+            <div class="page-header d-print-none">
+                <div class="container-xl">
+                    <div class="row g-2 align-items-center">
+                        <div class="col">
+                            <h2 class="page-title">Quản lý FAQ</h2>
+                            <div class="text-muted mt-1">
+                                Quản lý các câu hỏi thường gặp (FAQ) từ khách hàng
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary" id="btnAdd">
+                                <i class="ti ti-plus"></i> Thêm câu hỏi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page body -->
+            <div class="page-body">
+                <div class="container-xl">
+
+                    <!-- Bộ lọc -->
+                    <div class="row row-cards mb-3">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Bộ lọc</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-2">
+                                        <div class="col-md-5">
+                                            <label class="form-label">Từ khóa</label>
+                                            <input type="text" class="form-control" id="filterKeyword"
+                                                placeholder="Tìm trong câu hỏi hoặc câu trả lời...">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Trạng thái</label>
+                                            <select class="form-select" id="filterStatus">
+                                                <option value="all">Tất cả</option>
+                                                <option value="pending">Chờ trả lời</option>
+                                                <option value="answered">Đã trả lời</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">&nbsp;</label>
+                                            <button class="btn btn-primary w-100" id="btnFilter">
+                                                <i class="ti ti-filter"></i> Lọc
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bảng FAQ -->
+                    <div class="row row-cards">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Danh sách câu hỏi</h3>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-vcenter card-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 60px;">ID</th>
+                                                <th>Câu hỏi</th>
+                                                <th>Câu trả lời</th>
+                                                <th style="width: 140px;">Trạng thái</th>
+                                                <th style="width: 180px;">Ngày tạo</th>
+                                                <th style="width: 120px;" class="text-end">Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="faqTableBody">
+                                            <tr>
+                                                <td colspan="6" class="text-center py-4">
+                                                    <div class="spinner-border text-primary" role="status">
+                                                        <span class="visually-hidden">Đang tải...</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <!-- PHÂN TRANG - thêm giống news -->
+                                <div class="card-footer d-flex align-items-center">
+                                    <p class="m-0 text-muted" id="faqSummary">
+                                        Chưa có câu hỏi nào
+                                    </p>
+                                    <ul class="pagination m-0 ms-auto" id="faqPagination"></ul>
+                                </div>
+
+                                <!-- HẾT PHÂN TRANG -->
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal thêm / sửa FAQ -->
+    <div class="modal modal-blur fade" id="faqModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="faqModalTitle">Thêm câu hỏi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <form id="faqForm">
+                    <div class="modal-body">
+                        <input type="hidden" id="faqId">
+
+                        <div class="mb-3">
+                            <label class="form-label">Câu hỏi</label>
+                            <input type="text" class="form-control" id="faqQuestion" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Câu trả lời</label>
+                            <textarea class="form-control" id="faqAnswer" rows="4"
+                                placeholder="Nhập câu trả lời (có thể để trống nếu chưa trả lời)"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái</label>
+                            <select class="form-select" id="faqStatus">
+                                <option value="pending">Chờ trả lời</option>
+                                <option value="answered">Đã trả lời</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                            Hủy
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="faqSaveBtn">
+                            Lưu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabler JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+
+    <!-- SIDEBAR FIX SCRIPT -->
+    <script src="../sidebar-fix.js?v=2"></script>
+
+    <!-- JS riêng của trang FAQ -->
+    <script src="./admin_faq.js?v=12"></script>
+
+    <!-- ADMIN GUARD -->
+    <script type="module" src="../js/admin-guard.js"></script>
+
+    <!-- Mount sidebar -->
+    <script type="module">
+        import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            mountAdminSidebar('.mount-admin-sidebar', 'admin-faq');
+        });
+    </script>
+</body>
+
+</html>

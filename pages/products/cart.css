@@ -1,0 +1,352 @@
+main {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+main h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 24px;
+}
+
+.cart-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.cart-items {
+    flex: 2 1 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.cart-item {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 20px;
+    position: relative;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.cart-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #f3f4f6;
+}
+
+.product-image-link {
+    text-decoration: none;
+}
+
+.cart-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cart-info h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.cart-info h3 .product-name-link {
+    color: #111827;
+    text-decoration: none;
+}
+
+.cart-info h3 .product-name-link:hover {
+    text-decoration: underline;
+}
+
+.cart-info p {
+    margin: 0;
+    font-size: 1rem;
+    color: #111827;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    width: fit-content;
+}
+
+.quantity-control button {
+    background: #f9fafb;
+    border: none;
+    padding: 6px 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.quantity-control button:hover {
+    background: #f3f4f6;
+}
+
+.quantity-control .btn-decrease {
+    border-right: 1px solid #d1d5db;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.quantity-control .btn-increase {
+    border-left: 1px solid #d1d5db;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.quantity-control .quantity {
+    padding: 6px 14px;
+    font-weight: 500;
+}
+
+.btn-remove {
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    font-size: 1.2rem;
+    color: #6b7280;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1;
+    margin-left: auto;
+    align-self: center;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-remove:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+.cart-summary {
+    flex: 1 1 300px;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+    position: sticky;
+    top: 80px;
+}
+
+.cart-summary p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+    margin: 0 0 16px 0;
+}
+
+.cart-summary p:last-of-type {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111827;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 16px;
+}
+
+.btn-primary,
+.btn-secondary {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+.order-form {
+    flex-basis: 100%;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+}
+
+.order-form.hidden {
+    display: none;
+}
+
+.order-form h2 {
+    margin-top: 0;
+}
+
+.order-form label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 6px;
+    margin-top: 16px;
+}
+
+.order-form input,
+.order-form select,
+.order-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.order-form textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+}
+
+.form-actions button {
+    width: auto;
+}
+
+.cart-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+.cart-empty p {
+    font-size: 1.1rem;
+    color: #4b5563;
+}
+
+.cart-empty .btn-primary {
+    width: auto;
+    margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+    main {
+        padding: 0 0 24px 0;
+        margin-top: 20px;
+    }
+
+    main h1 {
+        padding: 0 24px;
+    }
+
+    .cart-layout {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .cart-items,
+    .cart-summary,
+    .order-form {
+        border-radius: 0;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .cart-summary {
+        position: static;
+        width: 100%;
+        box-sizing: border-box;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .order-form {
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    main {
+        margin-top: 0;
+    }
+
+    main h1 {
+        font-size: 1.5rem;
+        padding: 0 16px;
+    }
+
+    .cart-items,
+    .cart-summary,
+    .order-form {
+        padding: 20px;
+    }
+
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 40px;
+    }
+
+    .cart-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .btn-remove {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        font-size: 1.75rem;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+}

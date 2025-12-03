@@ -1,0 +1,36 @@
+fe/
+├── admin/                     # Phân hệ Quản trị (CMS)
+│   ├── comments/
+│   ├── news/
+│   ├── products/
+│   ├── users/
+│   ├── utils/                 # Các tiện ích (Toast, Scheduler)
+│   ├── admin.css
+│   └── index.html
+├── assets/                    # Tài nguyên tĩnh
+│   ├── fonts/
+│   ├── images/
+│   └── uploads/
+├── components/                # Thành phần giao diện tái sử dụng
+│   ├── AdminSidebar.js
+│   ├── Footer.js
+│   ├── Header.js
+│   └── PopUp.js
+├── css/                       # CSS dùng chung (Global styles)
+│   ├── common.css
+│   └── style.css
+├── js/                        # Logic cốt lõi (Core Logic)
+│   ├── api.js                 # Xử lý gọi API
+│   ├── config.js
+│   ├── security.js            # Bảo mật/Auth
+│   └── main.js
+├── pages/                     # Phân hệ Người dùng (Client)
+│   ├── home/                  # Trang chủ & Đăng nhập
+│   ├── news/                  # Trang tin tức
+│   ├── products/              # Trang sản phẩm & Giỏ hàng
+│   ├── profile/               # Trang cá nhân
+│   └── about/
+├── index.html                 # Entry point
+└── makefile
+
+

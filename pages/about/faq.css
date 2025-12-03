@@ -1,0 +1,331 @@
+:root {
+  --faq-primary: #ff4b2b;
+  --faq-primary-soft: rgba(255, 75, 43, 0.08);
+  --faq-border: rgba(15, 23, 42, 0.08);
+  --faq-text-main: #0f172a;
+  --faq-text-muted: #64748b;
+}
+
+/* Khối tổng */
+.faq-timeline-section {
+  padding: 60px 16px 80px;
+  background: #f8fafc;
+}
+
+.faq-timeline-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.faq-timeline-header h2 {
+  font-size: 32px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faq-text-main);
+  margin-bottom: 8px;
+}
+
+.faq-timeline-header p {
+  font-size: 14px;
+  color: var(--faq-text-muted);
+}
+
+/* Timeline chính */
+.faq-timeline {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  padding: 10px 0;
+}
+
+/* Đường dọc ở giữa */
+.faq-timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(226, 232, 240, 0),
+    #e11d48,
+    rgba(226, 232, 240, 0)
+  );
+}
+
+/* Mỗi hàng gồm: card trái - marker - card phải */
+.faq-timeline-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 32px;
+  margin-bottom: 40px;
+  align-items: flex-start;
+}
+
+/* Card chung */
+.faq-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 18px 22px 20px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.faq-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.faq-card p {
+  font-size: 14px;
+  color: var(--faq-text-muted);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.faq-card a {
+  text-decoration: none;
+}
+
+/* Link READ MORE */
+.faq-readmore {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faq-primary);
+}
+
+.faq-readmore:hover {
+  text-decoration: underline;
+}
+
+/* Marker giữa */
+.faq-timeline-marker {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.faq-marker-icon {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 2px solid var(--faq-primary-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+/* Icon mục tiêu (dùng emoji để đỡ phải import hình) */
+.faq-marker-icon::before {
+  content: "🎯";
+  font-size: 18px;
+}
+
+/* Card trái căn phải, card phải căn trái giống layout trong ảnh */
+.faq-card-left {
+  text-align: left;
+}
+
+.faq-card-right {
+  text-align: left;
+}
+
+/* Responsive: mobile xuống 1 cột */
+@media (max-width: 900px) {
+  .faq-timeline::before {
+    left: 16px;
+  }
+
+  .faq-timeline-row {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .faq-timeline-marker {
+    width: 32px;
+    height: 32px;
+  }
+
+  .faq-marker-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .faq-card {
+    padding: 16px 18px;
+  }
+}
+
+/* Chatbot */
+
+.faq-chatbot {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 320px;
+    max-height: 450px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.15);
+    background: #fff;
+    overflow: hidden;
+    font-size: 14px;
+    z-index: 999;
+}
+
+.faq-chatbot-header {
+    background: #111827;
+    color: #fff;
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-chatbot-body {
+    padding: 10px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.faq-chatbot-input {
+    display: flex;
+    border-top: 1px solid #e5e7eb;
+}
+
+.faq-chatbot-input input {
+    flex: 1;
+    border: none;
+    padding: 8px;
+    outline: none;
+}
+
+.faq-chatbot-input button {
+    border: none;
+    padding: 0 12px;
+    background: #111827;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Bóng chat */
+.faq-msg {
+    margin-bottom: 8px;
+    display: flex;
+}
+
+.faq-msg.bot {
+    justify-content: flex-start;
+}
+
+.faq-msg.user {
+    justify-content: flex-end;
+}
+
+.faq-msg .bubble {
+    max-width: 75%;
+    padding: 6px 10px;
+    border-radius: 12px;
+}
+
+.faq-msg.bot .bubble {
+    background: #e5e7eb;
+    border-bottom-left-radius: 0;
+}
+
+.faq-msg.user .bubble {
+    background: #111827;
+    color: #fff;
+    border-bottom-right-radius: 0;
+}
+
+/* Nút gợi ý câu hỏi */
+.faq-suggest-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.faq-suggest-btn {
+    border: none;
+    background: #f3f4f6;
+    padding: 4px 8px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 12px;
+}
+/* FAQ – background ảnh giày chạy ngang */
+
+.faq-animated-wrapper {
+    position: relative;
+    overflow: hidden;          /* Ẩn phần ảnh tràn ra ngoài */
+    min-height: 100vh;         /* Cho block cao ít nhất = chiều cao màn hình */
+}
+
+/* Lớp nền chứa ảnh giày */
+.faq-running-bg {
+    position: absolute;
+    inset: 0;                  /* top:0; right:0; bottom:0; left:0 */
+    z-index: 0;
+    pointer-events: none;      /* Không chặn click vào nội dung phía trên */
+    display: flex;
+    align-items: center;
+    opacity: 0.18;             /* Làm mờ nền để không lấn át text */
+}
+
+/* “Đường ray” cho giày chạy – dài 2 lần màn hình để chạy mượt */
+.faq-running-track {
+    display: flex;
+    gap: 6rem;                 /* Khoảng cách giữa các đôi giày */
+    width: 1000%;
+    animation: faq-shoes-move 14s linear infinite;
+}
+
+/* Ảnh giày */
+.faq-running-track img {
+    width: 500px;
+    max-width: 40vw;
+    flex-shrink: 0;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+}
+
+/* Lớp nội dung thực tế */
+.faq-page-content {
+    position: relative;
+    z-index: 1;                /* Đè lên background ảnh */
+}
+
+/* Animation từ phải sang trái */
+@keyframes faq-shoes-move {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);  /* 200% width -> chạy 50% là vừa một vòng */
+    }
+}
+
+/* Responsive nhẹ cho mobile */
+@media (max-width: 768px) {
+    .faq-running-track img {
+        width: 180px;
+        max-width: 60vw;
+    }
+
+    .faq-animated-wrapper {
+        padding-block: 1.5rem;
+    }
+}

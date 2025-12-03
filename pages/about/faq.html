@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/footer.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="faq.css?v=6">
+</head>
+
+<body>
+    <div class="mount-header"></div>
+
+    <main>
+        <div class="faq-running-bg">
+            <div class="faq-running-track">
+                <!-- Dùng 4–6 ảnh cùng 1 file để cảm giác “đoàn giày” chạy ngang -->
+                <img src="../../1.jpg" alt="Giày chạy">
+                <img src="../../1.jpg" alt="Giày chạy">
+                <img src="../../1.jpg" alt="Giày chạy">
+                <img src="../../1.jpg" alt="Giày chạy">
+                <img src="../../1.jpg" alt="Giày chạy">
+                <img src="../../1.jpg" alt="Giày chạy">
+            </div>
+        </div>
+
+        <section class="faq-timeline-section">
+            <div class="faq-timeline-header">
+                <h2>FAQ</h2>
+                <p>Các câu hỏi thường gặp từ khách hàng, dữ liệu lấy từ bảng <code>faqs</code> trong hệ thống.</p>
+            </div>
+
+            <!-- JS sẽ render danh sách FAQ vào đây -->
+            <div class="faq-timeline" id="faq-list">
+                <!-- Đang tải... (nội dung tạm thời sẽ bị JS thay thế) -->
+            </div>
+        </section>
+    </main>
+    <!-- Chatbot FAQ -->
+    <div class="faq-chatbot" id="faq-chatbot">
+        <div class="faq-chatbot-header">
+            <span>FAQ Chatbot</span>
+            <button id="faq-chatbot-toggle">−</button>
+        </div>
+
+        <div class="faq-chatbot-body" id="faq-chatbot-body">
+            <!-- Tin nhắn sẽ được JS render -->
+        </div>
+
+        <div class="faq-chatbot-input">
+            <input type="text" id="faq-chatbot-question" placeholder="Nhập câu hỏi của bạn...">
+            <button id="faq-chatbot-send">Gửi</button>
+        </div>
+    </div>
+
+    <div class="mount-footer"></div>
+
+    <script type="module" src="../../js/main.js"></script>
+    <script type="module" src="faq.js"></script>
+    <script src="../assets/js/faq-chatbot.js"></script>
+
+</body>
+
+</html>
