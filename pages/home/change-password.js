@@ -98,8 +98,6 @@ ready(() => {
   const userId = getUserId();
 
   if (!userId) {
-    // Chưa đăng nhập - redirect về login
-    alert('Vui lòng đăng nhập');
     window.location.href = 'login.html';
     return;
   }

@@ -64,26 +64,48 @@ ready(async () => {
     keyword: '',
   };
 
-
-
   function renderRows(list) {
     if (!Array.isArray(list) || list.length === 0) {
       elements.tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">Không tìm thấy sản phẩm nào.</td></tr>`;
       return;
     }
+
     elements.tableBody.innerHTML = list.map(p => `
       <tr>
-        <td><img src="${p.imageLink}" width="60" style="border-radius:8px;"></td>
-        <td>${p.name}</td>
+        <td>
+          <div class="text-truncate" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.name}">
+          ${p.name}
+          </div>
+        </td>
+        
+        <td class="product-img-cell"><img src="${p.imageLink}" width="60" style="border-radius:8px; object-fit: cover;"></td>
+
         <td>${Number(p.price).toLocaleString('vi-VN')} VNĐ</td>
         <td>${(Number(p.discount) * 100).toFixed(0)}%</td>
         <td>${p.stock}</td>
-        <td>${p.size}</td>
-        <td>${p.color}</td>
-        <td>${p.category}</td>
+        
+        <td>
+            <div class="text-truncate" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.size}">
+                ${p.size}
+            </div>
+        </td>
+        
+        <td>
+            <div class="d-flex align-items-center gap-2" title="${p.color}">
+                <span class="color-swatch-table" style="background-color: ${p.color}"></span>
+                <span class="text-muted small">${p.color}</span>
+            </div>
+        </td>
+
+        <td>
+            <div class="text-truncate" style="max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.category}">
+                ${p.category}
+            </div>
+        </td>
+
         <td class="text-end">
           <button data-action="edit" data-id="${p.id}" class="btn btn-outline-success btn-sm btn-edit me-1">Sửa</button>
-          <button data-action="delete" data-id="${p.id}" class="btn btn-outline-danger btn-sm btn-delete" >Xóa</button>
+          <button data-action="delete" data-id="${p.id}" class="btn btn-outline-danger btn-sm btn-delete">Xóa</button>
         </td>
       </tr>
     `).join('');
@@ -200,17 +222,23 @@ ready(async () => {
             <label>Giảm giá (%)<input type="number" name="discount" step="any" value="${product?.discount ? product.discount * 100 : ''}"></label>
             <label>Số lượng tồn<input type="number" name="stock" step="1" value="${product?.stock || ''}"></label>
             <label>Size<input type="text" name="size" value="${product?.size || ''}"></label>
-            <label>Màu sắc<input type="text" name="color" value="${product?.color || ''}"></label>
-            <label>
-              Ảnh sản phẩm
-              <input type="file" name="imageFile" accept="image/*" id="imageFile">
-              <input type="hidden" name="imageLink" value="${product?.imageLink || ''}">
-              <div class="image-preview"><img id="imagePreview" src="${product?.imageLink || '../../assets/images/placeholder.png'}" alt="Preview"></div>
+            <label>Size<input type="text" name="size" value="${product?.size || ''}"></label>
+            <label>Màu sắc
+                <div class="d-flex gap-2">
+                    <input type="color" name="color" value="${product?.color || '#000000'}" style="height: 38px; width: 60px; padding: 2px;">
+                    <input type="text" name="color_text" value="${product?.color || ''}" placeholder="#000000" style="flex:1;">
+                </div>
             </label>
             <label>
               Danh mục
               <select name="category" id="categorySelect"><option value="">-- Đang tải... --</option></select>
               <textarea name="newCategory" id="newCategory" placeholder="Nhập danh mục mới..." style="display:none;"></textarea>
+            </label>
+            <label>
+              Ảnh sản phẩm
+              <input type="file" name="imageFile" accept="image/*" id="imageFile">
+              <input type="hidden" name="imageLink" value="${product?.imageLink || ''}">
+              <div class="image-preview"><img id="imagePreview" src="${product?.imageLink || '../../assets/images/placeholder.png'}" alt="Preview"></div>
             </label>
           </div>
           <div class="popup-actions">
@@ -235,7 +263,14 @@ ready(async () => {
 
 
     populateCategories(categorySelect, newCategory, product?.category, !isEdit);
+    populateCategories(categorySelect, newCategory, product?.category, !isEdit);
     setupImagePreview(fileInput, previewImg);
+
+    const colorPicker = form.querySelector('input[name="color"]');
+    const colorText = form.querySelector('input[name="color_text"]');
+
+    colorPicker.addEventListener('input', () => colorText.value = colorPicker.value);
+    colorText.addEventListener('input', () => colorPicker.value = colorText.value);
   };
 
   async function populateCategories(selectEl, newCategoryEl, currentCategoryName, showNew) {
@@ -296,7 +331,8 @@ ready(async () => {
         }
       }
 
-      let imageUrl = product?.imageLink || '';
+
+      let imageUrl = (product?.imageLink || '').replace(BASE_URL + '/', '');
       const file = formData.get('imageFile');
       if (file && file.size > 0) {
         const uploadData = new FormData();
@@ -315,7 +351,9 @@ ready(async () => {
         discount: parseFloat(data.discount || 0),
         stock: parseInt(data.stock || 0),
         size: data.size,
-        color: data.color,
+        size: data.size,
+        color: data.color_text || data.color, // Prefer text input if manually typed, else picker
+        image: imageUrl,
         image: imageUrl,
         category_id: data.category,
       };

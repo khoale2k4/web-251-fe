@@ -23,7 +23,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: Arial, sans-serif;
   color: var(--text-dark);
   line-height: 1.6;
 }
@@ -99,7 +99,7 @@ body {
 }
 
 .hero-title {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, sans-serif;
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 800;
   margin-bottom: 20px;
@@ -171,7 +171,7 @@ body {
 }
 
 .section-title {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, sans-serif;
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 32px;
@@ -254,7 +254,7 @@ body {
 }
 
 .featured-title {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, sans-serif;
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 12px;
@@ -381,7 +381,7 @@ body {
 }
 
 .news-title {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, sans-serif;
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 12px;
@@ -814,7 +814,7 @@ body {
 }
 
 .article-title {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 800;
   color: var(--text-dark);
@@ -920,7 +920,7 @@ body {
 .article-body h2,
 .article-body h3,
 .article-body h4 {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, sans-serif;
   margin: 32px 0 16px;
   color: var(--text-dark);
 }
@@ -1038,7 +1038,7 @@ body {
 }
 
 .comments-header h2 {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, sans-serif;
   font-size: 2rem;
   color: var(--text-dark);
   margin-bottom: 32px;
@@ -1253,7 +1253,7 @@ body {
 }
 
 .related-title {
-  font-family: 'Playfair Display', serif;
+  font-family: Arial, sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--text-dark);
