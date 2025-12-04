@@ -3,6 +3,14 @@ import { mountFooter } from '../../components/Footer.js';
 import { Security } from '../../js/security.js';
 import { API_BASE } from '../../js/config.js';
 
+// Helper function to format image URL
+function formatImageUrl(imagePath) {
+    if (!imagePath) return '../../assets/images/placeholder.png';
+    if (imagePath.startsWith('http')) return imagePath;
+    if (imagePath.startsWith('/')) return `${API_BASE}${imagePath}`;
+    return `${API_BASE}/storage/${imagePath}`;
+}
+
 // Get post slug from URL
 const urlParams = new URLSearchParams(window.location.search);
 const postSlug = urlParams.get("slug");
@@ -80,8 +88,11 @@ async function loadPost() {
 
 function renderPost(post) {
     // Update page title
-    document.getElementById('pageTitle').textContent = `${post.title} - Shoe Store`;
-    document.getElementById('breadcrumbTitle').textContent = truncateText(post.title, 50);
+    document.title = `${post.title} - Shoe Store`;
+    const breadcrumbTitle = document.getElementById('breadcrumbTitle');
+    if (breadcrumbTitle) {
+        breadcrumbTitle.textContent = truncateText(post.title, 50);
+    }
 
     // Article header
     document.getElementById('articleTitle').textContent = post.title;
@@ -96,7 +107,7 @@ function renderPost(post) {
     const imageContainer = document.getElementById('articleImageContainer');
     if (post.image) {
         imageContainer.innerHTML = `
-            <img src="${post.image}" alt="${post.title}" class="featured-image">
+            <img src="${formatImageUrl(post.image)}" alt="${post.title}" class="featured-image">
         `;
     } else {
         imageContainer.style.display = 'none';
@@ -246,7 +257,7 @@ function renderRelatedPosts(posts) {
     relatedGrid.innerHTML = posts.map(post => `
         <a href="./detail.html?slug=${encodeURIComponent(post.slug || createSlug(post.title))}" class="related-card">
             <div class="related-image">
-                <img src="${post.image || '../../assets/images/placeholder.png'}" alt="${post.title}">
+                <img src="${formatImageUrl(post.image)}" alt="${post.title}">
             </div>
             <div class="related-content">
                 <h3 class="related-title">${Security.escapeHtml(post.title)}</h3>

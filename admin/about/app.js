@@ -172,8 +172,8 @@ async function handleImageUpload(files) {
       console.log('[Admin About] upload result:', result);
 
       if (result && result.relativePath) {
-        const url = `${AVATAR_PATH}/${result.relativePath}`;
-        aboutImageUrls.push(url);
+        // relativePath từ backend: /storage/storage/filename.jpg
+        aboutImageUrls.push(result.relativePath);
       } else {
         console.warn('Upload thành công nhưng không nhận được relativePath:', result);
       }

@@ -136,8 +136,8 @@ async function uploadImage(file, type) {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
-        formData.append("folder", filePath);
-        formData.append("target", "");
+        formData.append("folder", filePath); // storage
+        formData.append("target", ""); // Empty = backend storage
 
         const response = await fetch(`${API_BASE}/upload`, {
             method: 'POST',
@@ -150,22 +150,18 @@ async function uploadImage(file, type) {
             throw new Error(result.error || 'Upload failed');
         }
 
-        // Construct full path with prefix
-        // Ensure we don't double add if server changes behavior
-        let relativePath = result.relativePath;
-        if (!relativePath.startsWith(avatarPath)) {
-            relativePath = `${avatarPath}/${relativePath}`;
-        }
+        // relativePath từ backend: /storage/storage/filename.jpg
+        const fullPath = result.relativePath;
 
         // Update current settings
         if (type === 'logo') {
-            currentSettings.logo = relativePath;
-            document.getElementById('logoPreview').src = `${API_BASE}${relativePath}`;
+            currentSettings.logo = fullPath;
+            document.getElementById('logoPreview').src = `${API_BASE}${fullPath}`;
             document.getElementById('logoPreview').style.display = 'block';
             document.getElementById('noLogo').style.display = 'none';
         } else if (type === 'favicon') {
-            currentSettings.favicon = relativePath;
-            document.getElementById('faviconPreview').src = `${API_BASE}${relativePath}`;
+            currentSettings.favicon = fullPath;
+            document.getElementById('faviconPreview').src = `${API_BASE}${fullPath}`;
             document.getElementById('faviconPreview').style.display = 'block';
             document.getElementById('noFavicon').style.display = 'none';
         }

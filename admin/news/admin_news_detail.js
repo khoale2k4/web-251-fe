@@ -81,7 +81,14 @@ import { showToast } from '../utils/toast.js';
     if(post.image) {
       const imgContainer = qs('#postImageContainer');
       const img = qs('#postImage');
-      img.src = post.image.startsWith('http') ? post.image : `../../${post.image}`;
+      // Xử lý URL ảnh: nếu có http thì dùng luôn, nếu bắt đầu với / thì thêm API_BASE, còn lại thêm /storage/
+      if (post.image.startsWith('http')) {
+        img.src = post.image;
+      } else if (post.image.startsWith('/')) {
+        img.src = `${API_BASE}${post.image}`;
+      } else {
+        img.src = `${API_BASE}/storage/${post.image}`;
+      }
       imgContainer.style.display = 'block';
     }
 

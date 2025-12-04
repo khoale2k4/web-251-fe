@@ -92,9 +92,8 @@ function imageHandler() {
       const range = editor.getSelection(true);
       
       // Insert image at cursor position
-      // Convert relative path to full URL for display
-      const imageUrl = imagePath.startsWith('http') ? imagePath : `../../${imagePath}`;
-      editor.insertEmbed(range.index, 'image', imageUrl);
+      // imagePath is already full URL from uploadImage
+      editor.insertEmbed(range.index, 'image', imagePath);
       
       // Move cursor to next position
       editor.setSelection(range.index + 1);
@@ -127,8 +126,8 @@ async function uploadImage(file) {
   try {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('folder', 'news'); // Upload to assets/uploads/news
-    formData.append('target', 'assets');
+    formData.append('folder', 'news'); // Upload to storage/uploads/news
+    formData.append('target', ''); // Empty = lưu vào backend storage
     
     const uploadUrl = `${API_BASE}/upload`;
     console.log('[Upload] URL:', uploadUrl);
@@ -166,8 +165,8 @@ async function uploadImage(file) {
     
     console.log('[Upload] Success! Path:', result.relativePath);
     
-    // Return relative path (e.g., "assets/uploads/news/image-name.jpg")
-    return result.relativePath;
+    // Return full URL từ backend (e.g., "http://localhost:8000/storage/news/image-name.jpg")
+    return `${API_BASE}${result.relativePath}`;
   } catch (error) {
     console.error('[Upload] Error:', error);
     throw error;
