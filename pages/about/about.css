@@ -8,7 +8,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: Arial, sans-serif;
   color: var(--text-dark);
   line-height: 1.6;
   background-color: var(--bg-light);
@@ -107,7 +107,7 @@ body {
 }
 
 .brand-calligraphy {
-  font-family: "Great Vibes", cursive;
+  font-family: Arial, sans-serif;
   color: var(--primary);
 }
 

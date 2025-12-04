@@ -1,5 +1,14 @@
 /* profile.css */
 
+body {
+    background-image: url('../../assets/images/profile-bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
 .profile-container {
     max-width: 800px;
     margin: 40px auto;
@@ -16,6 +25,7 @@
     color: #6b7280;
     padding: 40px 0;
 }
+
 .profile-container p.error-text {
     color: #ef4444;
 }
@@ -29,7 +39,8 @@
 
 /* 1. Cột Avatar (Bên trái) */
 .profile-avatar-column {
-    flex: 1 1 200px; /* Co giãn, cơ sở 200px */
+    flex: 1 1 200px;
+    /* Co giãn, cơ sở 200px */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -56,6 +67,7 @@
     font-size: 0.9rem;
     font-weight: 500;
 }
+
 .avatar-upload-label:hover {
     background: #e5e7eb;
 }
@@ -67,7 +79,8 @@
 
 /* 2. Cột Thông tin (Bên phải) */
 .profile-info-column {
-    flex: 2 1 400px; /* Co giãn, gấp đôi cột trái */
+    flex: 2 1 400px;
+    /* Co giãn, gấp đôi cột trái */
 }
 
 .profile-info-column h2 {
@@ -104,7 +117,8 @@
 .form-group span {
     background-color: #f9fafb;
     color: #6b7280;
-    display: block; /* Đảm bảo nó có kích thước */
+    display: block;
+    /* Đảm bảo nó có kích thước */
 }
 
 .form-actions {
@@ -123,6 +137,7 @@
     font-weight: 600;
     transition: background 0.2s;
 }
+
 .btn-save:hover {
     background: #1d4ed8;
 }
@@ -132,9 +147,11 @@
 
 /* Khi form ở chế độ CHỈ ĐỌC (is-readonly) */
 #profileForm.is-readonly .avatar-upload-label {
-    display: none; /* Ẩn nút "Thay ảnh" */
+    display: none;
+    /* Ẩn nút "Thay ảnh" */
 }
 
 #profileForm.is-readonly .btn-save {
-    display: none; /* Ẩn nút "Lưu thay đổi" */
+    display: none;
+    /* Ẩn nút "Lưu thay đổi" */
 }

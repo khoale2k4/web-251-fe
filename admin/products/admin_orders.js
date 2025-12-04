@@ -1,6 +1,7 @@
 import { ready } from '../../js/main.js';
 import { API_BASE } from '../../js/config.js';
 import { Popup } from '../../components/PopUp.js';
+import { timeAgo, timeAgoWithDate } from '../../js/timeUtils.js';
 
 ready(async () => {
   const popup = new Popup();
@@ -94,7 +95,7 @@ ready(async () => {
       <tr>
         <td>${c.user_name || c.user || '-'}</td>
         <td>${c.total_items}</td>
-        <td>${c.updated_at || '-'}</td>
+        <td>${timeAgo(c.updated_at)}</td>
         <td class="text-end">
           <button class="btn btn-outline-primary btn-sm btn-view-cart me-1" data-id="${c.user_id}">Xem</button>
         </td>
@@ -132,7 +133,7 @@ ready(async () => {
           <td>${formatPaymentMethod(o.payment_method)}</td>
           <td>${statusDropdownHtml}</td> 
           <td>${o.note || ''}</td>
-          <td>${o.created_at || '-'}</td>
+          <td>${timeAgo(o.created_at)}</td>
           <td class="text-end td-actions">
             <button class="btn btn-outline-success btn-sm btn-save me-1" data-id="${o.id}">Lưu</button>
             <button class="btn btn-outline-primary btn-sm btn-view-order me-1" data-id="${o.id}">Xem</button>
@@ -377,7 +378,7 @@ ready(async () => {
         <div><strong>Địa chỉ giao hàng:</strong> ${order.address || order.shipping_address || '-'}</div>
         <div><strong>Phương thức thanh toán:</strong> ${formatPaymentMethod(order.payment_method)}</div>
         <div><strong>Trạng thái:</strong> ${order.status}</div>
-        <div><strong>Ngày tạo:</strong> ${order.created_at}</div>
+        <div><strong>Ngày tạo:</strong> ${timeAgoWithDate(order.created_at)}</div>
         <hr/>
         <div><strong>Chi tiết sản phẩm:</strong></div>
         <div class="table-responsive">
@@ -389,12 +390,17 @@ ready(async () => {
               ${(items || []).map(i => `
                 <tr>
                   <td><img src="${API_BASE + '/' + i.product_image}" alt="sp" style="width:48px;height:48px;object-fit:cover;border-radius:5px;"></td>
-                  <td>${i.name || i.product_name || '-'}</td>
-                  <td>${i.color || '-'}</td>
+                  <td class="text-truncate" style="max-width: 150px;">${i.name || i.product_name || '-'}</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2" title="${i.color}">
+                      <span class="color-swatch-table" style="background-color: ${i.color}"></span>
+                      <span class="text-muted small">${i.color}</span>
+                    </div>
+                  </td>
                   <td>${i.size || '-'}</td>
                   <td>${i.quantity || 1}</td>
                   <td>${Number(i.price || 0).toLocaleString('vi-VN')} VNĐ</td>
-                            </tr>
+                </tr>
               `).join('')}
             </tbody>
                     </table>
@@ -418,8 +424,8 @@ ready(async () => {
         let content = `
         <div><strong>ID giỏ hàng:</strong> ${cart.id}</div>
         <div><strong>ID người dùng:</strong> ${cart.user_id || '-'}</div>
-        <div><strong>Ngày tạo:</strong> ${cart.created_at || '-'}</div>
-        <div><strong>Cập nhật gần nhất:</strong> ${cart.updated_at || '-'}</div>
+        <div><strong>Ngày tạo:</strong> ${timeAgoWithDate(cart.created_at)}</div>
+        <div><strong>Cập nhật gần nhất:</strong> ${timeAgoWithDate(cart.updated_at)}</div>
         <hr/>
         <div><strong>Chi tiết sản phẩm:</strong></div>
         <div class="table-responsive">
@@ -431,8 +437,13 @@ ready(async () => {
               ${(items || []).map(i => `
                 <tr>
                   <td><img src="${API_BASE + '/' + i.image}" alt="sp" style="width:48px;height:48px;object-fit:cover;border-radius:5px;"></td>
-                  <td>${i.name || i.product_name || '-'}</td>
-                  <td>${i.color || '-'}</td>
+                  <td class="text-truncate" style="max-width: 150px;">${i.name || i.product_name || '-'}</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2" title="${i.color}">
+                      <span class="color-swatch-table" style="background-color: ${i.color}"></span>
+                      <span class="text-muted small">${i.color}</span>
+                    </div>
+                  </td>
                   <td>${i.size || '-'}</td>
                   <td>${i.quantity || 1}</td>
                   <td>${Number(i.subtotal || i.price * (i.quantity || 1) || 0).toLocaleString('vi-VN')} VNĐ</td>

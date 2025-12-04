@@ -10,9 +10,6 @@ import { API_BASE } from '../../js/config.js';
 
 const grid = document.querySelector('.products-grid');
 const title = document.getElementById('page-title');
-const paginationContainer = document.getElementById('pagination-container');
-const paginationSummary = document.getElementById('pagination-summary');
-const paginationControls = document.getElementById('pagination-controls');
 
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
@@ -74,10 +71,10 @@ async function fetchAndRenderProducts(page = 1, query = '', categoryId = '') {
   if (!grid) return;
 
   grid.innerHTML = `<p>Đang tải danh sách sản phẩm...</p>`;
-  paginationContainer.style.display = 'none';
+  // paginationContainer.style.display = 'none'; // REMOVED
 
   try {
-    let url = `${API_BASE}/products?page=${page}`;
+    let url = `${API_BASE}/products?page=${page}&limit=12`;
     if (query) url += `&search=${encodeURIComponent(query)}`;
     if (categoryId) url += `&category_id=${categoryId}`;
 
@@ -97,30 +94,32 @@ async function fetchAndRenderProducts(page = 1, query = '', categoryId = '') {
     if (state.products.length === 0) {
       grid.innerHTML = `<p>Không tìm thấy sản phẩm nào phù hợp.</p>`;
     } else {
-      grid.innerHTML = state.products.map(product => {
+      grid.innerHTML = state.products.map((product, index) => {
         const hasDiscount = parseFloat(product.discount) > 0;
         const price = parseFloat(product.price);
         const finalPrice = parseFloat(product.final_price);
         const imageUrl = `${API_BASE}${product.image}`;
         return `
-            <div class="product-card">
+            <div class="product-card" style="animation-delay: ${index * 0.1}s">
+              <span class="category-badge">${product.category_name}</span>
               <a href="/fe/pages/products/detail.html?id=${product.id}" class="product-image-link">
-                <img src="${imageUrl}" alt="${product.name}" class="product-image" onerror="this.src='/fe/assets/placeholder.png'">
+                <img src="${imageUrl}" alt="${product.name}" class="product-image" onerror="this.src='../../assets/images/placeholder.png'">
               </a>
               <div class="product-info">
                 <div class="info-top">
                   <h3><a href="/fe/pages/products/detail.html?id=${product.id}" class="product-name-link">${product.name}</a></h3>
                   <p>${product.description || ''}</p>
-                  <p class="category">Danh mục: <strong>${product.category_name}</strong></p>
                 </div>
                 <div class="info-bottom">
                   <div class="price-wrapper">
-                    <span class="price">${finalPrice.toLocaleString()} VNĐ</span>
-                    ${hasDiscount ? `<span class="old-price">${price.toLocaleString()} VNĐ</span><span class="discount-badge">-${(parseFloat(product.discount) || 0).toFixed(0)}%</span>` : ''}
+                    <span class="price">${finalPrice.toFixed(0).toLocaleString()} VNĐ</span>
+                    ${hasDiscount ? `<span class="old-price">${price.toFixed(0).toLocaleString()} VNĐ</span><span class="discount-badge">-${(parseFloat(product.discount) || 0).toFixed(0)}%</span>` : ''}
                   </div>
                   <div class="btn-group">
-                    <button class="btn-secondary view-btn" data-id="${product.id}">Xem</button>
-                    <button class="btn-primary add-btn" data-id="${product.id}">Thêm vào giỏ</button>
+                    <button class="btn-add-cart add-btn" data-id="${product.id}">
+                      <i class="fas fa-shopping-bag"></i> Thêm vào giỏ
+                    </button>
+                    <button class="btn-view-details view-btn" data-id="${product.id}">Xem chi tiết</button>
                   </div>
                 </div>
               </div>
@@ -138,45 +137,54 @@ async function fetchAndRenderProducts(page = 1, query = '', categoryId = '') {
 }
 
 function renderPagination() {
-  const { currentPage, totalPages, totalItems } = state;
+  const pagination = document.getElementById('pagination');
+  if (!pagination) return;
+
+  const { currentPage, totalPages } = state;
 
   if (totalPages <= 1) {
-    paginationContainer.style.display = 'none';
+    pagination.innerHTML = '';
     return;
   }
-  paginationContainer.style.display = 'flex';
-  paginationSummary.textContent = `Hiển thị trang ${currentPage} / ${totalPages} (Tổng cộng ${totalItems} sản phẩm)`;
 
-  let html = '';
+  let html = `
+      <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="window.changePage(${currentPage - 1})">
+          <i class="fas fa-chevron-left"></i>
+      </button>
+  `;
 
-  html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage - 1}"><i class="ti ti-chevron-left"></i></a></li>`;
-
-  const maxPagesToShow = 5;
-  let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-  let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-  if (endPage - startPage + 1 < maxPagesToShow) {
-    startPage = Math.max(1, endPage - maxPagesToShow + 1);
-  }
-  if (startPage > 1) {
-    html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
-    if (startPage > 2) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-  }
-  for (let i = startPage; i <= endPage; i++) {
-    html += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-  }
-  if (endPage < totalPages) {
-    if (endPage < totalPages - 1) html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-    html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+      html += `
+              <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="window.changePage(${i})">
+                  ${i}
+              </button>
+          `;
+    } else if (i === currentPage - 2 || i === currentPage + 2) {
+      html += '<span style="padding: 0 8px; display: flex; align-items: center;">...</span>';
+    }
   }
 
-  html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" data-page="${currentPage + 1}"><i class="ti ti-chevron-right"></i></a></li>`;
+  html += `
+      <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="window.changePage(${currentPage + 1})">
+          <i class="fas fa-chevron-right"></i>
+      </button>
+  `;
 
-  paginationControls.innerHTML = html;
+  pagination.innerHTML = html;
 }
 
-function attachProductEvents() {
-  const userId = getUserId();
+// Expose changePage to global scope for inline onclick handlers
+window.changePage = function (page) {
+  if (page < 1 || page > state.totalPages || page === state.currentPage) return;
 
+  state.currentPage = page;
+  updateUrl(page, state.keyword, state.categoryId);
+  fetchAndRenderProducts(page, state.keyword, state.categoryId);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+function attachProductEvents() {
   document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       const id = e.target.dataset.id;
@@ -187,8 +195,7 @@ function attachProductEvents() {
   document.querySelectorAll('.add-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const id = btn.dataset.id;
-      await updateCartCounter(userId);
-      if (id) addToCart(id, userId);
+      if (id) addToCart(id);
     });
   });
 }
@@ -209,24 +216,6 @@ function attachPageEventListeners() {
   // Category Change
   categorySelect?.addEventListener('change', () => {
     handleSearch();
-  });
-
-  // Pagination
-  document.getElementById('pagination-controls')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    const pageLink = e.target.closest('.page-link');
-    if (pageLink) {
-      const pageItem = pageLink.closest('.page-item');
-      if (pageItem.classList.contains('disabled') || pageItem.classList.contains('active')) {
-        return;
-      }
-
-      const newPage = parseInt(pageLink.dataset.page);
-      if (newPage) {
-        updateUrl(newPage, state.keyword, state.categoryId);
-        fetchAndRenderProducts(newPage, state.keyword, state.categoryId);
-      }
-    }
   });
 }
 
