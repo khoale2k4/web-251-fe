@@ -10,6 +10,14 @@ let currentPage = 1;
 const postsPerPage = 6;
 let searchTimeout = null;
 
+// Helper function to format image URL
+function formatImageUrl(imagePath) {
+    if (!imagePath) return '../../assets/images/placeholder.png';
+    if (imagePath.startsWith('http')) return imagePath;
+    if (imagePath.startsWith('/')) return `${API_BASE}${imagePath}`;
+    return `${API_BASE}/storage/${imagePath}`;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     mountHeader('.mount-header', 'news');
     mountFooter('.mount-footer');
@@ -101,7 +109,7 @@ function renderFeaturedPosts() {
     
     featuredGrid.innerHTML = featured.map(post => `
         <div class="featured-card" onclick="window.location.href='./detail.html?slug=${encodeURIComponent(post.slug || createSlug(post.title))}'">
-            <img src="${post.image || '../../assets/images/placeholder.png'}" alt="${post.title}">
+            <img src="${formatImageUrl(post.image)}" alt="${post.title}">
             <div class="featured-content">
                 <span class="featured-badge">Nổi bật</span>
                 <h3 class="featured-title">${post.title}</h3>
@@ -146,7 +154,7 @@ function createPostCard(post) {
     return `
         <article class="news-card" onclick="window.location.href='./detail.html?slug=${encodeURIComponent(post.slug || createSlug(post.title))}'">
             <div class="news-image">
-                <img src="${post.image || '../../assets/images/placeholder.png'}" alt="${post.title}">
+                <img src="${formatImageUrl(post.image)}" alt="${post.title}">
                 <span class="news-badge">Mới</span>
             </div>
             <div class="news-body">
