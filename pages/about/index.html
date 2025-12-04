@@ -10,24 +10,31 @@
 
   <link rel="stylesheet" href="../../css/header.css">
   <link rel="stylesheet" href="../../css/footer.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-flags.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-social.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-payments.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-vendors.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-marketing.min.css" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-flags.min.css" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-social.min.css" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-payments.min.css" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-vendors.min.css" />
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler-marketing.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../../css/style.css">
 
   <link rel="stylesheet" href="about.css">
-
-
 </head>
 
 <body class="body-marketing body-gradient">
   <script src="../dist/js/tabler-theme.min.js?1760059267"></script>
+
+  <!-- HEADER -->
   <div class="mount-header"></div>
 
+  <!-- HERO - dữ liệu lấy từ API page-contents (title: 123, mô tả: Chào cậu, cậu mua gì...) -->
   <div class="hero">
     <div class="container">
       <h1 class="hero-title" id="about-title">Về Chúng Tôi</h1>
@@ -40,30 +47,46 @@
     </div>
   </div>
 
+  <!-- PHẦN ABOUT SECTIONS + GALLERY -->
   <div class="section pt-0">
     <div class="container">
-      <div class="row gx-3" id="about-gallery-row">
 
+      <!-- 3 khung About đọc từ bảng about_sections -->
+      <div class="about-sections" id="about-sections">
+        <!-- skeleton hiển thị tạm khi đang tải dữ liệu -->
+        <section class="about-section about-section--skeleton">
+          <div class="about-section__content">
+            <p class="about-section__label">Giới thiệu</p>
+            <h2 class="about-section__title">Đang tải nội dung...</h2>
+            <p class="about-section__text">
+              Nội dung giới thiệu sẽ được tải từ hệ thống. Vui lòng chờ trong giây lát.
+            </p>
+          </div>
+          <div class="about-section__image-wrapper">
+            <div class="about-section__image-skeleton"></div>
+          </div>
+        </section>
       </div>
+
+      <!-- gallery ảnh cũ (about_image) vẫn giữ nguyên -->
+      <div class="row gx-3 mt-4" id="about-gallery-row"></div>
     </div>
   </div>
 
-
+  <!-- FOOTER -->
   <div class="mount-footer"></div>
 
   <script type="module" src="../../js/main.js"></script>
 
-  <div class="settings">
-  </div>
+  <div class="settings"></div>
 
   <script src="../dist/js/tabler.min.js?1760059268" defer></script>
   <script src="../preview/js/demo.min.js?1760059268" defer></script>
 
-  <script type="module" src="./about.js" defer></script>
+  <script type="module" src="./about.js?v=2" defer></script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    });
+    document.addEventListener("DOMContentLoaded", function () { });
   </script>
 </body>
 

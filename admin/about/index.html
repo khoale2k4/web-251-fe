@@ -2,175 +2,256 @@
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý nội dung trang - Admin</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản lý trang About - Admin</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
+  <!-- Tabler CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+  <!-- Sidebar cố định giống các trang admin khác -->
+  <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
 
-    <style>
-        .text-monospace {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-    </style>
+  <style>
+    .excerpt-preview {
+      max-width: 320px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #6c757d;
+      font-size: 0.875rem;
+    }
+
+    .thumb-img {
+      width: 64px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .text-monospace {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="page">
-        <div class="mount-admin-sidebar"></div>
+  <div class="page">
+    <!-- Sidebar / header admin (giữ nguyên kiến trúc cũ) -->
+    <div class="mount-admin-sidebar"></div>
 
-        <div class="page-wrapper">
-            <div class="page-header d-print-none">
-                <div class="container-xl">
-                    <div class="row g-2 align-items-center">
-                        <div class="col">
-                            <h2 class="page-title">
-                                Quản lý nội dung trang
-                            </h2>
-                            <div class="text-muted mt-1">
-                                Thay đổi nội dung hiển thị trên Trang giới thiệu
-                            </div>
-                        </div>
-                        <div class="col-auto ms-auto d-print-none">
-                            <span class="text-muted text-sm">
-                                Lần cập nhật cuối:
-                                <span id="lastUpdate" class="text-monospace">--</span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+    <!-- Nội dung chính -->
+    <div class="page-wrapper">
+      <div class="container-xl">
+        <!-- Page header -->
+        <div class="page-header d-print-none">
+          <div class="row align-items-center">
+            <div class="col">
+              <h2 class="page-title">
+                Quản lý nội dung trang About
+              </h2>
+              <div class="text-muted mt-1">
+                Chỉnh sửa nội dung từ bảng page_contents &amp; các section từ bảng about_sections.
+              </div>
             </div>
-
-            <div class="page-body">
-                <div class="container-xl">
-                    <form id="pageContentForm" class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Nội dung các giới thiệu</h3>
-                        </div>
-                        <div class="card-body">
-
-
-                            <!-- <ul class="nav nav-tabs" data-bs-toggle="tabs">
-                            <li class="nav-item">
-                                <a href="#tab-home" class="nav-link active" data-bs-toggle="tab">
-                                    <i class="ti ti-home me-1"></i> Trang chủ
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="#tab-about" class="nav-link" data-bs-toggle="tab">
-                                    <i class="ti ti-info-circle me-1"></i> Trang giới thiệu
-                                </a>
-                            </li>
-                        </ul> -->
-
-                            <div class="tab-content mt-3">
-
-                                <div class="tab-pane show" id="tab-home">
-                                    <h3 class="card-title mb-3">Hero section</h3>
-                                    <div class="mb-3">
-                                        <label class="form-label">Tiêu đề lớn (hero_title)</label>
-                                        <input type="text" class="form-control" id="homeHeroTitle"
-                                            name="home_hero_title">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Mô tả ngắn (hero_subtitle)</label>
-                                        <textarea class="form-control" id="homeHeroSubtitle" name="home_hero_subtitle"
-                                            rows="2"></textarea>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Nút CTA - text (hero_button_text)</label>
-                                            <input type="text" class="form-control" id="homeHeroButtonText"
-                                                name="home_hero_button_text">
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Nút CTA - link (hero_button_link)</label>
-                                            <input type="text" class="form-control text-monospace"
-                                                id="homeHeroButtonLink" name="home_hero_button_link"
-                                                placeholder="/shop">
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Ảnh hero (URL) (home_hero_image)</label>
-                                        <input type="text" class="form-control text-monospace" id="homeHeroImage"
-                                            name="home_hero_image" placeholder="/uploads/hero.jpg">
-                                    </div>
-
-                                    <hr class="my-4" />
-
-                                    <h3 class="card-title mb-3">Giới thiệu ngắn trên Trang chủ</h3>
-                                    <div class="mb-3">
-                                        <label class="form-label">Tiêu đề (home_intro_title)</label>
-                                        <input type="text" class="form-control" id="homeIntroTitle"
-                                            name="home_intro_title">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Nội dung (home_intro_text)</label>
-                                        <textarea class="form-control" id="homeIntroText" name="home_intro_text"
-                                            rows="4"></textarea>
-                                    </div>
-                                </div>
-
-
-                                <div class="tab-pane active" id="tab-about">
-                                    <h3 class="card-title mb-3">Nội dung Trang giới thiệu</h3>
-                                    <div class="mb-3">
-                                        <label class="form-label">Tiêu đề (about_title)</label>
-                                        <input type="text" class="form-control" id="aboutTitle" name="about_title">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Nội dung (about_content)</label>
-                                        <textarea class="form-control" id="aboutContent" name="about_content"
-                                            rows="6"></textarea>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label">Ảnh giới thiệu (about_image)</label>
-                                        <div class="form-hint mb-2">
-                                            Tải lên ảnh mới. Ảnh sẽ được upload ngay lập tức.
-                                        </div>
-                                        <input type="file" class="form-control" id="aboutImageUpload" multiple
-                                            accept="image/png, image/jpeg, image/gif, image/webp">
-
-                                        <div id="aboutImagePreview" class="mt-3 d-flex flex-wrap gap-2">
-                                        </div>
-
-                                        <input type="hidden" id="aboutImage" name="about_image">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-footer text-end">
-                        </div>
-
-                        <div class="card-footer text-end">
-                            <button type="submit" class="btn btn-primary" id="btnSave">
-                                <i class="ti ti-device-floppy me-1"></i>
-                                Lưu thay đổi
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">
+                <button id="btn-add-section" class="btn btn-primary">
+                  <i class="ti ti-plus"></i>
+                  Thêm section
+                </button>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-    </div>
-    </div>
 
-    </form>
-    </div>
-    </div>
-    </div>
-    </div>
+        <!-- CARD: Form quản lý page_contents (about_title, about_content, about_image) -->
+        <div class="card mb-3">
+          <form id="pageContentForm">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col">
+                  <h3 class="card-title">Nội dung Trang giới thiệu (page_contents)</h3>
+                  <div class="text-muted">
+                    Tiêu đề, đoạn mô tả chính &amp; bộ ảnh đang dùng cho trang About của người dùng.
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <span class="text-muted text-sm">
+                    Lần cập nhật cuối:
+                    <span id="lastUpdate" class="text-monospace">--</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label class="form-label">Tiêu đề (about_title)</label>
+                <input type="text" class="form-control" id="aboutTitle" name="about_title">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Nội dung (about_content)</label>
+                <textarea class="form-control" id="aboutContent" name="about_content" rows="6"></textarea>
+              </div>
 
-    <!-- Tabler JS -->
-    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
+              <div class="mb-3">
+                <label class="form-label">Ảnh giới thiệu (about_image)</label>
+                <div class="form-hint mb-2">
+                  Tải lên ảnh mới. Ảnh sẽ được upload ngay lập tức.
+                </div>
+                <input type="file" class="form-control" id="aboutImageUpload" multiple
+                  accept="image/png, image/jpeg, image/gif, image/webp">
 
-    <!-- Config + Sidebar giống file settings -->
+                <div id="aboutImagePreview" class="mt-3 d-flex flex-wrap gap-2"></div>
+
+                <input type="hidden" id="aboutImage" name="about_image">
+              </div>
+            </div>
+            <div class="card-footer text-end">
+              <button type="submit" class="btn btn-primary" id="btnSave">
+                <i class="ti ti-device-floppy me-1"></i>
+                Lưu thay đổi
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- CARD: Bảng danh sách section About (about_sections) -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Danh sách section About</h3>
+          </div>
+          <div class="table-responsive">
+          <table class="table table-vcenter card-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tiêu đề</th>
+                <th>Mô tả ngắn</th>
+                <th>Hình ảnh</th>
+                <th>Thứ tự</th>
+                <th>Trạng thái</th>
+                <th class="w-1"></th>
+              </tr>
+            </thead>
+            <tbody id="about-table-body">
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                  Đang tải dữ liệu...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- PHÂN TRANG GIỐNG FAQ -->
+        <div class="card-footer d-flex align-items-center">
+          <p class="m-0 text-muted" id="aboutSummary">
+            Chưa có section nào
+          </p>
+          <ul class="pagination m-0 ms-auto" id="aboutPagination"></ul>
+        </div>
+        <!-- HẾT PHÂN TRANG -->
+          
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal thêm / sửa section -->
+  <div class="modal fade" id="modal-about-form" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form id="about-form">
+          <div class="modal-header">
+            <h5 class="modal-title" id="about-form-title">Thêm section</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+
+            <input type="hidden" id="about-id">
+
+            <div class="mb-3">
+              <label class="form-label">Tiêu đề</label>
+              <input type="text" class="form-control" id="about-title-input"
+                placeholder="Nhập tiêu đề section" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Nội dung / mô tả</label>
+              <textarea class="form-control" id="about-description-input"
+                rows="4" placeholder="Mô tả chi tiết nội dung section"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">URL hình ảnh</label>
+              <input type="text" class="form-control" id="about-image-input"
+                placeholder="Đường dẫn ảnh (image_url)">
+              <div class="form-hint">
+                Có thể là link tuyệt đối hoặc tương đối. Ví dụ:
+                <code>/uploads/about/brand-story.jpg</code>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <label class="form-label">Thứ tự hiển thị</label>
+                <input type="number" class="form-control" id="about-sort-input"
+                  value="1" min="0" step="1">
+              </div>
+              <div class="col-sm-6 mb-3">
+                <label class="form-label d-block">Trạng thái</label>
+                <label class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox"
+                    id="about-active-input" checked>
+                  <span class="form-check-label">Hiển thị trên trang About</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-link link-secondary"
+              data-bs-dismiss="modal">
+              Hủy
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Lưu thay đổi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal xác nhận xoá section -->
+  <div class="modal fade" id="modal-about-delete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body text-center py-4">
+          <h3>Bạn chắc chắn?</h3>
+          <div class="text-secondary">
+            Thao tác này sẽ xoá hẳn section khỏi trang About.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn me-auto" data-bs-dismiss="modal">
+            Hủy
+          </button>
+          <button type="button" class="btn btn-danger" id="btn-confirm-delete">
+            Xoá
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Tabler + sidebar + page -->
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js" defer></script>
+  <!-- Config + Sidebar giống file settings -->
     <script type="module" src="../../js/config.js?v=6"></script>
     <script type="module">
         import { mountAdminSidebar } from '../../components/AdminSidebar.js';
@@ -179,6 +260,7 @@
             mountAdminSidebar('.mount-admin-sidebar', 'pages');
         });
     </script>
+<<<<<<< HEAD
 
     <!-- JS riêng cho trang này -->
     <script type="module" src="./app.js"></script>
@@ -188,3 +270,9 @@
 </body>
 
 </html>
+=======
+  <script src="./app.js?v=3" type="module" defer></script>
+</body>
+
+</html>
+>>>>>>> task2-new
