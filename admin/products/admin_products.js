@@ -296,17 +296,17 @@ ready(async () => {
         }
       }
 
-
       let imageUrl = product?.imageLink || '';
       const file = formData.get('imageFile');
       if (file && file.size > 0) {
         const uploadData = new FormData();
         uploadData.append('file', file);
-        uploadData.append("folder", filePath);
-        uploadData.append("target", "");
+        uploadData.append("folder", filePath); // storage
+        uploadData.append("target", ""); // Empty = backend storage
 
         const uploadRes = await http.request(`${BASE_URL}/upload`, { method: 'POST', body: uploadData });
-        imageUrl = avatarPath + "/" + uploadRes.relativePath;
+        // relativePath từ backend: /storage/storage/filename.jpg
+        imageUrl = uploadRes.relativePath;
       }
 
       const body = {
@@ -319,7 +319,6 @@ ready(async () => {
         image: imageUrl,
         category_id: data.category,
       };
-
 
       if (isEdit) {
         await http.put(`${BASE_URL}/products/${product.id}`, body);
@@ -337,7 +336,6 @@ ready(async () => {
 
   const onDeleteConfirmPopup = (product) => {
     if (!product) return;
-
 
 
     const contentHtml = `
