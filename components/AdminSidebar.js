@@ -11,13 +11,13 @@ export function AdminSidebar({ current = '' } = {}) {
     { href: '../faq/index.html', key: 'admin-faq', label: 'Quản lý FAQ', icon: 'ti ti-help' },
     { href: '../comments/index.html', key: 'comments', label: 'Quản lý Comments', icon: 'ti ti-message' },
     { href: '../about/index.html', key: 'about', label: 'Giới Thiệu', icon: 'ti ti-message' },
-  
+
   ];
 
   if (current === 'dashboard') {
     items = items.map(item => ({
       ...item,
-      href: item.href.replace(/^\.\.\//, '') 
+      href: item.href.replace(/^\.\.\//, '')
     }));
   }
 
@@ -38,7 +38,7 @@ export function AdminSidebar({ current = '' } = {}) {
   const adminEmail = user ? user.email : '';
 
   return `
-    <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark fixed-sidebar">
+    <aside class="navbar navbar-vertical navbar-expand-lg navbar-dark">
       <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
           <span class="navbar-toggler-icon"></span>
@@ -97,7 +97,7 @@ export function mountAdminSidebar(containerSelector, current) {
     : containerSelector;
   if (!container) return;
   container.innerHTML = AdminSidebar({ current });
-  
+
   // Gắn event logout
   const logoutBtn = document.getElementById('adminLogoutBtn');
   if (logoutBtn) {
@@ -107,20 +107,20 @@ export function mountAdminSidebar(containerSelector, current) {
         localStorage.removeItem('user');
         sessionStorage.removeItem('user');
         localStorage.removeItem('rememberMe');
-        
+
         // Tính toán đường dẫn đúng đến admin-login.html
         const currentPath = window.location.pathname;
         let adminLoginPath = './admin-login.html'; // Default cho /fe/admin/
-        
+
         // Nếu đang ở subfolder (users, products, etc.)
-        if (currentPath.includes('/fe/admin/') && 
-            (currentPath.includes('/users/') || currentPath.includes('/products/') || 
-             currentPath.includes('/news/') || currentPath.includes('/contact/') ||
-             currentPath.includes('/settings/') || currentPath.includes('/faq/') ||
-             currentPath.includes('/comments/') || currentPath.includes('/about/'))) {
+        if (currentPath.includes('/fe/admin/') &&
+          (currentPath.includes('/users/') || currentPath.includes('/products/') ||
+            currentPath.includes('/news/') || currentPath.includes('/contact/') ||
+            currentPath.includes('/settings/') || currentPath.includes('/faq/') ||
+            currentPath.includes('/comments/') || currentPath.includes('/about/'))) {
           adminLoginPath = '../admin-login.html';
         }
-        
+
         window.location.href = adminLoginPath;
       }
     });

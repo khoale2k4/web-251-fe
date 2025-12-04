@@ -64,26 +64,47 @@ ready(async () => {
     keyword: '',
   };
 
-
-
   function renderRows(list) {
     if (!Array.isArray(list) || list.length === 0) {
       elements.tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-4 text-muted">Không tìm thấy sản phẩm nào.</td></tr>`;
       return;
     }
+
     elements.tableBody.innerHTML = list.map(p => `
       <tr>
-        <td><img src="${p.imageLink}" width="60" style="border-radius:8px;"></td>
-        <td>${p.name}</td>
+        <td><img src="${p.imageLink}" width="60" style="border-radius:8px; object-fit: cover;"></td>
+        
+        <td>
+            <div class="text-truncate" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.name}">
+                ${p.name}
+            </div>
+        </td>
+
         <td>${Number(p.price).toLocaleString('vi-VN')} VNĐ</td>
         <td>${(Number(p.discount) * 100).toFixed(0)}%</td>
         <td>${p.stock}</td>
-        <td>${p.size}</td>
-        <td>${p.color}</td>
-        <td>${p.category}</td>
+        
+        <td>
+            <div class="text-truncate" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.size}">
+                ${p.size}
+            </div>
+        </td>
+        
+        <td>
+            <div class="text-truncate" style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.color}">
+                ${p.color}
+            </div>
+        </td>
+
+        <td>
+            <div class="text-truncate" style="max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.category}">
+                ${p.category}
+            </div>
+        </td>
+
         <td class="text-end">
           <button data-action="edit" data-id="${p.id}" class="btn btn-outline-success btn-sm btn-edit me-1">Sửa</button>
-          <button data-action="delete" data-id="${p.id}" class="btn btn-outline-danger btn-sm btn-delete" >Xóa</button>
+          <button data-action="delete" data-id="${p.id}" class="btn btn-outline-danger btn-sm btn-delete">Xóa</button>
         </td>
       </tr>
     `).join('');
