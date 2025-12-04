@@ -8,7 +8,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: Arial, sans-serif;
   color: var(--text-dark);
   line-height: 1.6;
   background-color: var(--bg-light);
@@ -41,9 +41,9 @@ body {
 }
 
 /* SECTION CŨ */
-.section {
+/* .section {
   padding: 40px 0;
-}
+} */
 
 /* CARD CŨ (nếu bạn dùng) */
 .about-card {
@@ -107,7 +107,7 @@ body {
 }
 
 .brand-calligraphy {
-  font-family: "Great Vibes", cursive;
+  font-family: Arial, sans-serif;
   color: var(--primary);
 }
 

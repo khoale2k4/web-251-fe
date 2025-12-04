@@ -8,36 +8,34 @@ import getUserId from '../../js/getUserId.js';
 const API_BASE = 'http://localhost:8000';
 const userId = getUserId();
 
-// Kiểm tra đăng nhập - yêu cầu đăng nhập để xem giỏ hàng
 if (!userId) {
-    alert('Vui lòng đăng nhập để xem giỏ hàng');
     window.location.href = '/fe/pages/home/login.html';
 } else {
     ready(async () => {
         mountHeader('.mount-header', 'products');
         mountFooter('.mount-footer');
         await fetchAndRenderCart(userId);
+        await fetchAndRenderRecommendedProducts();
     });
 }
 
 async function fetchAndRenderCart(userId) {
-    const main = document.querySelector('main');
-    main.innerHTML = `<p>Đang tải giỏ hàng...</p>`;
+    const cartContent = document.querySelector('.cart-content');
+    cartContent.innerHTML = `<p>Đang tải giỏ hàng...</p>`;
 
     try {
         const response = await fetch(`${API_BASE}/carts/${userId}`);
         const result = await response.json();
 
         if (!result.success || !result.data) {
-            main.innerHTML = `<p>Không thể tải giỏ hàng!</p>`;
+            cartContent.innerHTML = `<p>Không thể tải giỏ hàng!</p>`;
             return;
         }
 
         const { items, total, item_count } = result.data;
 
         if (item_count === 0) {
-            main.innerHTML = `
-                <h1>Giỏ hàng của bạn</h1>
+            cartContent.innerHTML = `
                 <div class="cart-empty">
                     <p>Giỏ hàng của bạn đang trống.</p>
                     <a href="/fe/pages/products/products.html" class="btn-primary">Tiếp tục mua sắm</a>
@@ -46,9 +44,7 @@ async function fetchAndRenderCart(userId) {
             return;
         }
 
-        main.innerHTML = `
-      <h1>Giỏ hàng của bạn</h1>
-      
+        cartContent.innerHTML = `
       <div class="cart-layout">
       
         <div class="cart-items">
@@ -58,7 +54,7 @@ async function fetchAndRenderCart(userId) {
                 <img src="${API_BASE}${item.image}" alt="${item.product_name}" class="cart-image" onerror="this.src='/fe/assets/placeholder.png'">
               </a>
               <div class="cart-info">
-                <h3><a href="/fe/pages/products/detail.html?id=${item.product_id}" class="product-name-link">${item.product_name}</a></h3>
+                <h3><a href="/fe/pages/products/detail.html?id=${item.product_id}" class="product-name-link" title="${item.product_name}">${item.product_name}</a></h3>
                 <p>${parseFloat(item.final_price).toLocaleString()} VNĐ</p>
                 <div class="quantity-control">
                   <button class="btn-decrease" data-product_id="${item.product_id}">−</button>
@@ -70,11 +66,16 @@ async function fetchAndRenderCart(userId) {
               <button class="btn-remove" data-id="${item.id}">&times;</button>
             </div>
           `).join('')}
-        </div> <div class="cart-summary">
+        </div>
+        
+        <div class="cart-summary">
           <p><strong>Tổng sản phẩm:</strong> <span>${item_count}</span></p>
           <p><strong>Tổng cộng:</strong> <span>${parseFloat(total).toLocaleString()} VNĐ</span></p>
           <button id="checkout-btn" class="btn-primary">Đặt hàng</button>
-        </div> </div> <form id="order-form" class="order-form hidden">
+        </div>
+      </div>
+      
+      <form id="order-form" class="order-form hidden">
         <h2>Thông tin giao hàng</h2>
         <label>Địa chỉ giao hàng</label>
         <input type="text" id="shipping_address" placeholder="VD: 123 Đường ABC, Quận 1" required />
@@ -97,7 +98,6 @@ async function fetchAndRenderCart(userId) {
       </form>
     `;
 
-        // Gắn sự kiện (Event Listeners)
         attachCartEvents(userId);
 
     } catch (err) {
@@ -123,7 +123,17 @@ function attachCartEvents(userId) {
     document.querySelectorAll('.btn-decrease').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const productId = e.target.dataset.product_id;
-            updateQuantity(userId, productId, -1);
+            const cartItem = e.target.closest('.cart-item');
+            const quantitySpan = cartItem.querySelector('.quantity');
+            const currentQty = parseInt(quantitySpan.textContent);
+            console.log(currentQty);
+
+            if (currentQty <= 1) {
+                const itemId = cartItem.dataset.id;
+                removeItem(userId, itemId);
+            } else {
+                updateQuantity(userId, productId, -1);
+            }
         });
     });
 
@@ -142,9 +152,6 @@ function attachCartEvents(userId) {
     });
 }
 
-/**
- * CẬP NHẬT 1: Sửa lỗi alert()
- */
 async function updateQuantity(userId, productId, delta) {
     try {
         const response = await fetch(`${API_BASE}/carts/items`, {
@@ -157,7 +164,6 @@ async function updateQuantity(userId, productId, delta) {
             await fetchAndRenderCart(userId);
             await updateCartCounter(userId);
         } else {
-            // Thay thế alert() bằng Popup
             const popup = new Popup();
             popup.show({
                 title: "Lỗi cập nhật",
@@ -170,29 +176,23 @@ async function updateQuantity(userId, productId, delta) {
     }
 }
 
-/**
- * CẬP NHẬT 2: Sửa confirm() (Yêu cầu chính)
- */
 async function removeItem(userId, itemId) {
-    // 1. Khởi tạo Popup
     const popup = new Popup();
 
-    // 2. Hiển thị popup với 2 lựa chọn
     popup.show({
         title: "Xác nhận xóa",
         content: "<p>Bạn có chắc muốn xoá sản phẩm này khỏi giỏ hàng?</p>",
         actions: [
             {
                 label: "Hủy",
-                type: "btn-secondary", // Lớp CSS cho nút
-                close: true           // Tự động đóng khi bấm
+                type: "btn-secondary",
+                close: true
             },
             {
                 label: "Xác nhận Xóa",
                 type: "btn-danger",
-                close: false, // Không tự đóng, chờ logic
+                close: false,
                 onClick: async () => {
-                    // 3. Đưa logic xóa vào bên trong onClick
                     try {
                         const response = await fetch(`${API_BASE}/carts/items/${itemId}?user_id=${userId}`, {
                             method: 'DELETE'
@@ -201,7 +201,7 @@ async function removeItem(userId, itemId) {
                         if (response.ok && result.success) {
                             await fetchAndRenderCart(userId);
                             await updateCartCounter(userId);
-                            popup.hide(); 
+                            popup.hide();
                         } else {
                             popup.show({
                                 title: "Lỗi",
@@ -229,7 +229,7 @@ async function createOrderFromCart(userId) {
     const note = document.getElementById('note').value.trim();
 
     if (!shipping_address) {
-        alert('Vui lòng nhập địa chỉ giao hàng!'); 
+        alert('Vui lòng nhập địa chỉ giao hàng!');
         return;
     }
 
@@ -284,3 +284,34 @@ async function createOrderFromCart(userId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => updateCartCounter(userId));
+
+async function fetchAndRenderRecommendedProducts() {
+    const container = document.getElementById('recommended-grid');
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/products?limit=4`);
+        const result = await response.json();
+
+        if (!result.success || !result.data || !result.data.products) {
+            container.innerHTML = '<p>Không có sản phẩm nào.</p>';
+            return;
+        }
+
+        const products = result.data.products;
+
+        container.innerHTML = products.map(p => `
+            <a href="/fe/pages/products/detail.html?id=${p.id}" class="product-card">
+                <img src="${API_BASE + '/' + p.image || '../../assets/images/placeholder.png'}" alt="${p.name}" onerror="this.src='/fe/assets/placeholder.png'">
+                <div class="product-info">
+                    <h3>${p.name}</h3>
+                    <div class="price">${parseInt(p.price).toLocaleString()} VNĐ</div>
+                </div>
+            </a>
+        `).join('');
+
+    } catch (err) {
+        console.error('Lỗi tải sản phẩm gợi ý:', err);
+        container.innerHTML = '<p>Không thể tải sản phẩm gợi ý.</p>';
+    }
+}

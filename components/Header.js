@@ -3,6 +3,7 @@ import { API_BASE, PATHS } from "../js/config.js";
 import { Storage } from "../js/storage.js";
 import { API } from "../js/api.js";
 import { Security } from "../js/security.js";
+import getUserId from "../js/getUserId.js";
 
 async function fetchUser(userId) {
   if (!userId) return null;
@@ -37,12 +38,12 @@ async function loadSiteSettings() {
 export async function Header({ current, userName = null, userId = null, settings = null }) {
   userName = Security.escapeHtml(userName);
   const navItems = [
-    { href: PATHS.HOME, label: 'Home', key: 'home' },
-    { href: PATHS.ABOUT, label: 'About', key: 'about' },
+    { href: PATHS.HOME, label: 'Trang chủ', key: 'home' },
+    { href: PATHS.ABOUT, label: 'Giới thiệu', key: 'about' },
     { href: PATHS.FAQ, label: 'FAQ', key: 'faq' },
-    { href: PATHS.PRODUCTS, label: 'Products', key: 'products' },
-    { href: PATHS.NEWS, label: 'News', key: 'news' },
-    { href: PATHS.CONTACT, label: 'Contact', key: 'contact' },
+    { href: PATHS.PRODUCTS, label: 'Sản phẩm', key: 'products' },
+    { href: PATHS.NEWS, label: 'Tin tức', key: 'news' },
+    { href: PATHS.CONTACT, label: 'Liên hệ', key: 'contact' },
   ];
 
   const cartHref = {
@@ -105,7 +106,7 @@ export async function Header({ current, userName = null, userId = null, settings
           </form>
 
           <a href="${cartHref.href}" class="cart-icon" key="${cartHref.key}">
-            &#128722;
+            <i class="fas fa-shopping-cart"></i>
             <span class="cart-counter" id="cart-counter">0</span>
           </a>
 
@@ -145,7 +146,6 @@ export async function mountHeader(containerSelector, current) {
     link.href = faviconUrl;
   }
 
-  // Inject Font Awesome
   if (!document.querySelector("link[href*='font-awesome']")) {
     const faLink = document.createElement('link');
     faLink.rel = 'stylesheet';
@@ -154,7 +154,7 @@ export async function mountHeader(containerSelector, current) {
   }
 
   let userName = null;
-  const userId = Storage.get('userId');
+  const userId = getUserId();
 
   if (userId) {
     const user = await fetchUser(userId);
@@ -186,7 +186,7 @@ export async function mountHeader(containerSelector, current) {
   const logoutBtn = container.querySelector('#logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      Storage.remove('userId');
+      localStorage.removeItem('user');
       window.location.href = PATHS.LOGIN;
     });
   }

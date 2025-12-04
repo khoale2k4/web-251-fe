@@ -11,7 +11,7 @@
   <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
 
   <!-- Sidebar cố định giống các trang admin khác -->
-  <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
+  <!-- Sidebar cố định REMOVED -->
 
   <style>
     .excerpt-preview {
@@ -123,37 +123,37 @@
             <h3 class="card-title">Danh sách section About</h3>
           </div>
           <div class="table-responsive">
-          <table class="table table-vcenter card-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Tiêu đề</th>
-                <th>Mô tả ngắn</th>
-                <th>Hình ảnh</th>
-                <th>Thứ tự</th>
-                <th>Trạng thái</th>
-                <th class="w-1"></th>
-              </tr>
-            </thead>
-            <tbody id="about-table-body">
-              <tr>
-                <td colspan="7" class="text-center text-muted py-4">
-                  Đang tải dữ liệu...
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+            <table class="table table-vcenter card-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tiêu đề</th>
+                  <th>Mô tả ngắn</th>
+                  <th>Hình ảnh</th>
+                  <th>Thứ tự</th>
+                  <th>Trạng thái</th>
+                  <th class="w-1"></th>
+                </tr>
+              </thead>
+              <tbody id="about-table-body">
+                <tr>
+                  <td colspan="7" class="text-center text-muted py-4">
+                    Đang tải dữ liệu...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <!-- PHÂN TRANG GIỐNG FAQ -->
-        <div class="card-footer d-flex align-items-center">
-          <p class="m-0 text-muted" id="aboutSummary">
-            Chưa có section nào
-          </p>
-          <ul class="pagination m-0 ms-auto" id="aboutPagination"></ul>
-        </div>
-        <!-- HẾT PHÂN TRANG -->
-          
+          <!-- PHÂN TRANG GIỐNG FAQ -->
+          <div class="card-footer d-flex align-items-center">
+            <p class="m-0 text-muted" id="aboutSummary">
+              Chưa có section nào
+            </p>
+            <ul class="pagination m-0 ms-auto" id="aboutPagination"></ul>
+          </div>
+          <!-- HẾT PHÂN TRANG -->
+
         </div>
 
       </div>
@@ -167,8 +167,7 @@
         <form id="about-form">
           <div class="modal-header">
             <h5 class="modal-title" id="about-form-title">Thêm section</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"
-              aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
 
@@ -176,20 +175,19 @@
 
             <div class="mb-3">
               <label class="form-label">Tiêu đề</label>
-              <input type="text" class="form-control" id="about-title-input"
-                placeholder="Nhập tiêu đề section" required>
+              <input type="text" class="form-control" id="about-title-input" placeholder="Nhập tiêu đề section"
+                required>
             </div>
 
             <div class="mb-3">
               <label class="form-label">Nội dung / mô tả</label>
-              <textarea class="form-control" id="about-description-input"
-                rows="4" placeholder="Mô tả chi tiết nội dung section"></textarea>
+              <textarea class="form-control" id="about-description-input" rows="4"
+                placeholder="Mô tả chi tiết nội dung section"></textarea>
             </div>
 
             <div class="mb-3">
               <label class="form-label">URL hình ảnh</label>
-              <input type="text" class="form-control" id="about-image-input"
-                placeholder="Đường dẫn ảnh (image_url)">
+              <input type="text" class="form-control" id="about-image-input" placeholder="Đường dẫn ảnh (image_url)">
               <div class="form-hint">
                 Có thể là link tuyệt đối hoặc tương đối. Ví dụ:
                 <code>/uploads/about/brand-story.jpg</code>
@@ -199,14 +197,12 @@
             <div class="row">
               <div class="col-sm-6 mb-3">
                 <label class="form-label">Thứ tự hiển thị</label>
-                <input type="number" class="form-control" id="about-sort-input"
-                  value="1" min="0" step="1">
+                <input type="number" class="form-control" id="about-sort-input" value="1" min="0" step="1">
               </div>
               <div class="col-sm-6 mb-3">
                 <label class="form-label d-block">Trạng thái</label>
                 <label class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox"
-                    id="about-active-input" checked>
+                  <input class="form-check-input" type="checkbox" id="about-active-input" checked>
                   <span class="form-check-label">Hiển thị trên trang About</span>
                 </label>
               </div>
@@ -214,8 +210,7 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-link link-secondary"
-              data-bs-dismiss="modal">
+            <button type="button" class="btn btn-link link-secondary" data-bs-dismiss="modal">
               Hủy
             </button>
             <button type="submit" class="btn btn-primary">
@@ -252,27 +247,19 @@
   <!-- JS Tabler + sidebar + page -->
   <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js" defer></script>
   <!-- Config + Sidebar giống file settings -->
-    <script type="module" src="../../js/config.js?v=6"></script>
-    <script type="module">
-        import { mountAdminSidebar } from '../../components/AdminSidebar.js';
-        document.addEventListener('DOMContentLoaded', () => {
-            // key 'pages' tuỳ bạn đặt để sidebar highlight đúng menu
-            mountAdminSidebar('.mount-admin-sidebar', 'pages');
-        });
-    </script>
-<<<<<<< HEAD
+  <script type="module" src="../../js/config.js?v=6"></script>
+  <script type="module">
+    import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+    document.addEventListener('DOMContentLoaded', () => {
+      // key 'pages' tuỳ bạn đặt để sidebar highlight đúng menu
+      mountAdminSidebar('.mount-admin-sidebar', 'pages');
+    });
+  </script>
+  <!-- JS riêng cho trang này -->
+  <script type="module" src="./app.js"></script>
 
-    <!-- JS riêng cho trang này -->
-    <script type="module" src="./app.js"></script>
-
-    <!-- ADMIN GUARD -->
-    <script type="module" src="../js/admin-guard.js"></script>
+  <!-- ADMIN GUARD -->
+  <script type="module" src="../js/admin-guard.js"></script>
 </body>
 
 </html>
-=======
-  <script src="./app.js?v=3" type="module" defer></script>
-</body>
-
-</html>
->>>>>>> task2-new

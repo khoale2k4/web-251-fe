@@ -11,27 +11,37 @@
 
     <link rel="stylesheet" href="../../css/popUp.css">
     <link rel="stylesheet" href="./product_popup.css">
-
-    <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
-
-
     <style>
-        .fixed-sidebar {
-            z-index: 1000 !important;
+        .table-striped tbody tr:hover {
+            background-color: rgba(37, 99, 235, 0.05) !important;
+            transition: background-color 0.2s;
         }
 
-        .page .page-wrapper {
-            margin-left: 260px !important;
+        .product-img-cell {
+            position: relative;
         }
 
-        .page-wrapper main {
-            width: auto !important;
-            max-width: none !important;
-            position: relative !important;
+        .product-img-cell img {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+            cursor: zoom-in;
+            position: relative;
+            z-index: 1;
         }
 
-        .page-wrapper main {
-            padding: 0 !important;
+        .product-img-cell:hover img {
+            transform: scale(2.5);
+            z-index: 100;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .color-swatch-table {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #e5e7eb;
+            display: inline-block;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -67,14 +77,16 @@
                                 <table class="table table-striped table-vcenter">
                                     <thead class="table-light">
                                         <tr>
-                                            <th></th>
-                                            <th>Tên sản phẩm</th>
+                                            <th style="width: 250px;">Tên sản phẩm</th>
+                                            <th style="width: 80px;">Ảnh</th>
                                             <th>Giá</th>
                                             <th>Giảm giá</th>
                                             <th>Còn lại</th>
                                             <th>Kích cỡ</th>
                                             <th>Màu sắc</th>
-                                            <th>Phân loại</th>
+
+                                            <th style="width: 150px;">Phân loại</th>
+
                                             <th class="text-end">Thao tác</th>
                                         </tr>
                                     </thead>
@@ -103,7 +115,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
 
     <!-- SIDEBAR FIX SCRIPT -->
-    <script src="../sidebar-fix.js?v=2"></script>
+    <!-- SIDEBAR FIX SCRIPT REMOVED -->
 
     <!-- JS gốc -->
     <script type="module" src="../../js/main.js?v=6"></script>

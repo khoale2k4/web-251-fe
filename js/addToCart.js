@@ -1,35 +1,16 @@
 import { Popup } from "../components/PopUp.js";
+import getUserId from "./getUserId.js";
 import { updateCartCounter } from "./updateCartCounter.js";
 
 const API_BASE = 'http://localhost:8000';
 
-export async function addToCart(productId, userId = null) {
-
-    // 1. Khởi tạo popup MỘT LẦN ở ngoài
-    // Chúng ta sẽ dùng nó cho cả thông báo thành công và thất bại
+export async function addToCart(productId) {
     const popup = new Popup();
 
-    // 2. Kiểm tra đăng nhập - nếu guest thì yêu cầu đăng nhập
+    const userId = getUserId();
+
     if (!userId) {
-        popup.show({
-            title: "Yêu cầu đăng nhập",
-            content: `<p>Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.</p>`,
-            actions: [
-                {
-                    label: "Đăng nhập",
-                    type: "btn-primary",
-                    onClick: () => {
-                        window.location.href = '/fe/pages/home/login.html';
-                    },
-                    close: true
-                },
-                {
-                    label: "Hủy",
-                    type: "btn-secondary",
-                    close: true
-                }
-            ]
-        });
+        window.location.href = '/fe/pages/home/login.html';
         return;
     }
 
@@ -48,24 +29,18 @@ export async function addToCart(productId, userId = null) {
 
         if (response.ok && result.success) {
 
-            // --- ĐÃ SỬA LỖI ---
-            // 2. Xóa bỏ hàm confirmPopup() và gọi popup.show() trực tiếp
             popup.show({
                 title: "Thêm thành công!",
                 content: `<p>Sản phẩm đã được thêm vào giỏ hàng của bạn.</p>`,
-
-                // 3. Dùng 'actions' để tạo nút "OK" cho sạch sẽ
-                //    Nó tự động đóng khi bấm, không cần addEventListener
                 actions: [
                     {
                         label: "OK",
-                        type: "btn-primary", // Class của nút
-                        close: true          // Tự động đóng popup
+                        type: "btn-primary",
+                        close: true
                     }
                 ]
             });
 
-            // 4. Cập nhật counter
             await updateCartCounter(userId);
 
         } else {
@@ -74,7 +49,6 @@ export async function addToCart(productId, userId = null) {
     } catch (error) {
         console.error('Lỗi khi thêm sản phẩm vào giỏ:', error);
 
-        // 5. (Cải tiến) Dùng popup để báo lỗi thay vì alert()
         popup.show({
             title: "Thêm thất bại!",
             content: `<p>Đã xảy ra lỗi: ${error.message}</p>`,

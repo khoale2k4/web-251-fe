@@ -37,6 +37,10 @@
 .popup-header h3 {
     margin: 0;
     font-size: 18px;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .btn-close {

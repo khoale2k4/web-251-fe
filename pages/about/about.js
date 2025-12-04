@@ -8,7 +8,7 @@ const BASE_URL = 'http://localhost:8000';
 // API mới: danh sách 3 section About (giữ nguyên PHP như bạn đã làm)
 // const API_ABOUT_SECTIONS = 'http://localhost/be/api/about_sections_list.php';
 // API mới: danh sách 3 section About (qua index.php + routes MVC)
-const API_ABOUT_SECTIONS = 'http://localhost/be/index.php?route=about-sections';
+const API_ABOUT_SECTIONS = BASE_URL + '/about-sections';
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -66,6 +66,7 @@ async function loadAboutContent() {
 
           imageUrls.forEach((imageUrlPath) => {
             const fullImageUrl = BASE_URL + imageUrlPath;
+            console.log(fullImageUrl);
 
             const colHtml = `
               <div class="col mb-3">
@@ -166,7 +167,7 @@ function createAboutSection(item, index) {
 
   const imageUrl =
     item.image_url && String(item.image_url).trim()
-      ? item.image_url
+      ? BASE_URL + item.image_url
       : '../../1.jpg'; // đổi path nếu cần
 
   section.innerHTML = `
