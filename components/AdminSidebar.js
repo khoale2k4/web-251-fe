@@ -43,7 +43,7 @@ export function AdminSidebar({ current = '' } = {}) {
           <span class="navbar-toggler-icon"></span>
         </button>
         <h1 class="navbar-brand navbar-brand-autodark">
-          <a href="../index.html"><span class="text-white">Admin Panel</span></a>
+          <a href="../index.html"><span>Admin Panel</span></a>
         </h1>
         
         <div class="px-3 py-2 mb-2" style="background: rgba(255,255,255,0.1); border-radius: 8px;">
