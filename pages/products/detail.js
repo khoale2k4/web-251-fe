@@ -65,8 +65,15 @@ async function fetchAndRenderProductDetail(id) {
                     <span class="product-category">${product.category_name}</span>
                     <h1 class="product-title">${product.name}</h1>
                     <div class="price-section">
-                        <span class="price">${finalPrice.toFixed(0).toLocaleString()} VNĐ</span>
-                        ${hasDiscount ? `<span class="old-price">${price.toLocaleString()} VNĐ</span><span class="discount-badge">-${(parseFloat(product.discount) || 0).toFixed(0)}%</span>` : ''}
+                        <span class="price">${Number(finalPrice).toLocaleString('vi-VN')} VNĐ</span>
+                        ${hasDiscount ? `
+    <span class="old-price">
+      ${Number(price).toLocaleString('vi-VN')} VNĐ
+    </span>
+    <span class="discount-badge">
+      -${Number(product.discount || 0).toFixed(0)}%
+    </span>
+  ` : ''}
                     </div>
                     
                     <p class="product-description">${product.description}</p>
@@ -102,11 +109,9 @@ async function fetchAndRenderProductDetail(id) {
 
         attachProductEvents();
 
-        // Size Guide Popup Logic
         const btnSizeGuide = document.getElementById('btnSizeGuide');
         if (btnSizeGuide) {
             btnSizeGuide.addEventListener('click', () => {
-                // Create popup if not exists
                 let popup = document.getElementById('sizeGuidePopup');
                 if (!popup) {
                     popup = document.createElement('div');

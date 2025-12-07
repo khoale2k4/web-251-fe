@@ -1,12 +1,29 @@
-// Admin Site Settings Management
 import { API_BASE } from '../../js/config.js';
-console.log(API_BASE);
 
 let currentSettings = null;
-const filePath = 'storage';
-const avatarPath = '/' + filePath;
 
-// Load settings
+// Helper: Normalize path to ensure single /storage/ prefix
+function normalizeStoragePath(path) {
+    if (!path) return '';
+    // Remove API_BASE if present
+    let normalized = path.replace(API_BASE, '');
+    // Remove duplicate /storage/ prefixes
+    while (normalized.includes('/storage//storage/')) {
+        normalized = normalized.replace('/storage//storage/', '/storage/');
+    }
+    // Ensure path starts with /storage/
+    if (!normalized.startsWith('/storage/')) {
+        normalized = '/storage/' + normalized.replace(/^\/+/, '');
+    }
+    return normalized;
+}
+
+// Helper: Get full URL for display
+function getFullImageUrl(path) {
+    if (!path) return '';
+    return API_BASE + normalizeStoragePath(path);
+}
+
 async function loadSettings() {
     try {
         const response = await fetch(`${API_BASE}/site-settings`);
@@ -25,7 +42,6 @@ async function loadSettings() {
     }
 }
 
-// Populate form with current settings
 function populateForm(settings) {
     document.getElementById('siteName').value = settings.site_name || '';
     document.getElementById('siteTitle').value = settings.site_title || '';
@@ -44,9 +60,9 @@ function populateForm(settings) {
     document.getElementById('aboutUs').value = settings.about_us || '';
     document.getElementById('copyright').value = settings.copyright || '';
 
-    // Display logo
+    // Display logo - API returns path with /storage/ prefix
     if (settings.logo) {
-        document.getElementById('logoPreview').src = `${API_BASE}${settings.logo}`;
+        document.getElementById('logoPreview').src = getFullImageUrl(settings.logo);
         document.getElementById('logoPreview').style.display = 'block';
         document.getElementById('noLogo').style.display = 'none';
     } else {
@@ -56,7 +72,7 @@ function populateForm(settings) {
 
     // Display favicon
     if (settings.favicon) {
-        document.getElementById('faviconPreview').src = `${API_BASE}${settings.favicon}`;
+        document.getElementById('faviconPreview').src = getFullImageUrl(settings.favicon);
         document.getElementById('faviconPreview').style.display = 'block';
         document.getElementById('noFavicon').style.display = 'none';
     } else {
@@ -70,7 +86,6 @@ function populateForm(settings) {
     }
 }
 
-// Save settings
 async function saveSettings(e) {
     e.preventDefault();
 
@@ -96,12 +111,12 @@ async function saveSettings(e) {
             copyright: document.getElementById('copyright').value
         };
 
-        // Add logo and favicon relativePaths if they exist
+        // Add logo and favicon with normalized /storage/ prefix
         if (currentSettings.logo) {
-            formData.logo = currentSettings.logo;
+            formData.logo = normalizeStoragePath(currentSettings.logo);
         }
         if (currentSettings.favicon) {
-            formData.favicon = currentSettings.favicon;
+            formData.favicon = normalizeStoragePath(currentSettings.favicon);
         }
 
         const response = await fetch(`${API_BASE}/site-settings`, {
@@ -119,7 +134,7 @@ async function saveSettings(e) {
         }
 
         alert('Đã lưu cấu hình thành công!');
-        loadSettings(); // Reload to get updated timestamp
+        loadSettings();
 
     } catch (error) {
         console.error('Error saving settings:', error);
@@ -130,14 +145,13 @@ async function saveSettings(e) {
     }
 }
 
-// Upload image (logo or favicon)
 async function uploadImage(file, type) {
     try {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
-        formData.append("folder", filePath); // storage
-        formData.append("target", ""); // Empty = backend storage
+        formData.append("folder", "storage");
+        formData.append("target", "");
 
         const response = await fetch(`${API_BASE}/upload`, {
             method: 'POST',
@@ -150,18 +164,20 @@ async function uploadImage(file, type) {
             throw new Error(result.error || 'Upload failed');
         }
 
-        // relativePath từ backend: /storage/storage/filename.jpg
-        const fullPath = result.relativePath;
+        // API returns filename in relativePath, normalize to /storage/filename
+        const storagePath = normalizeStoragePath(result.relativePath);
+        const fullUrl = getFullImageUrl(storagePath);
+        console.log('Uploaded:', storagePath, '-> Display:', fullUrl);
 
-        // Update current settings
+        // Update current settings and preview
         if (type === 'logo') {
-            currentSettings.logo = fullPath;
-            document.getElementById('logoPreview').src = `${API_BASE}${fullPath}`;
+            currentSettings.logo = storagePath;
+            document.getElementById('logoPreview').src = fullUrl;
             document.getElementById('logoPreview').style.display = 'block';
             document.getElementById('noLogo').style.display = 'none';
         } else if (type === 'favicon') {
-            currentSettings.favicon = fullPath;
-            document.getElementById('faviconPreview').src = `${API_BASE}${fullPath}`;
+            currentSettings.favicon = storagePath;
+            document.getElementById('faviconPreview').src = fullUrl;
             document.getElementById('faviconPreview').style.display = 'block';
             document.getElementById('noFavicon').style.display = 'none';
         }
@@ -174,18 +190,15 @@ async function uploadImage(file, type) {
     }
 }
 
-// Handle file input change
 function handleFileSelect(e, type) {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
         alert('Vui lòng chọn file hình ảnh!');
         return;
     }
 
-    // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
         alert('File quá lớn! Vui lòng chọn file nhỏ hơn 5MB.');
         return;
@@ -194,22 +207,18 @@ function handleFileSelect(e, type) {
     uploadImage(file, type);
 }
 
-// Setup drag and drop for logo
 function setupDragAndDrop(uploadAreaId, inputId, type) {
     const uploadArea = document.getElementById(uploadAreaId);
     const input = document.getElementById(inputId);
 
-    // Click to upload
     uploadArea.addEventListener('click', () => {
         input.click();
     });
 
-    // File input change
     input.addEventListener('change', (e) => {
         handleFileSelect(e, type);
     });
 
-    // Drag and drop
     uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
         uploadArea.classList.add('dragover');
@@ -232,15 +241,11 @@ function setupDragAndDrop(uploadAreaId, inputId, type) {
     });
 }
 
-// Initialize
 document.addEventListener('DOMContentLoaded', function () {
     loadSettings();
 
-    // Form submit
     document.getElementById('settingsForm').addEventListener('submit', saveSettings);
 
-    // Setup drag and drop
     setupDragAndDrop('logoUploadArea', 'logoInput', 'logo');
     setupDragAndDrop('faviconUploadArea', 'faviconInput', 'favicon');
 });
-

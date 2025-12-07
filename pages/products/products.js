@@ -112,9 +112,20 @@ async function fetchAndRenderProducts(page = 1, query = '', categoryId = '') {
                 </div>
                 <div class="info-bottom">
                   <div class="price-wrapper">
-                    <span class="price">${finalPrice.toFixed(0).toLocaleString()} VNĐ</span>
-                    ${hasDiscount ? `<span class="old-price">${price.toFixed(0).toLocaleString()} VNĐ</span><span class="discount-badge">-${(parseFloat(product.discount) || 0).toFixed(0)}%</span>` : ''}
-                  </div>
+          <span class="price">
+            ${Number(finalPrice).toLocaleString('vi-VN')} VNĐ
+  </span>
+
+  ${hasDiscount ? `
+    <span class="old-price">
+      ${Number(price).toLocaleString('vi-VN')} VNĐ
+    </span>
+    <span class="discount-badge">
+      -${Number(product.discount || 0).toFixed(0)}%
+    </span>
+  ` : ''}
+</div>
+
                   <div class="btn-group">
                     <button class="btn-add-cart add-btn" data-id="${product.id}">
                       <i class="fas fa-shopping-bag"></i> Thêm vào giỏ

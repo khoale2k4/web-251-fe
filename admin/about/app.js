@@ -14,7 +14,7 @@ const AVATAR_PATH = '/' + STORAGE_FOLDER;
 // const API_DELETE = `${PHP_API_BASE}/be/api/about_sections_delete.php`;
 
 // API PHP cho about_sections (qua index.php + routes MVC)
-const PHP_API_BASE = 'http://localhost/be/index.php'; // nếu project nằm trong thư mục con thì chỉnh lại
+const PHP_API_BASE = API_BASE + "/"; // nếu project nằm trong thư mục con thì chỉnh lại
 
 // List cho admin
 const API_LIST   = `${PHP_API_BASE}?route=admin/about-sections/list`;
@@ -74,10 +74,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-/* =========================
- * 1. Quản lý page_contents (about_*)
- * ========================= */
-
 async function loadPageContents() {
   try {
     const res = await fetch(PAGE_CONTENT_API);
@@ -109,7 +105,6 @@ async function loadPageContents() {
       hiddenImage.value = data.about_image || '[]';
     }
 
-    // Parse about_image -> mảng URL
     aboutImageUrls = [];
     if (data.about_image) {
       try {
@@ -172,7 +167,6 @@ async function handleImageUpload(files) {
       console.log('[Admin About] upload result:', result);
 
       if (result && result.relativePath) {
-        // relativePath từ backend: /storage/storage/filename.jpg
         aboutImageUrls.push(result.relativePath);
       } else {
         console.warn('Upload thành công nhưng không nhận được relativePath:', result);
@@ -392,8 +386,8 @@ function renderTable() {
         </td>
         <td>
           ${
-            imgUrl
-              ? `<img src="${imgUrl}" alt="" class="thumb-img">`
+            API_BASE + imgUrl
+              ? `<img src="${API_BASE + imgUrl}" alt="" class="thumb-img">`
               : '<span class="text-muted">Không có</span>'
           }
         </td>

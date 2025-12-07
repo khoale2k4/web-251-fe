@@ -194,6 +194,7 @@ ready(async () => {
         stock: p.stock,
         size: p.size,
         color: p.color,
+        description: p.description,
         category: p.category_name
       }));
       state.totalPages = res.pagination.total_pages || 1;
@@ -218,22 +219,43 @@ ready(async () => {
         <form id="product-form" class="product-form">
           <div class="form-grid">
             <label>Tên sản phẩm<input type="text" name="name" value="${product?.name || ''}" required></label>
-            <label>Giá<input type="text" name="price" inputmode="decimal" pattern="^[0-9]+([.,][0-9]+)?$" placeholder="VD: 123000" value="${product?.price || ''}" required></label>
-            <label>Giảm giá (%)<input type="number" name="discount" step="any" value="${product?.discount ? product.discount * 100 : ''}"></label>
-            <label>Số lượng tồn<input type="number" name="stock" step="1" value="${product?.stock || ''}"></label>
+            <label>Mô tả<input type="text" name="description" value="${product?.description || ''}" required></label>
+            
+            <label>Giá (VNĐ)
+                <input type="text" name="price" inputmode="decimal" 
+                       pattern="^[0-9]+([.,][0-9]+)?$" 
+                       placeholder="VD: 123000" 
+                       value="${product?.price || ''}" required
+                       title="Vui lòng nhập số dương">
+            </label>
+
+            <label>Giảm giá (%)
+                <input type="number" name="discount" step="0.1" min="0" max="100" 
+                       value="${product?.discount ? product.discount * 100 : ''}"
+                       placeholder="0 - 100">
+            </label>
+
+            <label>Số lượng tồn
+                <input type="number" name="stock" step="1" min="0" 
+                       value="${product?.stock || '0'}" required>
+            </label>
+
             <label>Size<input type="text" name="size" value="${product?.size || ''}"></label>
-            <label>Size<input type="text" name="size" value="${product?.size || ''}"></label>
+            <label>
+              Danh mục
+              <select name="category" id="categorySelect" required>
+                <option value="">-- Chọn danh mục --</option>
+              </select>
+              <textarea name="newCategory" id="newCategory" placeholder="Nhập danh mục mới..." style="display:none;"></textarea>
+            </label>
+            
             <label>Màu sắc
                 <div class="d-flex gap-2">
                     <input type="color" name="color" value="${product?.color || '#000000'}" style="height: 38px; width: 60px; padding: 2px;">
-                    <input type="text" name="color_text" value="${product?.color || ''}" placeholder="#000000" style="flex:1;">
+                    <input type="text" name="color_text" value="${product?.color || ''}" placeholder="#000000" pattern="^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$" style="flex:1;">
                 </div>
             </label>
-            <label>
-              Danh mục
-              <select name="category" id="categorySelect"><option value="">-- Đang tải... --</option></select>
-              <textarea name="newCategory" id="newCategory" placeholder="Nhập danh mục mới..." style="display:none;"></textarea>
-            </label>
+            
             <label>
               Ảnh sản phẩm
               <input type="file" name="imageFile" accept="image/*" id="imageFile">
@@ -250,19 +272,54 @@ ready(async () => {
 
     popup.show({ title, content });
 
-
     const form = document.getElementById('product-form');
     const categorySelect = document.getElementById('categorySelect');
     const newCategory = document.getElementById('newCategory');
     const fileInput = document.getElementById('imageFile');
     const previewImg = document.getElementById('imagePreview');
 
-
     form.querySelector('.btn-cancel').addEventListener('click', () => popup.hide());
-    form.addEventListener('submit', (e) => handleProductFormSubmit(e, product));
 
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    populateCategories(categorySelect, newCategory, product?.category, !isEdit);
+      const formData = new FormData(form);
+      const priceInput = formData.get('price');
+      const stockInput = formData.get('stock');
+      const discountInput = formData.get('discount');
+      const categoryVal = formData.get('category');
+      const newCategoryVal = formData.get('newCategory');
+
+      let priceValue = parseFloat(priceInput.replace(/,/g, '.'));
+      if (isNaN(priceValue) || priceValue < 0) {
+        alert('Vui lòng nhập giá hợp lệ và không được âm!');
+        form.querySelector('input[name="price"]').focus();
+        return;
+      }
+
+      let stockValue = parseInt(stockInput);
+      if (stockValue < 0) {
+        alert('Số lượng tồn kho không được âm!');
+        form.querySelector('input[name="stock"]').focus();
+        return;
+      }
+      if (discountInput) {
+        let discountValue = parseFloat(discountInput);
+        if (discountValue < 0 || discountValue > 100) {
+          alert('Giảm giá phải nằm trong khoảng từ 0% đến 100%!');
+          form.querySelector('input[name="discount"]').focus();
+          return;
+        }
+      }
+      if (categorySelect.value === 'new' && (!newCategoryVal || newCategoryVal.trim() === '')) {
+        alert('Vui lòng nhập tên danh mục mới!');
+        newCategory.focus();
+        return;
+      }
+
+      handleProductFormSubmit(e, product);
+    });
+
     populateCategories(categorySelect, newCategory, product?.category, !isEdit);
     setupImagePreview(fileInput, previewImg);
 
@@ -270,7 +327,11 @@ ready(async () => {
     const colorText = form.querySelector('input[name="color_text"]');
 
     colorPicker.addEventListener('input', () => colorText.value = colorPicker.value);
-    colorText.addEventListener('input', () => colorPicker.value = colorText.value);
+    colorText.addEventListener('input', () => {
+      if (/^#[0-9A-F]{6}$/i.test(colorText.value)) {
+        colorPicker.value = colorText.value;
+      }
+    });
   };
 
   async function populateCategories(selectEl, newCategoryEl, currentCategoryName, showNew) {
@@ -336,12 +397,11 @@ ready(async () => {
       if (file && file.size > 0) {
         const uploadData = new FormData();
         uploadData.append('file', file);
-        uploadData.append("folder", filePath); // storage
-        uploadData.append("target", ""); // Empty = backend storage
+        uploadData.append("folder", filePath);
+        uploadData.append("target", "");
 
         const uploadRes = await http.request(`${BASE_URL}/upload`, { method: 'POST', body: uploadData });
-        // relativePath từ backend: /storage/storage/filename.jpg
-        imageUrl = uploadRes.relativePath;
+        imageUrl = "/storage/" + uploadRes.relativePath;
       }
 
       const body = {
@@ -351,10 +411,11 @@ ready(async () => {
         stock: parseInt(data.stock || 0),
         size: data.size,
         size: data.size,
-        color: data.color_text || data.color, // Prefer text input if manually typed, else picker
+        color: data.color_text || data.color,
         image: imageUrl,
         image: imageUrl,
         category_id: data.category,
+        description: data.description
       };
 
       if (isEdit) {
