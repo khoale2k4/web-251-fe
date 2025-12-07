@@ -8,29 +8,30 @@
     <link rel="stylesheet" href="../../css/header.css">
     <link rel="stylesheet" href="../../css/footer.css">
     <link rel="stylesheet" href="../../css/style.css">
-    <link rel="stylesheet" href="faq.css?v=6">
+    <!-- <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="faq.css?v=3">
 </head>
 
 <body>
     <div class="mount-header"></div>
 
     <main>
-        <div class="faq-running-bg">
+        <!-- <div class="faq-running-bg">
             <div class="faq-running-track">
-                <!-- Dùng 4–6 ảnh cùng 1 file để cảm giác “đoàn giày” chạy ngang -->
-                <img src="../../1.jpg" alt="Giày chạy">
+                 Dùng 4–6 ảnh cùng 1 file để cảm giác “đoàn giày” chạy ngang -->
+                <!-- <img src="../../1.jpg" alt="Giày chạy">
                 <img src="../../1.jpg" alt="Giày chạy">
                 <img src="../../1.jpg" alt="Giày chạy">
                 <img src="../../1.jpg" alt="Giày chạy">
                 <img src="../../1.jpg" alt="Giày chạy">
                 <img src="../../1.jpg" alt="Giày chạy">
             </div>
-        </div>
+        </div> -->
 
         <section class="faq-timeline-section">
             <div class="faq-timeline-header">
                 <h2>FAQ</h2>
-                <p>Các câu hỏi thường gặp từ khách hàng, dữ liệu lấy từ bảng <code>faqs</code> trong hệ thống.</p>
+                <p>Các câu hỏi thường gặp từ khách hàng</p>
             </div>
 
             <!-- JS sẽ render danh sách FAQ vào đây -->
@@ -58,9 +59,20 @@
 
     <div class="mount-footer"></div>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script type="module" src="../../js/main.js"></script>
     <script type="module" src="faq.js"></script>
     <script src="../assets/js/faq-chatbot.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true,
+                offset: 100
+            });
+        });
+    </script>
 
 </body>
 

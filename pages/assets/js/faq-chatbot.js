@@ -13,14 +13,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function addMessage(text, from = 'bot') {
         const msg = document.createElement('div');
         msg.className = 'faq-msg ' + from;
+        msg.style.opacity = '0';
+        msg.style.transform = from === 'user' ? 'translateX(20px)' : 'translateX(-20px)';
+        
         msg.innerHTML = `
-            <div class="bubble" data-aos="${from === 'user' ? 'fade-left' : 'fade-right'}" data-aos-duration="500">
+            <div class="bubble">
                 ${text}
             </div>
         `;
 
         bodyEl.appendChild(msg);
-        bodyEl.scrollTop = bodyEl.scrollHeight;
+        
+        // Smooth scroll
+        setTimeout(() => {
+            bodyEl.scrollTo({
+                top: bodyEl.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 50);
+        
+        // Animate in
+        setTimeout(() => {
+            msg.style.transition = 'all 0.3s ease-out';
+            msg.style.opacity = '1';
+            msg.style.transform = 'translateX(0)';
+        }, 10);
     }
 
     // Hàm render các câu hỏi gợi ý (nút bấm)
@@ -29,30 +46,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const wrapper = document.createElement('div');
         wrapper.className = 'faq-msg bot';
+        wrapper.style.opacity = '0';
+        wrapper.style.transform = 'translateX(-20px)';
 
         const inner = document.createElement('div');
         inner.className = 'bubble';
 
-        inner.innerHTML = '<div>Một số câu hỏi thường gặp:</div>';
+        inner.innerHTML = '<div style="font-weight: 600; margin-bottom: 8px; color: #374151;">💡 Một số câu hỏi thường gặp:</div>';
 
         const list = document.createElement('div');
         list.className = 'faq-suggest-list';
 
         // Lấy tối đa 6 câu để demo
-        faqs.slice(0, 6).forEach(f => {
+        faqs.slice(0, 6).forEach((f, index) => {
             const btn = document.createElement('button');
             btn.className = 'faq-suggest-btn';
             btn.textContent = f.question;
+            btn.style.opacity = '0';
+            btn.style.transform = 'scale(0.8)';
             btn.addEventListener('click', () => {
                 handleUserAsk(f.question);
             });
             list.appendChild(btn);
+            
+            // Stagger animation for buttons
+            setTimeout(() => {
+                btn.style.transition = 'all 0.3s ease-out';
+                btn.style.opacity = '1';
+                btn.style.transform = 'scale(1)';
+            }, index * 50);
         });
 
         inner.appendChild(list);
         wrapper.appendChild(inner);
         bodyEl.appendChild(wrapper);
-        bodyEl.scrollTop = bodyEl.scrollHeight;
+        
+        // Animate wrapper
+        setTimeout(() => {
+            wrapper.style.transition = 'all 0.3s ease-out';
+            wrapper.style.opacity = '1';
+            wrapper.style.transform = 'translateX(0)';
+        }, 10);
+        
+        setTimeout(() => {
+            bodyEl.scrollTo({
+                top: bodyEl.scrollHeight,
+                behavior: 'smooth'
+            });
+        }, 400);
     }
 
     // Tìm câu trả lời tốt nhất cho câu hỏi user gõ
@@ -111,19 +152,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Nút thu/phóng chatbot
+    // Nút thu/phóng chatbot với smooth animation
     toggleBtn.addEventListener('click', () => {
         const body = document.querySelector('.faq-chatbot-body');
         const inputWrap = document.querySelector('.faq-chatbot-input');
+        const chatbot = document.getElementById('faq-chatbot');
 
-        if (body.style.display === 'none') {
-            body.style.display = '';
+        if (body.style.display === 'none' || body.style.maxHeight === '0px') {
+            body.style.display = 'flex';
+            body.style.maxHeight = '350px';
+            body.style.opacity = '1';
             inputWrap.style.display = 'flex';
+            inputWrap.style.opacity = '1';
             toggleBtn.textContent = '−';
+            chatbot.style.maxHeight = '500px';
+            chatbot.style.height = 'auto';
         } else {
-            body.style.display = 'none';
-            inputWrap.style.display = 'none';
+            body.style.maxHeight = '0px';
+            body.style.opacity = '0';
+            inputWrap.style.opacity = '0';
             toggleBtn.textContent = '+';
+            chatbot.style.maxHeight = '60px';
+            chatbot.style.height = '60px';
+            
+            setTimeout(() => {
+                body.style.display = 'none';
+                inputWrap.style.display = 'none';
+            }, 300);
         }
     });
 

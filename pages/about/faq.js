@@ -6,9 +6,14 @@ import { API_BASE } from '../../js/config.js';
 /**
  * Tạo 1 card FAQ (1 cột question + answer)
  */
-function createFaqCard(faq, position = 'left') {
+function createFaqCard(faq, position = 'left', index = 0) {
   const article = document.createElement('article');
   article.className = `faq-card faq-card-${position}`;
+  
+  // Thêm AOS animation attributes
+  article.setAttribute('data-aos', position === 'left' ? 'fade-right' : 'fade-left');
+  article.setAttribute('data-aos-delay', (index * 100).toString());
+  article.setAttribute('data-aos-duration', '600');
 
   const answerText = faq.answer && faq.answer.trim()
     ? faq.answer
@@ -31,20 +36,25 @@ function renderFaqTimeline(container, faqs) {
   for (let i = 0; i < faqs.length; i += 2) {
     const row = document.createElement('div');
     row.className = 'faq-timeline-row';
+    row.setAttribute('data-aos', 'fade-up');
+    row.setAttribute('data-aos-delay', (Math.floor(i / 2) * 150).toString());
+    row.setAttribute('data-aos-duration', '800');
 
     // LEFT CARD
-    const leftCard = createFaqCard(faqs[i], 'left');
+    const leftCard = createFaqCard(faqs[i], 'left', i);
     row.appendChild(leftCard);
 
     // CENTER MARKER
     const marker = document.createElement('div');
     marker.className = 'faq-timeline-marker';
+    marker.setAttribute('data-aos', 'zoom-in');
+    marker.setAttribute('data-aos-delay', (Math.floor(i / 2) * 150 + 100).toString());
     marker.innerHTML = '<span class="faq-marker-icon"></span>';
     row.appendChild(marker);
 
     // RIGHT CARD (nếu còn phần tử)
     if (faqs[i + 1]) {
-      const rightCard = createFaqCard(faqs[i + 1], 'right');
+      const rightCard = createFaqCard(faqs[i + 1], 'right', i + 1);
       row.appendChild(rightCard);
     } else {
       // Nếu lẻ, thêm 1 card rỗng để layout vẫn đủ 3 cột
@@ -55,6 +65,11 @@ function renderFaqTimeline(container, faqs) {
     }
 
     container.appendChild(row);
+  }
+  
+  // Refresh AOS after content is loaded
+  if (typeof AOS !== 'undefined') {
+    AOS.refresh();
   }
 }
 
@@ -87,4 +102,14 @@ ready(async () => {
   mountHeader('.mount-header', 'faq');
   mountFooter('.mount-footer');
   await loadFaqs();
+  
+  // Initialize AOS after content is loaded
+  if (typeof AOS !== 'undefined') {
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true,
+      offset: 100
+    });
+  }
 });

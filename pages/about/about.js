@@ -164,14 +164,31 @@ function createAboutSection(item, index) {
   const rawDesc = item.description || item.content || item.body || '';
   const desc = String(rawDesc).replace(/\n/g, '<br>');
 
-  const imageUrl =
-    item.image_url && String(item.image_url).trim()
-      ? item.image_url
-      : '../../1.jpg'; // đổi path nếu cần
+  // ====== Build URL ảnh section ======
+  let imageUrl = '';
+
+  if (item.image_url && String(item.image_url).trim()) {
+    const rawPath = String(item.image_url).trim();
+  
+    if (rawPath.startsWith('http://') || rawPath.startsWith('https://')) {
+      // Nếu là URL tuyệt đối thì dùng luôn
+      imageUrl = rawPath;
+    } else {
+      // Thêm /be vào trước /storage
+      const normalizedPath = rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
+      imageUrl = `http://localhost/be${normalizedPath}`;
+      // nếu muốn dùng biến thì:
+      // const STORAGE_BASE = 'http://localhost/be';
+      // imageUrl = `${STORAGE_BASE}${normalizedPath}`;
+    }
+  } else {
+    // Ảnh default khi không có image_url
+    imageUrl = '../../1.jpg';
+  }
+  // ====================================
 
   section.innerHTML = `
     <div class="about-section__content">
-      <p class="about-section__label">Giới thiệu #${index + 1}</p>
       <h2 class="about-section__title">${escapeHtml(title)}</h2>
       <p class="about-section__text">${desc}</p>
     </div>
@@ -186,6 +203,7 @@ function createAboutSection(item, index) {
 
   return section;
 }
+
 
 function escapeHtml(str) {
   return String(str)

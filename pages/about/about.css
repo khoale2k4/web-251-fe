@@ -7,20 +7,95 @@
   --bg-light: #f9fafb;
 }
 
+/* ============================================
+   HIỆU ỨNG 1: ANIMATED GRADIENT BACKGROUND
+   Giống Home - đơn giản hơn
+   ============================================ */
+html {
+  background: linear-gradient(-45deg, #f9fafb, #e0e7ff, #fce7f3, #e0f2fe, #fef3c7);
+  background-size: 400% 400%;
+  animation: gradientShift 20s ease infinite;
+  min-height: 100%;
+}
+
 body {
   font-family: 'Inter', -apple-system, sans-serif;
   color: var(--text-dark);
   line-height: 1.6;
-  background-color: var(--bg-light);
+  background: linear-gradient(-45deg, #f9fafb, #e0e7ff, #fce7f3, #e0f2fe, #fef3c7);
+  background-size: 400% 400%;
+  background-attachment: fixed;
+  animation: gradientShift 20s ease infinite;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
-/* HERO CŨ */
+/* Mount header và footer giống Home */
+.mount-header,
+.mount-footer {
+  display: contents;
+}
+
+main {
+  flex: 1;
+  background: transparent;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Tắt animation nếu người dùng chọn giảm chuyển động */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    animation: none;
+    background: var(--bg-light);
+  }
+}
+
+/* HERO - giống Home */
 .hero {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 80px 20px;
+  padding: 20px 20px 80px 20px;
   text-align: center;
-  margin-bottom: 40px;
+  margin-top: 0;
+  margin-bottom: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  animation: float 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-15px) translateX(15px);
+  }
 }
 
 .hero-title {
@@ -29,6 +104,8 @@ body {
   margin-bottom: 20px;
   animation: fadeInDown 1s;
   color: white !important;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-description {
@@ -38,11 +115,22 @@ body {
   opacity: 0.95;
   animation: fadeInUp 1s;
   color: white !important;
+  position: relative;
+  z-index: 1;
 }
 
-/* SECTION CŨ */
+/* SECTION */
 .section {
   padding: 40px 0;
+  position: relative;
+  background: transparent;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
 /* CARD CŨ (nếu bạn dùng) */
@@ -119,23 +207,72 @@ body {
   display: flex;
   flex-direction: column;
   gap: 32px;
+  background: transparent !important;
 }
 
+/* ============================================
+   HIỆU ỨNG 2: ALTERNATING BACKGROUND CHO SECTIONS
+   ============================================ */
 /* Một khung: text trái, hình phải */
 .about-section {
   display: grid;
   grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
   gap: 24px;
   align-items: center;
-  background: #ffffff;
   border-radius: 18px;
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
   padding: 24px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
 
   /* Scroll reveal */
   opacity: 0;
   transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 0.6s ease, transform 0.6s ease, background 0.4s ease, transform 0.4s ease;
+}
+
+/* Section lẻ (1, 3, 5...) - nền trắng với gradient nhẹ */
+.about-section:nth-child(odd) {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-left: 4px solid transparent;
+}
+
+/* Section chẵn (2, 4, 6...) - nền xanh nhạt với border màu */
+.about-section:nth-child(even) {
+  background: linear-gradient(135deg, #fefefe 0%, #f1f5f9 100%);
+  border-left: 4px solid var(--primary);
+}
+
+/* Hiệu ứng hover - đổi màu nền */
+.about-section:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
+}
+
+.about-section:nth-child(even):hover {
+  background: linear-gradient(135deg, #fefefe 0%, #dbeafe 100%);
+}
+
+/* Pattern overlay tinh tế cho các section */
+.about-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(30%, -30%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.about-section:hover::after {
+  opacity: 1;
 }
 
 /* Khi vào viewport */
@@ -149,6 +286,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .about-section__label {
@@ -172,6 +311,8 @@ body {
 /* Ảnh giày bên phải */
 .about-section__image-wrapper {
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .about-section__image {
@@ -180,12 +321,24 @@ body {
   border-radius: 18px;
   box-shadow: 0 20px 45px rgba(15, 23, 42, 0.35);
   display: inline-block;
+  transition: transform 0.4s ease;
+}
+
+.about-section:hover .about-section__image {
+  transform: scale(1.05);
 }
 
 /* Skeleton khi đang tải */
 .about-section--skeleton {
   opacity: 1;
   transform: none;
+  background: #ffffff !important;
+  border-left: none !important;
+}
+
+.about-section--skeleton:hover {
+  transform: none;
+  background: #ffffff !important;
 }
 
 .about-section__image-skeleton {
@@ -224,4 +377,254 @@ body {
   .hero-description {
     font-size: 16px;
   }
+
+  /* Giảm hiệu ứng trên mobile */
+  .about-section::after {
+    display: none;
+  }
 }
+
+/* Tắt animation cho người dùng muốn giảm chuyển động */
+@media (prefers-reduced-motion: reduce) {
+  .about-section {
+    transition: opacity 0.3s ease;
+  }
+  
+  .about-section:hover {
+    transform: none;
+  }
+  
+  .about-section__image {
+    transition: none;
+  }
+  
+  .about-section:hover .about-section__image {
+    transform: none;
+  }
+}
+
+/* ============================================
+   ĐỒNG BỘ HEADER VỚI GRADIENT BACKGROUND
+   ============================================ */
+.site-header {
+  background: rgba(249, 250, 251, 0.75) !important;
+  backdrop-filter: saturate(180%) blur(12px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(12px) !important;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+.navbar {
+  background: transparent !important;
+}
+
+.nav-left {
+  background: transparent !important;
+}
+
+.nav-left .logo {
+  background: transparent !important;
+}
+
+/* Search bar trong suốt với gradient nhẹ */
+.search-bar {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(204, 204, 204, 0.5) !important;
+}
+
+.search-bar:focus-within {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: #2563eb !important;
+}
+
+.search-bar input[type="search"] {
+  background: transparent !important;
+}
+
+.search-bar .search-button {
+  background-color: rgba(240, 240, 240, 0.6) !important;
+}
+
+.search-bar .search-button:hover {
+  background-color: rgba(224, 224, 224, 0.8) !important;
+}
+
+/* Nav auth section */
+.nav-auth {
+  background: transparent !important;
+}
+
+.nav-auth-link {
+  background: transparent !important;
+}
+
+.nav-auth-link:hover {
+  background-color: rgba(243, 244, 246, 0.6) !important;
+}
+
+.user-profile-menu {
+  background: transparent !important;
+}
+
+/* Mobile nav menu */
+.site-header.mobile-nav-open .site-nav {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* Đảm bảo tất cả phần tử trong header không có background trắng */
+.site-nav,
+.site-nav a,
+.nav-right,
+.cart-icon {
+  background: transparent !important;
+}
+
+/* Footer cũng đồng bộ */
+.mount-footer {
+  background: transparent !important;
+}
+
+/* ============================================
+   ĐỒNG BỘ SIDEBAR/SETTINGS PANEL BÊN TRÁI
+   Override tất cả background màu lạ
+   ============================================ */
+/* Settings panel từ Tabler */
+.settings,
+.settings *,
+.settings-panel,
+.theme-switcher {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Sidebar bên trái - override tất cả */
+aside,
+.sidebar,
+.navbar-vertical,
+.fixed-sidebar,
+.navbar-vertical.navbar-dark {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Các phần tử trong sidebar/settings */
+.settings button,
+.settings .btn,
+.settings a,
+.settings i,
+.settings svg,
+.settings .icon,
+.navbar-vertical .nav-link,
+.navbar-vertical .nav-item {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Override màu nền từ Tabler CSS */
+body > div.settings,
+body > .settings,
+.page-sidebar,
+.page-wrapper::before {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Đảm bảo không có background màu xám/trắng */
+[style*="background-color: #"],
+[style*="background-color:#"],
+[style*="background: #"],
+[style*="background:#"] {
+  /* Chỉ override nếu là màu trắng/xám nhạt */
+}
+
+/* Override tất cả div không cần thiết */
+body > div:not(.mount-header):not(.mount-footer):not(.hero):not(.section):not(.container) {
+  background: transparent !important;
+}
+
+/* ============================================
+   KÉO CÁC PHẦN CONTENT DÀI RA ĐỂ ĐÈ LÊN SIDEBAR BÊN TRÁI
+   ============================================ */
+
+/* Header đè lên sidebar */
+.mount-header,
+.site-header {
+  position: relative !important;
+  z-index: 1000 !important;
+  width: 100vw !important;
+  left: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Hero section đè lên sidebar */
+.hero {
+  position: relative !important;
+  z-index: 999 !important;
+  width: 100vw !important;
+  left: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Section content đè lên sidebar */
+.section {
+  position: relative !important;
+  z-index: 999 !important;
+  width: 100vw !important;
+  left: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Container trong section vẫn giữ max-width nhưng căn giữa */
+.section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Footer đè lên sidebar */
+.mount-footer {
+  position: relative !important;
+  z-index: 999 !important;
+  width: 100vw !important;
+  left: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Đảm bảo body không bị overflow */
+body {
+  overflow-x: hidden !important;
+}
+
+/* Override cho sidebar/settings để đảm bảo nó ở dưới */
+.settings,
+aside,
+.sidebar,
+.navbar-vertical,
+.fixed-sidebar {
+  z-index: 1 !important;
+  position: fixed !important;
+}
+
+/* Đảm bảo tất cả content chính đều full width */
+body > .mount-header,
+body > .hero,
+body > .section,
+body > .mount-footer {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  left: 0 !important;
+  margin-left: 0 !important;
+  position: relative !important;
+}
+

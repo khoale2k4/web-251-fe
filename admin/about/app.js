@@ -29,8 +29,10 @@ const API_DELETE = `${PHP_API_BASE}?route=admin/about-sections/delete`;
 
 let currentContents = null;      // dữ liệu page_contents hiện tại
 let aboutImageUrls = [];         // mảng URL ảnh cho about_image
+let sectionImageUrl = '';        // URL ảnh cho từng about_section (image_url)
 let sectionsCache = [];          // cache danh sách about_sections
 let deleteId = null;             // id đang chờ xoá
+
 // Phân trang cho bảng about_sections
 let currentPage = 1;
 const pageSize = 5; // hoặc 10 cho giống FAQ
@@ -54,6 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+    // Upload ảnh cho từng section (image_url)
+      // Upload ảnh cho SECTION
+  const sectionUploadInput = document.getElementById('sectionImageUpload');
+  if (sectionUploadInput) {
+    sectionUploadInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleSectionImageUpload(e.target.files[0]); // 1 ảnh
+        e.target.value = ''; // cho phép chọn lại cùng file
+      }
+    });
+  }
+
+  
 
   // About sections (PHP)
   loadSections();
@@ -188,6 +203,94 @@ async function handleImageUpload(files) {
 
   renderImagePreviews();
   updateHiddenImageInput();
+}
+// Upload ảnh cho từng section (field image_url)
+async function handleSectionImageUpload(file) {
+  const previewContainer = document.getElementById('sectionImagePreview');
+  if (!previewContainer || !file) return;
+
+  // spinner loading
+  previewContainer.innerHTML =
+    '<div id="section-upload-loading" class="spinner-border spinner-border-sm" role="status"></div>';
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('folder', STORAGE_FOLDER);
+  formData.append('target', ''); // giống handleImageUpload, backend đã support
+
+  try {
+    const response = await fetch(UPLOAD_API, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('HTTP ' + response.status);
+    }
+
+    const result = await response.json();
+    console.log('[Admin About] section upload result:', result);
+
+    if (result && result.relativePath) {
+      // Giống cách tính URL của aboutImageUrls
+      sectionImageUrl = `${AVATAR_PATH}/${result.relativePath}`;
+
+      // Gán lại vào ô URL để BE nhận đúng field image_url
+      const hidden = document.getElementById('about-image-input');
+      if (hidden) hidden.value = sectionImageUrl;
+
+      renderSectionImagePreview();
+    } else {
+      throw new Error('Upload thành công nhưng không nhận được relativePath');
+    }
+  } catch (err) {
+    console.error('[Admin About] section upload error:', err);
+    alert('Tải ảnh section thất bại: ' + (err.message || 'Lỗi không xác định'));
+  } finally {
+    const loading = document.getElementById('section-upload-loading');
+    if (loading) loading.remove();
+  }
+}
+
+function renderSectionImagePreview() {
+  const previewContainer = document.getElementById('sectionImagePreview');
+  if (!previewContainer) return;
+
+  previewContainer.innerHTML = '';
+
+  if (!sectionImageUrl) {
+    previewContainer.innerHTML =
+      '<p class="text-muted mb-0">Chưa có ảnh. Chọn file để tải lên hoặc nhập URL ở trên.</p>';
+    return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'd-flex align-items-center gap-3';
+
+  const img = document.createElement('img');
+  img.src = sectionImageUrl.startsWith('http')
+    ? sectionImageUrl
+    : `${API_BASE}${sectionImageUrl}`;
+  img.className = 'rounded';
+  img.style.width = '120px';
+  img.style.height = '80px';
+  img.style.objectFit = 'cover';
+
+  const btnRemove = document.createElement('button');
+  btnRemove.type = 'button';
+  btnRemove.className = 'btn btn-link text-danger px-0';
+  btnRemove.textContent = 'Xoá ảnh';
+  btnRemove.addEventListener('click', () => {
+    if (!confirm('Xoá ảnh này khỏi section?')) return;
+    sectionImageUrl = '';
+    const input = document.getElementById('about-image-input');
+    if (input) input.value = '';
+    renderSectionImagePreview();
+  });
+
+  wrapper.appendChild(img);
+  wrapper.appendChild(btnRemove);
+  previewContainer.appendChild(wrapper);
 }
 
 function renderImagePreviews() {
@@ -370,56 +473,63 @@ function renderTable() {
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = Math.min(startIndex + pageSize, total);
 
-  const pageSections = sorted.slice(startIndex, endIndex);
+    // ...
+    const pageSections = sorted.slice(startIndex, endIndex);
 
-  let html = '';
-
-  pageSections.forEach((item, idx) => {
-    const rowIndex = startIndex + idx + 1; // STT toàn cục
-
-    const desc = (item.description || item.content || '')
-      .replace(/\s+/g, ' ')
-      .trim();
-
-    const imgUrl = item.image_url || '';
-
-    html += `
-      <tr>
-        <td>${rowIndex}</td>
-        <td>${escapeHtml(item.title || '')}</td>
-        <td>
-          <div class="excerpt-preview">${escapeHtml(desc || '—')}</div>
-        </td>
-        <td>
-          ${
-            imgUrl
-              ? `<img src="${imgUrl}" alt="" class="thumb-img">`
-              : '<span class="text-muted">Không có</span>'
-          }
-        </td>
-        <td>${item.sort_order ?? item.display_order ?? ''}</td>
-        <td>
-          ${
-            item.is_active == 1
-              ? '<span class="badge bg-green-lt">Hiển thị</span>'
-              : '<span class="badge bg-secondary-lt">Ẩn</span>'
-          }
-        </td>
-        <td class="text-nowrap">
-          <button class="btn btn-icon btn-sm btn-outline-primary me-1"
-                  data-action="edit" data-id="${item.id}" title="Sửa">
-            <i class="ti ti-edit"></i>
-          </button>
-          <button class="btn btn-icon btn-sm btn-outline-danger"
-                  data-action="delete" data-id="${item.id}" title="Xoá">
-            <i class="ti ti-trash"></i>
-          </button>
-        </td>
-      </tr>
-    `;
-  });
-
-  tbody.innerHTML = html;
+    let html = '';
+  
+    pageSections.forEach((item, idx) => {
+      const rowIndex = startIndex + idx + 1; // STT toàn cục
+  
+      const desc = (item.description || item.content || '')
+        .replace(/\s+/g, ' ')
+        .trim();
+  
+      const imgUrl = item.image_url || '';
+  
+      // 👉 GHÉP API_BASE nếu là path tương đối
+      const resolvedImgUrl =
+        imgUrl && !imgUrl.startsWith('http') ? `${API_BASE}${imgUrl}` : imgUrl;
+  
+      html += `
+        <tr>
+          <td>${rowIndex}</td>
+          <td>${escapeHtml(item.title || '')}</td>
+          <td>
+            <div class="excerpt-preview">${escapeHtml(desc || '—')}</div>
+          </td>
+          <td>
+            ${
+              resolvedImgUrl
+                ? `<img src="${resolvedImgUrl}" alt="" class="thumb-img">`
+                : '<span class="text-muted">Không có</span>'
+            }
+          </td>
+          <td>${item.sort_order ?? item.display_order ?? ''}</td>
+          <td>
+            ${
+              item.is_active == 1
+                ? '<span class="badge bg-green-lt">Hiển thị</span>'
+                : '<span class="badge bg-secondary-lt">Ẩn</span>'
+            }
+          </td>
+          <td class="text-nowrap">
+            <button class="btn btn-icon btn-sm btn-outline-primary me-1"
+                    data-action="edit" data-id="${item.id}" title="Sửa">
+              <i class="ti ti-edit"></i>
+            </button>
+            <button class="btn btn-icon btn-sm btn-outline-danger"
+                    data-action="delete" data-id="${item.id}" title="Xoá">
+              <i class="ti ti-trash"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+  
+    tbody.innerHTML = html;
+    // ...
+  
 
   // Text "Hiển thị X–Y trong tổng số Z section"
   if (summaryEl) {
@@ -530,6 +640,10 @@ function openFormModal(mode, id = null) {
     if (imgInput) imgInput.value = item.image_url || '';
     if (sortInput) sortInput.value = item.sort_order ?? item.display_order ?? 0;
     if (activeInput) activeInput.checked = item.is_active == 1;
+
+    // set state preview ảnh
+    sectionImageUrl = item.image_url || '';
+    renderSectionImagePreview();
   } else {
     if (titleEl) titleEl.textContent = 'Thêm section';
     if (idInput) idInput.value = '';
@@ -538,10 +652,15 @@ function openFormModal(mode, id = null) {
     if (imgInput) imgInput.value = '';
     if (sortInput) sortInput.value = sectionsCache.length + 1;
     if (activeInput) activeInput.checked = true;
+
+    // reset preview ảnh
+    sectionImageUrl = '';
+    renderSectionImagePreview();
   }
 
   modal.show();
 }
+
 
 async function onSubmitForm(e) {
   e.preventDefault();
