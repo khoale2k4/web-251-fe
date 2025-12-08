@@ -202,13 +202,28 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label">URL hình ảnh</label>
-              <input type="text" class="form-control" id="about-image-input" placeholder="Đường dẫn ảnh (image_url)">
-              <div class="form-hint">
-                Có thể là link tuyệt đối hoặc tương đối. Ví dụ:
-                <code>/uploads/about/brand-story.jpg</code>
-              </div>
-            </div>
+  <label class="form-label">URL hình ảnh</label>
+  <!-- Vẫn giữ input URL như cũ -->
+  <input type="text" class="form-control" id="about-image-input"
+    placeholder="Đường dẫn ảnh (image_url)">
+  <div class="form-hint">
+    Có thể là link tuyệt đối hoặc tương đối. Ví dụ:
+    <code>/uploads/about/brand-story.jpg</code>
+  </div>
+
+  <!-- Thêm phần upload ảnh giống about_image -->
+  <div class="mt-3">
+    <label class="form-label">Hoặc upload ảnh từ máy</label>
+    <input type="file"
+           class="form-control"
+           id="sectionImageUpload"
+           accept="image/png, image/jpeg, image/gif, image/webp">
+
+    <!-- Preview ảnh section -->
+    <div id="sectionImagePreview" class="mt-2 d-flex align-items-center gap-3"></div>
+  </div>
+</div>
+
 
             <div class="row">
               <div class="col-sm-6 mb-3">
@@ -263,19 +278,15 @@
   <!-- JS Tabler + sidebar + page -->
   <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js" defer></script>
   <!-- Config + Sidebar giống file settings -->
-  <script type="module" src="../../js/config.js?v=6"></script>
-  <script type="module">
-    import { mountAdminSidebar } from '../../components/AdminSidebar.js';
-    document.addEventListener('DOMContentLoaded', () => {
-      // key 'pages' tuỳ bạn đặt để sidebar highlight đúng menu
-      mountAdminSidebar('.mount-admin-sidebar', 'pages');
-    });
-  </script>
-  <!-- JS riêng cho trang này -->
-  <script type="module" src="./app.js"></script>
-
-  <!-- ADMIN GUARD -->
-  <script type="module" src="../js/admin-guard.js"></script>
+    <script type="module" src="../../js/config.js?v=6"></script>
+    <script type="module">
+        import { mountAdminSidebar } from '../../components/AdminSidebar.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            // key 'pages' tuỳ bạn đặt để sidebar highlight đúng menu
+            mountAdminSidebar('.mount-admin-sidebar', 'pages');
+        });
+    </script>
+  <script src="./app.js?v=4" type="module" defer></script>
 </body>
 
 </html>

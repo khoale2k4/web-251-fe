@@ -8,6 +8,16 @@ import { Popup } from '../../components/PopUp.js';
 
 const API_BASE = 'http://localhost:8000';
 
+// Chuyển đổi size giày sang chiều dài bàn chân (cm) theo chuẩn EU
+function getFootLength(size) {
+    const sizeMap = {
+        '35': '22.5 cm', '36': '23.0 cm', '37': '23.5 cm', '38': '24.0 cm',
+        '39': '24.5 cm', '40': '25.0 cm', '41': '25.5 cm', '42': '26.0 cm',
+        '43': '26.5 cm', '44': '27.0 cm', '45': '27.5 cm', '46': '28.0 cm'
+    };
+    return sizeMap[String(size)] || `~${(parseInt(size) * 0.67).toFixed(1)} cm`;
+}
+
 ready(async () => {
     mountHeader('.mount-header', 'products');
     mountFooter('.mount-footer');
@@ -81,12 +91,10 @@ async function fetchAndRenderProductDetail(id) {
                     <div class="features-container" style="margin: 24px 0; background: #f8fafc; padding: 20px; border-radius: 16px;">
                         <h3 style="font-size: 1.1rem; margin-bottom: 12px; font-weight: 700;">Thông tin chi tiết</h3>
                         <ul class="features" style="list-style: none; padding: 0; display: grid; gap: 12px;">
-                          <li style="display: flex; align-items: center; gap: 10px;">
+                          <li style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                               <i class="fas fa-ruler-combined" style="color: var(--primary); width: 20px;"></i> 
                               <span>Kích thước: <strong>${product.size}</strong></span>
-                              <button class="btn-size-guide" id="btnSizeGuide" style="margin-left: 10px; border: none; background: none; color: var(--primary); cursor: pointer; font-size: 0.9rem; text-decoration: underline;">
-                                  <i class="fas fa-ruler"></i> Bảng kích thước
-                              </button>
+                              <span style="color: #6b7280; font-size: 0.9rem;">(Chiều dài bàn chân: <strong>${getFootLength(product.size)}</strong>)</span>
                           </li>
                           <li style="display: flex; align-items: center; gap: 10px;">
                               <i class="fas fa-palette" style="color: var(--primary); width: 20px;"></i> 
@@ -108,32 +116,6 @@ async function fetchAndRenderProductDetail(id) {
         `;
 
         attachProductEvents();
-
-        const btnSizeGuide = document.getElementById('btnSizeGuide');
-        if (btnSizeGuide) {
-            btnSizeGuide.addEventListener('click', () => {
-                let popup = document.getElementById('sizeGuidePopup');
-                if (!popup) {
-                    popup = document.createElement('div');
-                    popup.id = 'sizeGuidePopup';
-                    popup.className = 'popup-overlay';
-                    popup.innerHTML = `
-                        <div class="popup-content">
-                            <button class="popup-close">&times;</button>
-                            <h3>Bảng kích thước</h3>
-                            <img src="../../assets/images/size-chart.jpg" alt="Size Chart" style="max-width: 100%; height: auto; border-radius: 8px;">
-                        </div>
-                    `;
-                    document.body.appendChild(popup);
-
-                    // Close events
-                    popup.querySelector('.popup-close').addEventListener('click', () => popup.remove());
-                    popup.addEventListener('click', (e) => {
-                        if (e.target === popup) popup.remove();
-                    });
-                }
-            });
-        }
 
         fetchAndRenderRelatedProducts(product.category_id, product.id);
 
