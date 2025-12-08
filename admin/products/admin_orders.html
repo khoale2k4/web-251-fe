@@ -9,14 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/css/tabler.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet" />
 
-  <link rel="stylesheet" href="../../css/popUp.css">
-  <link rel="stylesheet" href="admin_orders_tab.css">
-
-
-  <link rel="stylesheet" href="../fixed-sidebar.css?v=1">
-
   <style>
-    /* Table Row Hover */
     .table-striped tbody tr:hover {
       background-color: rgba(37, 99, 235, 0.05) !important;
       transition: background-color 0.2s;
@@ -46,6 +39,26 @@
       background: rgba(255, 255, 255, 0.15) !important;
       border-radius: 6px;
     }
+
+    .detail-row {
+      display: flex;
+      padding: 8px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      width: 160px;
+      flex-shrink: 0;
+    }
+
+    .detail-value {
+      flex: 1;
+    }
   </style>
 </head>
 
@@ -55,34 +68,61 @@
 
     <div class="page-wrapper">
       <main>
-        <div class="page-header">
+        <div class="page-header d-print-none">
           <div class="container-xl">
-            <h2 class="page-title">Quản lý Giỏ hàng & Đơn hàng</h2>
+            <div class="row g-2 align-items-center">
+              <div class="col">
+                <h2 class="page-title">Quản lý Giỏ hàng & Đơn hàng</h2>
+                <div class="text-muted mt-1">Quản lý giỏ hàng và đơn đặt hàng của khách hàng</div>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="page-body">
           <div class="container-xl">
-            <div class="card">
-              <div class="card-header d-flex align-items-center">
-                <h3 class="card-title mb-0">Giỏ hàng & Đơn hàng</h3>
-                <ul class="nav nav-tabs card-header-tabs ms-3" id="ordersTabs" role="tablist">
-                  <li class="nav-item">
-                    <a class="nav-link active" id="tab-cart" data-type="cart" href="#" role="tab">Giỏ hàng</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" id="tab-orders" data-type="orders" href="#" role="tab">Đơn hàng</a>
-                  </li>
-                </ul>
-                <div class="ms-auto d-flex filter-group">
-                  <!-- <input type="text" class="form-control order-search" id="ordersSearch" placeholder="Tìm kiếm..."
-                    style="width:220px;" /> -->
-                  <button id="btnRefresh" class="btn btn-outline-secondary">Làm mới</button>
+            <!-- Filter Card -->
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="row g-3 align-items-end">
+                  <div class="col-md-4">
+                    <div class="btn-group w-100" role="group">
+                      <button type="button" class="btn btn-primary active" id="tab-cart">
+                        <i class="ti ti-shopping-cart"></i> Giỏ hàng
+                      </button>
+                      <button type="button" class="btn btn-outline-primary" id="tab-orders">
+                        <i class="ti ti-package"></i> Đơn hàng
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Lọc trạng thái</label>
+                    <select class="form-select" id="orderStatusFilter" style="display: none;">
+                      <option value="all">Tất cả trạng thái</option>
+                      <option value="pending">Chờ xử lý</option>
+                      <option value="approved">Đã duyệt</option>
+                      <option value="shipped">Đang giao</option>
+                      <option value="delivered">Đã giao</option>
+                      <option value="cancelled">Đã hủy</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <button id="btnRefresh" class="btn btn-outline-secondary w-100">
+                      <i class="ti ti-refresh"></i> Làm mới
+                    </button>
+                  </div>
                 </div>
               </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title" id="tableTitle">Danh sách giỏ hàng</h3>
+              </div>
               <div class="table-responsive">
-                <table class="table table-striped table-vcenter">
-                  <thead class="table-light" id="ordersTableHead">
+                <table class="table table-striped table-vcenter card-table">
+                  <thead id="ordersTableHead">
                     <tr>
                       <th>Người dùng</th>
                       <th>Số sản phẩm</th>
@@ -92,7 +132,11 @@
                   </thead>
                   <tbody id="ordersTableBody">
                     <tr>
-                      <td colspan="4" class="text-center py-4 text-muted">Đang tải dữ liệu...</td>
+                      <td colspan="4" class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                          <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -109,13 +153,51 @@
     </div>
   </div>
 
+  <!-- Cart Detail Modal -->
+  <div class="modal modal-blur fade" id="cartDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cartDetailTitle">Chi tiết giỏ hàng</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="cartDetailBody">
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Detail Modal -->
+  <div class="modal modal-blur fade" id="orderDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="orderDetailTitle">Chi tiết đơn hàng</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="orderDetailBody">
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta20/dist/js/tabler.min.js"></script>
 
-  <script src="../sidebar-fix.js?v=2"></script>
-
   <script type="module" src="../../js/main.js?v=6"></script>
+  <script type="module" src="admin_orders.js?v=7"></script>
 
-  <!-- ADMIN GUARD -->
   <script type="module" src="../js/admin-guard.js"></script>
 
   <script type="module">
@@ -124,7 +206,6 @@
       mountAdminSidebar('.mount-admin-sidebar', 'admin-orders');
     });
   </script>
-  <script type="module" src="admin_orders.js?v=6"></script>
 </body>
 
 </html>

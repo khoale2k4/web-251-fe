@@ -67,7 +67,7 @@ export function AdminSidebar({ current = '' } = {}) {
             </li>
             
             <li class="nav-item">
-              <a class="nav-link" href="../../index.html" target="_blank">
+              <a class="nav-link" href="../index.html" target="_blank">
                 <span class="nav-link-icon d-md-none d-lg-inline-block"><i class="ti ti-external-link"></i></span>
                 <span class="nav-link-title">Xem trang User</span>
               </a>
