@@ -70,9 +70,6 @@ async function fetchCategories() {
 async function fetchAndRenderProducts(page = 1, query = '', categoryId = '') {
   if (!grid) return;
 
-  grid.innerHTML = `<p>Đang tải danh sách sản phẩm...</p>`;
-  // paginationContainer.style.display = 'none'; // REMOVED
-
   try {
     let url = `${API_BASE}/products?page=${page}&limit=12`;
     if (query) url += `&search=${encodeURIComponent(query)}`;
@@ -185,7 +182,6 @@ function renderPagination() {
   pagination.innerHTML = html;
 }
 
-// Expose changePage to global scope for inline onclick handlers
 window.changePage = function (page) {
   if (page < 1 || page > state.totalPages || page === state.currentPage) return;
 
@@ -212,19 +208,16 @@ function attachProductEvents() {
 }
 
 function attachPageEventListeners() {
-  // Search Button
   searchBtn?.addEventListener('click', () => {
     handleSearch();
   });
 
-  // Enter key in search input
   searchInput?.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
   });
 
-  // Category Change
   categorySelect?.addEventListener('change', () => {
     handleSearch();
   });
