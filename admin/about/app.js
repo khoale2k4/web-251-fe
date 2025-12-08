@@ -227,7 +227,7 @@ async function handleSectionImageUpload(file) {
 
     if (result && result.relativePath) {
       // Giống cách tính URL của aboutImageUrls
-      sectionImageUrl = `${AVATAR_PATH}/${result.relativePath}`;
+      sectionImageUrl = `${result.relativePath}`;
 
       // Gán lại vào ô URL để BE nhận đúng field image_url
       const hidden = document.getElementById('about-image-input');

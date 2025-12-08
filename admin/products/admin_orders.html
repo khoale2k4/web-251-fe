@@ -87,7 +87,7 @@
                 <div class="row g-3 align-items-end">
                   <div class="col-md-4">
                     <div class="btn-group w-100" role="group">
-                      <button type="button" class="btn btn-primary active" id="tab-cart">
+                      <button type="button" class="btn btn-primary" id="tab-cart">
                         <i class="ti ti-shopping-cart"></i> Giỏ hàng
                       </button>
                       <button type="button" class="btn btn-outline-primary" id="tab-orders">
@@ -95,9 +95,9 @@
                       </button>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4" id="statusFilterWrapper" style="display: none;">
                     <label class="form-label">Lọc trạng thái</label>
-                    <select class="form-select" id="orderStatusFilter" style="display: none;">
+                    <select class="form-select" id="orderStatusFilter">
                       <option value="all">Tất cả trạng thái</option>
                       <option value="pending">Chờ xử lý</option>
                       <option value="approved">Đã duyệt</option>

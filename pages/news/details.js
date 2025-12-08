@@ -31,9 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeApp();
 });
 
-function initializeApp() {
+async function initializeApp() {
     setupEventListeners();
-    loadPost();
+    await loadPost();
     loadComments();
     loadRelatedPosts();
     setupBackToTop();
@@ -75,6 +75,7 @@ async function loadPost() {
         if (data.success && data.data && data.data.length > 0) {
             currentPost = data.data[0];
             postId = currentPost.id; // Set postId for comments
+            console.log(currentPost)
             renderPost(currentPost);
             hideLoading();
         } else {

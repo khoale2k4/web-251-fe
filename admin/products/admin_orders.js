@@ -226,17 +226,31 @@ ready(async () => {
     }
   }
 
+  const statusFilterWrapper = document.getElementById('statusFilterWrapper');
+
+  function updateTabUI() {
+    if (state.currentTab === 'cart') {
+      tabCart.classList.add('btn-primary');
+      tabCart.classList.remove('btn-outline-primary');
+      tabOrders.classList.remove('btn-primary');
+      tabOrders.classList.add('btn-outline-primary');
+      statusFilterWrapper.style.display = 'none';
+    } else {
+      tabOrders.classList.add('btn-primary');
+      tabOrders.classList.remove('btn-outline-primary');
+      tabCart.classList.remove('btn-primary');
+      tabCart.classList.add('btn-outline-primary');
+      statusFilterWrapper.style.display = 'block';
+    }
+  }
+
   // Tab switching
   tabCart?.addEventListener('click', () => {
     if (state.currentTab === 'cart') return;
     state.currentTab = 'cart';
     state.page = 1;
     state.keyword = '';
-    tabCart.classList.add('btn-primary');
-    tabCart.classList.remove('btn-outline-primary');
-    tabOrders.classList.remove('btn-primary');
-    tabOrders.classList.add('btn-outline-primary');
-    statusFilter.style.display = 'none';
+    updateTabUI();
     setHeadForCart();
     loadCurrentTabData();
   });
@@ -246,11 +260,7 @@ ready(async () => {
     state.currentTab = 'orders';
     state.page = 1;
     state.keyword = '';
-    tabOrders.classList.add('btn-primary');
-    tabOrders.classList.remove('btn-outline-primary');
-    tabCart.classList.remove('btn-primary');
-    tabCart.classList.add('btn-outline-primary');
-    statusFilter.style.display = 'block';
+    updateTabUI();
     setHeadForOrders();
     loadCurrentTabData();
   });
@@ -408,5 +418,6 @@ ready(async () => {
   });
 
   // Initial load
+  updateTabUI();
   await loadCurrentTabData();
 });

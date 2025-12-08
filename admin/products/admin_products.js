@@ -142,7 +142,7 @@ ready(async () => {
         <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Đang tải...</span></div>
       </td></tr>`;
 
-      const url = `${BASE_URL}/products?page=${page}&limit=10${keyword ? `&keyword=${encodeURIComponent(keyword)}` : ''}`;
+      const url = `${BASE_URL}/products?page=${page}&limit=10${keyword ? `&search=${encodeURIComponent(keyword)}` : ''}`;
       const res = await http.get(url);
 
       if (!res || !res.products) {
